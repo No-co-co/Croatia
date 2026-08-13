@@ -1260,6 +1260,7 @@ button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
   <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
     <div class="modal-sheet" id="modalSheet">
       <div class="modal-handle"></div>
+      <button class="modal-close" onclick="closeModal()" aria-label="סגור">&times;</button>
       <div id="modalContent"></div>
     </div>
   </div>
@@ -1407,6 +1408,8 @@ function switchTab(tab) {
   document.getElementById('tab-' + tab).classList.add('active');
   document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
   document.getElementById('contentArea').scrollTop = 0;
+  document.getElementById('chatOverlay').classList.remove('open');
+  document.getElementById('modalOverlay').classList.remove('open');
   ss('activeTab', tab);
 }
 
