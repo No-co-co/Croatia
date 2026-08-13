@@ -1,6 +1,7 @@
 <title>טיול קרואטיה כהן</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="manifest" href="manifest.json">
 <style>
 :root {
   --bg-primary: #F5F2ED;
@@ -20,6 +21,8 @@
   --border: #E5E2DC;
   --success: #3A8F5C;
   --success-light: rgba(58,143,92,0.1);
+  --warning: #EAB308;
+  --warning-light: rgba(234,179,8,0.1);
   --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
   --shadow-lg: 0 4px 12px rgba(0,0,0,0.08);
   --radius: 12px;
@@ -31,1237 +34,288 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg-primary: #0F1E28;
-    --bg-card: #1A2E3A;
-    --bg-nav: #0A1520;
-    --bg-nav-text: #7A8B95;
-    --bg-nav-active: #3A9AAB;
-    --text-primary: #E8E4DF;
-    --text-secondary: #9CA3AF;
-    --accent: #3A9AAB;
-    --accent-hover: #4BB0C1;
-    --accent-light: rgba(58,154,171,0.15);
-    --coral: #E07A5F;
-    --coral-light: rgba(224,122,95,0.15);
-    --sand: #2A3E4A;
-    --sand-dark: #354D5A;
-    --border: #2A3E4A;
-    --success: #4CA871;
-    --success-light: rgba(76,168,113,0.15);
-    --shadow: 0 1px 3px rgba(0,0,0,0.2);
-    --shadow-lg: 0 4px 12px rgba(0,0,0,0.3);
-    --chat-user: #3A9AAB;
-    --chat-bot: #2A3E4A;
-    --chat-bot-text: #E8E4DF;
+    --bg-primary: #0F1E28; --bg-card: #1A2E3A; --bg-nav: #0A1520; --bg-nav-text: #7A8B95;
+    --bg-nav-active: #3A9AAB; --text-primary: #E8E4DF; --text-secondary: #9CA3AF;
+    --accent: #3A9AAB; --accent-hover: #4BB0C1; --accent-light: rgba(58,154,171,0.15);
+    --coral: #E07A5F; --coral-light: rgba(224,122,95,0.15); --sand: #2A3E4A; --sand-dark: #354D5A;
+    --border: #2A3E4A; --success: #4CA871; --success-light: rgba(76,168,113,0.15);
+    --warning-light: rgba(234,179,8,0.12);
+    --shadow: 0 1px 3px rgba(0,0,0,0.2); --shadow-lg: 0 4px 12px rgba(0,0,0,0.3);
+    --chat-user: #3A9AAB; --chat-bot: #2A3E4A; --chat-bot-text: #E8E4DF;
   }
 }
 :root[data-theme="dark"] {
-  --bg-primary: #0F1E28;
-  --bg-card: #1A2E3A;
-  --bg-nav: #0A1520;
-  --bg-nav-text: #7A8B95;
-  --bg-nav-active: #3A9AAB;
-  --text-primary: #E8E4DF;
-  --text-secondary: #9CA3AF;
-  --accent: #3A9AAB;
-  --accent-hover: #4BB0C1;
-  --accent-light: rgba(58,154,171,0.15);
-  --coral: #E07A5F;
-  --coral-light: rgba(224,122,95,0.15);
-  --sand: #2A3E4A;
-  --sand-dark: #354D5A;
-  --border: #2A3E4A;
-  --success: #4CA871;
-  --success-light: rgba(76,168,113,0.15);
-  --shadow: 0 1px 3px rgba(0,0,0,0.2);
-  --shadow-lg: 0 4px 12px rgba(0,0,0,0.3);
-  --chat-user: #3A9AAB;
-  --chat-bot: #2A3E4A;
-  --chat-bot-text: #E8E4DF;
+  --bg-primary: #0F1E28; --bg-card: #1A2E3A; --bg-nav: #0A1520; --bg-nav-text: #7A8B95;
+  --bg-nav-active: #3A9AAB; --text-primary: #E8E4DF; --text-secondary: #9CA3AF;
+  --accent: #3A9AAB; --accent-hover: #4BB0C1; --accent-light: rgba(58,154,171,0.15);
+  --coral: #E07A5F; --coral-light: rgba(224,122,95,0.15); --sand: #2A3E4A; --sand-dark: #354D5A;
+  --border: #2A3E4A; --success: #4CA871; --success-light: rgba(76,168,113,0.15);
+  --warning-light: rgba(234,179,8,0.12);
+  --shadow: 0 1px 3px rgba(0,0,0,0.2); --shadow-lg: 0 4px 12px rgba(0,0,0,0.3);
+  --chat-user: #3A9AAB; --chat-bot: #2A3E4A; --chat-bot-text: #E8E4DF;
 }
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: var(--font);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  direction: rtl;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-/* Main layout */
-.app-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  height: 100dvh;
-}
-
-.app-header {
-  background: var(--bg-nav);
-  color: #fff;
-  padding: 12px 16px;
-  padding-top: max(12px, env(safe-area-inset-top));
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-  z-index: 100;
-}
-
-.app-header h1 {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-.app-header .phase-badge {
-  font-size: 11px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.15);
-  font-weight: 500;
-}
-
-.content-area {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 16px;
-  padding-bottom: 80px;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Bottom nav */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--bg-nav);
-  display: flex;
-  justify-content: space-around;
-  padding: 6px 0;
-  padding-bottom: max(6px, env(safe-area-inset-bottom));
-  z-index: 200;
-  border-top: 1px solid rgba(255,255,255,0.08);
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 4px 6px;
-  border: none;
-  background: none;
-  color: var(--bg-nav-text);
-  font-family: var(--font);
-  font-size: 10px;
-  cursor: pointer;
-  transition: color 0.15s;
-  -webkit-tap-highlight-color: transparent;
-  min-width: 52px;
-}
-
+body { font-family: var(--font); background: var(--bg-primary); color: var(--text-primary); direction: rtl; min-height: 100vh; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.app-container { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+.app-header { background: var(--bg-nav); color: #fff; padding: 12px 16px; padding-top: max(12px, env(safe-area-inset-top)); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 100; }
+.app-header h1 { font-size: 18px; font-weight: 700; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+.phase-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: rgba(255,255,255,0.15); font-weight: 500; }
+.header-btn { background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer; padding: 4px; display: flex; align-items: center; }
+.header-btn:hover { color: #fff; }
+.content-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 16px; padding-bottom: 80px; -webkit-overflow-scrolling: touch; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-nav); display: flex; justify-content: space-around; padding: 6px 0; padding-bottom: max(6px, env(safe-area-inset-bottom)); z-index: 200; border-top: 1px solid rgba(255,255,255,0.08); }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 6px; border: none; background: none; color: var(--bg-nav-text); font-family: var(--font); font-size: 10px; cursor: pointer; transition: color 0.15s; -webkit-tap-highlight-color: transparent; min-width: 52px; }
 .nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.nav-item.active { color: var(--bg-nav-active); }
-.nav-item.active svg { stroke-width: 2.2; }
-
-/* Tab content */
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* Cards */
-.card {
-  background: var(--bg-card);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: var(--shadow);
-}
-
-.card-accent {
-  border-right: 3px solid var(--accent);
-}
-
-.card-coral {
-  border-right: 3px solid var(--coral);
-}
-
-.card-title {
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.card-subtitle {
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-bottom: 4px;
-}
-
-/* Dashboard */
-.countdown-card {
-  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-  color: #fff;
-  border: none;
-  text-align: center;
-  padding: 24px 16px;
-}
-
-.countdown-number {
-  font-size: 56px;
-  font-weight: 800;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.countdown-label {
-  font-size: 16px;
-  opacity: 0.9;
-  margin-top: 4px;
-}
-
-.countdown-date {
-  font-size: 13px;
-  opacity: 0.7;
-  margin-top: 8px;
-}
-
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.stat-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px 8px;
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--accent);
-  font-variant-numeric: tabular-nums;
-}
-
-.stat-label {
-  font-size: 11px;
-  color: var(--text-secondary);
-  margin-top: 2px;
-}
-
-/* Schedule */
-.day-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 10px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-
-.day-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 16px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-}
-
+.nav-item.active { color: var(--bg-nav-active); } .nav-item.active svg { stroke-width: 2.2; }
+.tab-content { display: none; } .tab-content.active { display: block; }
+.card { background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
+.card-accent { border-right: 3px solid var(--accent); }
+.card-coral { border-right: 3px solid var(--coral); }
+.card-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.card-subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+.countdown-card { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: #fff; border: none; text-align: center; padding: 24px 16px; }
+.countdown-number { font-size: 56px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.countdown-label { font-size: 16px; opacity: 0.9; margin-top: 4px; }
+.countdown-date { font-size: 13px; opacity: 0.7; margin-top: 8px; }
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.stat-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 8px; text-align: center; }
+.stat-value { font-size: 22px; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
+.stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+.emergency-card { background: linear-gradient(135deg, #B91C1C, #991B1B); color: #fff; border: none; padding: 16px; }
+.emergency-card .card-title { color: #fff; font-size: 16px; }
+.emergency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.emer-btn { display: flex; align-items: center; gap: 8px; padding: 10px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.15); color: #fff; text-decoration: none; font-size: 12px; font-weight: 600; transition: background 0.15s; border: none; cursor: pointer; font-family: var(--font); }
+.emer-btn:hover { background: rgba(255,255,255,0.25); }
+.emer-btn .emer-icon { font-size: 18px; flex-shrink: 0; }
+.emer-btn span { line-height: 1.3; }
+.day-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow); }
+.day-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; }
 .day-header:active { background: var(--accent-light); }
-
-.day-date {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent);
-  font-variant-numeric: tabular-nums;
-}
-
-.day-title {
-  font-size: 14px;
-  font-weight: 600;
-  margin-top: 2px;
-}
-
-.day-badge {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 10px;
-  background: var(--accent-light);
-  color: var(--accent);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
+.day-date { font-size: 13px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+.day-title { font-size: 14px; font-weight: 600; margin-top: 2px; }
+.day-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: var(--accent-light); color: var(--accent); font-weight: 600; white-space: nowrap; }
 .day-badge.sailing { background: var(--coral-light); color: var(--coral); }
-.day-badge.today { background: var(--success-light); color: var(--success); }
-
-.day-chevron {
-  width: 18px;
-  height: 18px;
-  stroke: var(--text-secondary);
-  fill: none;
-  stroke-width: 2;
-  transition: transform 0.2s;
-  flex-shrink: 0;
-}
-
+.day-chevron { width: 18px; height: 18px; stroke: var(--text-secondary); fill: none; stroke-width: 2; transition: transform 0.2s; flex-shrink: 0; }
 .day-card.open .day-chevron { transform: rotate(180deg); }
-
-.day-body {
-  display: none;
-  padding: 0 16px 14px;
-  border-top: 1px solid var(--border);
-}
-
+.day-body { display: none; padding: 0 16px 14px; border-top: 1px solid var(--border); }
 .day-card.open .day-body { display: block; padding-top: 12px; }
-
-.event-item {
-  display: flex;
-  gap: 10px;
-  padding: 6px 0;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.event-icon {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  background: var(--accent-light);
-}
-
-.event-text { flex: 1; }
-.event-time { font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
-.event-note { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
-
-.lodge-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: var(--coral);
-  font-weight: 600;
-  margin-top: 6px;
-  padding: 3px 8px;
-  background: var(--coral-light);
-  border-radius: 6px;
-}
-
-/* Documents */
-.doc-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 10px;
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: var(--shadow);
-  -webkit-tap-highlight-color: transparent;
-}
-
+.event-item { display: flex; gap: 10px; padding: 6px 0; font-size: 13px; line-height: 1.5; }
+.event-icon { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; background: var(--accent-light); }
+.event-text { flex: 1; } .event-time { font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; } .event-note { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.lodge-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--coral); font-weight: 600; margin-top: 6px; padding: 3px 8px; background: var(--coral-light); border-radius: 6px; }
+.map-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--accent); text-decoration: none; padding: 3px 8px; background: var(--accent-light); border-radius: 6px; margin-top: 4px; margin-right: 6px; font-weight: 600; }
+.doc-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; cursor: pointer; box-shadow: var(--shadow); -webkit-tap-highlight-color: transparent; }
 .doc-card:active { transform: scale(0.99); }
-
-.doc-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-}
-
-.doc-icon-wrap {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
+.doc-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+.doc-icon-wrap { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
 .doc-icon-wrap.flight { background: #EBF5FF; color: #2563EB; }
 .doc-icon-wrap.car { background: #FFF7ED; color: #EA580C; }
 .doc-icon-wrap.yacht { background: var(--accent-light); color: var(--accent); }
 .doc-icon-wrap.hotel { background: #F0FDF4; color: var(--success); }
-
+.doc-icon-wrap.ticket { background: #FDF2F8; color: #DB2777; }
+.doc-icon-wrap.insurance { background: #EEF2FF; color: #4F46E5; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .doc-icon-wrap.flight { background: rgba(37,99,235,0.15); }
   :root:not([data-theme="light"]) .doc-icon-wrap.car { background: rgba(234,88,12,0.15); }
   :root:not([data-theme="light"]) .doc-icon-wrap.hotel { background: rgba(58,143,92,0.15); }
+  :root:not([data-theme="light"]) .doc-icon-wrap.ticket { background: rgba(219,39,119,0.15); }
+  :root:not([data-theme="light"]) .doc-icon-wrap.insurance { background: rgba(79,70,229,0.15); }
 }
 :root[data-theme="dark"] .doc-icon-wrap.flight { background: rgba(37,99,235,0.15); }
 :root[data-theme="dark"] .doc-icon-wrap.car { background: rgba(234,88,12,0.15); }
 :root[data-theme="dark"] .doc-icon-wrap.hotel { background: rgba(58,143,92,0.15); }
-
-.doc-info { flex: 1; }
-.doc-info h3 { font-size: 15px; font-weight: 700; }
-.doc-info p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
-
-/* Modal */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 500;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.modal-overlay.open {
-  display: flex;
-}
-
-.modal-sheet {
-  background: var(--bg-card);
-  border-radius: 16px 16px 0 0;
-  width: 100%;
-  max-width: 600px;
-  max-height: 85vh;
-  overflow-y: auto;
-  padding: 20px;
-  animation: slideUp 0.25s ease-out;
-}
-
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-
-.modal-handle {
-  width: 36px;
-  height: 4px;
-  background: var(--border);
-  border-radius: 2px;
-  margin: 0 auto 16px;
-}
-
-.modal-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
-
-.modal-close {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: var(--text-secondary);
-  padding: 4px;
-}
-
-.detail-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-  gap: 12px;
-}
-
+:root[data-theme="dark"] .doc-icon-wrap.ticket { background: rgba(219,39,119,0.15); }
+:root[data-theme="dark"] .doc-icon-wrap.insurance { background: rgba(79,70,229,0.15); }
+.doc-info { flex: 1; } .doc-info h3 { font-size: 15px; font-weight: 700; } .doc-info p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.upload-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; border: 2px dashed var(--border); border-radius: var(--radius); background: var(--bg-card); color: var(--accent); font-size: 14px; font-weight: 600; font-family: var(--font); cursor: pointer; margin-bottom: 14px; transition: border-color 0.15s; }
+.upload-btn:hover { border-color: var(--accent); }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; align-items: flex-end; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal-sheet { background: var(--bg-card); border-radius: 16px 16px 0 0; width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto; padding: 20px; animation: slideUp 0.25s ease-out; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+.modal-close { position: absolute; top: 20px; left: 20px; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-secondary); padding: 4px; }
+.detail-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; gap: 12px; }
 .detail-row:last-child { border-bottom: none; }
-
-.detail-label {
-  color: var(--text-secondary);
-  font-weight: 500;
-  flex-shrink: 0;
-  min-width: 80px;
-}
-
-.detail-value {
-  font-weight: 600;
-  text-align: left;
-  direction: ltr;
-  word-break: break-word;
-}
-
-.detail-value.rtl-val {
-  direction: rtl;
-  text-align: right;
-}
-
-.detail-section {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--accent);
-  padding: 12px 0 6px;
-  border-bottom: 2px solid var(--accent-light);
-  margin-top: 8px;
-}
-
-/* Checklist */
-.checklist-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 14px;
-}
-
+.detail-label { color: var(--text-secondary); font-weight: 500; flex-shrink: 0; min-width: 80px; }
+.detail-value { font-weight: 600; text-align: left; direction: ltr; word-break: break-word; }
+.detail-value.rtl-val { direction: rtl; text-align: right; }
+.detail-section { font-size: 14px; font-weight: 700; color: var(--accent); padding: 12px 0 6px; border-bottom: 2px solid var(--accent-light); margin-top: 8px; }
+.checklist-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
 .checklist-item:last-child { border-bottom: none; }
-
-.checklist-item input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  accent-color: var(--accent);
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.checklist-item.checked label {
-  text-decoration: line-through;
-  color: var(--text-secondary);
-}
-
-.checklist-item label {
-  flex: 1;
-  cursor: pointer;
-  line-height: 1.4;
-}
-
-.checklist-item .delete-btn {
-  background: none;
-  border: none;
-  color: var(--coral);
-  font-size: 18px;
-  cursor: pointer;
-  padding: 0 4px;
-  opacity: 0.5;
-  transition: opacity 0.15s;
-}
-
-.checklist-item .delete-btn:hover { opacity: 1; }
-
-.add-item-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.add-item-row input {
-  flex: 1;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-family: var(--font);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  direction: rtl;
-}
-
+.checklist-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
+.checklist-item.checked label { text-decoration: line-through; color: var(--text-secondary); }
+.checklist-item label { flex: 1; cursor: pointer; line-height: 1.4; }
+.checklist-item .item-hint { font-size: 11px; color: var(--text-secondary); display: block; margin-top: 2px; font-style: italic; }
+.checklist-item .delete-btn { background: none; border: none; color: var(--coral); font-size: 18px; cursor: pointer; padding: 0 4px; opacity: 0.5; }
+.add-item-row { display: flex; gap: 8px; margin-top: 12px; }
+.add-item-row input { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: var(--font); background: var(--bg-primary); color: var(--text-primary); direction: rtl; }
 .add-item-row input::placeholder { color: var(--text-secondary); }
-
 .add-item-row input:focus { outline: none; border-color: var(--accent); }
-
-.btn {
-  padding: 10px 16px;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 600;
-  font-family: var(--font);
-  cursor: pointer;
-  transition: background 0.15s;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.btn-accent {
-  background: var(--accent);
-  color: #fff;
-}
-
-.btn-accent:hover { background: var(--accent-hover); }
-
-.btn-outline {
-  background: transparent;
-  color: var(--accent);
-  border: 1px solid var(--accent);
-}
-
-/* Tabs (person selector) */
-.person-tabs {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding-bottom: 12px;
-  margin-bottom: 12px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
+.btn { padding: 10px 16px; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; font-family: var(--font); cursor: pointer; transition: background 0.15s; -webkit-tap-highlight-color: transparent; }
+.btn-accent { background: var(--accent); color: #fff; } .btn-accent:hover { background: var(--accent-hover); }
+.btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+.person-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 12px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .person-tabs::-webkit-scrollbar { display: none; }
-
-.person-tab {
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  font-size: 13px;
-  font-weight: 600;
-  font-family: var(--font);
-  cursor: pointer;
-  white-space: nowrap;
-  color: var(--text-primary);
-  -webkit-tap-highlight-color: transparent;
-  transition: all 0.15s;
-}
-
-.person-tab.active {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-}
-
-/* Progress bar */
-.progress-bar {
-  height: 6px;
-  background: var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-  margin-top: 8px;
-}
-
-.progress-fill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 3px;
-  transition: width 0.3s;
-}
-
-.progress-text {
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-top: 4px;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Yacht rules */
-.rule-card {
-  padding: 12px;
-  border-radius: var(--radius-sm);
-  margin-bottom: 8px;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.rule-danger {
-  background: var(--coral-light);
-  border-right: 3px solid var(--coral);
-}
-
-.rule-warning {
-  background: rgba(234,179,8,0.1);
-  border-right: 3px solid #EAB308;
-}
-
-.rule-info {
-  background: var(--accent-light);
-  border-right: 3px solid var(--accent);
-}
-
-.rule-title {
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-/* Budget */
-.budget-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 14px;
-}
-
+.person-tab { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-card); font-size: 13px; font-weight: 600; font-family: var(--font); cursor: pointer; white-space: nowrap; color: var(--text-primary); -webkit-tap-highlight-color: transparent; }
+.person-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.3s; }
+.progress-text { font-size: 12px; color: var(--text-secondary); margin-top: 4px; font-variant-numeric: tabular-nums; }
+.rule-card { padding: 12px; border-radius: var(--radius-sm); margin-bottom: 8px; font-size: 13px; line-height: 1.6; }
+.rule-danger { background: var(--coral-light); border-right: 3px solid var(--coral); }
+.rule-warning { background: var(--warning-light); border-right: 3px solid var(--warning); }
+.rule-info { background: var(--accent-light); border-right: 3px solid var(--accent); }
+.rule-title { font-weight: 700; margin-bottom: 4px; }
+.budget-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
 .budget-item:last-child { border-bottom: none; }
-
 .budget-name { flex: 1; }
-
-.budget-amount {
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  direction: ltr;
-  text-align: left;
-}
-
-.budget-amount input {
-  width: 100px;
-  padding: 6px 8px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 14px;
-  font-family: var(--font);
-  font-weight: 700;
-  text-align: left;
-  direction: ltr;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-variant-numeric: tabular-nums;
-}
-
+.budget-note { font-size: 11px; color: var(--success); font-weight: 500; }
+.budget-amount { font-weight: 700; font-variant-numeric: tabular-nums; direction: ltr; text-align: left; }
+.budget-amount input { width: 100px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; font-family: var(--font); font-weight: 700; text-align: left; direction: ltr; background: var(--bg-primary); color: var(--text-primary); }
 .budget-amount input:focus { outline: none; border-color: var(--accent); }
-
-.budget-total {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 0;
-  font-size: 16px;
-  font-weight: 800;
-  border-top: 2px solid var(--accent);
-  margin-top: 8px;
-}
-
-.budget-total .amount {
-  color: var(--accent);
-  font-variant-numeric: tabular-nums;
-  direction: ltr;
-}
-
-.budget-delete {
-  background: none;
-  border: none;
-  color: var(--coral);
-  cursor: pointer;
-  font-size: 16px;
-  padding: 2px 6px;
-  opacity: 0.5;
-}
-
-.budget-delete:hover { opacity: 1; }
-
-/* Chat */
-.chat-fab {
-  position: fixed;
-  bottom: 76px;
-  left: 16px;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  box-shadow: 0 4px 12px rgba(42,127,142,0.3);
-  cursor: pointer;
-  z-index: 150;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.15s, box-shadow 0.15s;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.chat-fab:hover { transform: scale(1.05); box-shadow: 0 6px 16px rgba(42,127,142,0.4); }
+.budget-total { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; font-size: 16px; font-weight: 800; border-top: 2px solid var(--accent); margin-top: 8px; }
+.budget-total .amount { color: var(--accent); font-variant-numeric: tabular-nums; direction: ltr; }
+.budget-delete { background: none; border: none; color: var(--coral); cursor: pointer; font-size: 16px; padding: 2px 6px; opacity: 0.5; }
+.currency-sel { display: flex; gap: 6px; margin-bottom: 14px; }
+.currency-btn { padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-card); font-size: 13px; font-weight: 600; font-family: var(--font); cursor: pointer; color: var(--text-primary); }
+.currency-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.chat-fab { position: fixed; bottom: 76px; left: 16px; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: #fff; border: none; box-shadow: 0 4px 12px rgba(42,127,142,0.3); cursor: pointer; z-index: 150; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
 .chat-fab svg { width: 24px; height: 24px; fill: #fff; }
-
-.chat-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 600;
-}
-
+.chat-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 600; }
 .chat-overlay.open { display: flex; flex-direction: column; }
-
-.chat-panel {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 85vh;
-  background: var(--bg-primary);
-  border-radius: 16px 16px 0 0;
-  display: flex;
-  flex-direction: column;
-  animation: slideUp 0.25s ease-out;
-}
-
-.chat-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-
+.chat-panel { position: absolute; bottom: 0; left: 0; right: 0; height: 85vh; background: var(--bg-primary); border-radius: 16px 16px 0 0; display: flex; flex-direction: column; animation: slideUp 0.25s ease-out; }
+.chat-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .chat-header h3 { font-size: 16px; font-weight: 700; }
-
-.chat-close {
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: 4px;
-}
-
-.chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.chat-msg {
-  max-width: 85%;
-  padding: 10px 14px;
-  border-radius: 14px;
-  font-size: 14px;
-  line-height: 1.5;
-  word-break: break-word;
-}
-
-.chat-msg.user {
-  align-self: flex-end;
-  background: var(--chat-user);
-  color: #fff;
-  border-bottom-left: 4px;
-}
-
-.chat-msg.bot {
-  align-self: flex-start;
-  background: var(--chat-bot);
-  color: var(--chat-bot-text);
-  border-bottom-right: 4px;
-}
-
-.chat-msg.bot .disclaimer {
-  font-size: 11px;
-  color: var(--text-secondary);
-  margin-top: 6px;
-  font-style: italic;
-}
-
-.chat-input-row {
-  display: flex;
-  gap: 8px;
-  padding: 12px 16px;
-  border-top: 1px solid var(--border);
-  flex-shrink: 0;
-  padding-bottom: max(12px, env(safe-area-inset-bottom));
-  background: var(--bg-card);
-}
-
-.chat-input-row input {
-  flex: 1;
-  padding: 10px 14px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  font-size: 14px;
-  font-family: var(--font);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  direction: rtl;
-}
-
+.chat-close { background: none; border: none; font-size: 24px; color: var(--text-secondary); cursor: pointer; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.chat-msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-break: break-word; }
+.chat-msg.user { align-self: flex-end; background: var(--chat-user); color: #fff; }
+.chat-msg.bot { align-self: flex-start; background: var(--chat-bot); color: var(--chat-bot-text); }
+.chat-input-row { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border); flex-shrink: 0; padding-bottom: max(12px, env(safe-area-inset-bottom)); background: var(--bg-card); }
+.chat-input-row input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 20px; font-size: 14px; font-family: var(--font); background: var(--bg-primary); color: var(--text-primary); direction: rtl; }
 .chat-input-row input:focus { outline: none; border-color: var(--accent); }
-
-.chat-send, .chat-mic {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.chat-send {
-  background: var(--accent);
-  color: #fff;
-}
-
-.chat-mic {
-  background: var(--sand);
-  color: var(--text-primary);
-}
-
-.chat-mic.recording {
-  background: var(--coral);
-  color: #fff;
-  animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-}
-
-/* Section headers */
-.section-header {
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.section-sub {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--accent);
-  margin: 16px 0 10px;
-}
-
-/* Category tabs for shopping */
-.cat-tabs {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-
-.cat-tab {
-  padding: 5px 12px;
-  border-radius: 16px;
-  font-size: 12px;
-  font-weight: 600;
-  font-family: var(--font);
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text-primary);
-  cursor: pointer;
-}
-
-.cat-tab.active {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-}
-
-/* Weather card */
-.weather-card {
-  background: linear-gradient(135deg, #1B3A4B, #0F1E28);
-  color: #fff;
-  border: none;
-  padding: 16px;
-}
-
-.weather-card .card-title { color: #fff; }
-.weather-card p { font-size: 13px; line-height: 1.6; opacity: 0.9; }
-
-/* List sub-tabs */
-.list-subtabs {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 14px;
-}
-
-.list-subtab {
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  font-size: 13px;
-  font-weight: 600;
-  font-family: var(--font);
-  cursor: pointer;
-  color: var(--text-primary);
-  -webkit-tap-highlight-color: transparent;
-}
-
-.list-subtab.active {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-}
-
-@media (min-width: 768px) {
-  .content-area { max-width: 640px; margin: 0 auto; }
-  .modal-sheet { max-width: 560px; }
-}
-
-/* Focus states */
-button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
+.chat-send { width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--accent); color: #fff; }
+.section-header { font-size: 18px; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.section-sub { font-size: 14px; font-weight: 700; color: var(--accent); margin: 16px 0 10px; }
+.list-subtabs { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; scrollbar-width: none; }
+.list-subtabs::-webkit-scrollbar { display: none; }
+.list-subtab { padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-card); font-size: 13px; font-weight: 600; font-family: var(--font); cursor: pointer; color: var(--text-primary); white-space: nowrap; }
+.list-subtab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.weather-card { background: linear-gradient(135deg, #1B3A4B, #0F1E28); color: #fff; border: none; padding: 16px; }
+.weather-card .card-title { color: #fff; } .weather-card p { font-size: 13px; line-height: 1.6; opacity: 0.9; }
+.route-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; }
+.route-day { font-size: 15px; font-weight: 700; color: var(--accent); }
+.route-path { font-size: 14px; font-weight: 600; margin: 4px 0; }
+.route-stats { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary); margin: 6px 0; }
+.route-stats span { display: flex; align-items: center; gap: 3px; }
+.route-desc { font-size: 13px; line-height: 1.6; margin-top: 8px; }
+.route-attractions { font-size: 12px; color: var(--text-secondary); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+.route-planb { font-size: 12px; color: var(--coral); margin-top: 6px; font-weight: 500; }
+.settings-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 700; align-items: flex-end; justify-content: center; }
+.settings-overlay.open { display: flex; }
+.settings-panel { background: var(--bg-card); border-radius: 16px 16px 0 0; width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto; padding: 20px; animation: slideUp 0.25s ease-out; }
+.settings-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.settings-label { font-size: 14px; font-weight: 600; }
+.settings-sub { font-size: 12px; color: var(--text-secondary); }
+.theme-toggle { display: flex; gap: 4px; }
+.theme-btn { padding: 6px 12px; border-radius: 16px; border: 1px solid var(--border); background: var(--bg-primary); font-size: 12px; font-weight: 600; font-family: var(--font); cursor: pointer; color: var(--text-primary); }
+.theme-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.api-input-row { display: flex; gap: 8px; margin-top: 8px; }
+.api-input-row input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--font); background: var(--bg-primary); color: var(--text-primary); direction: ltr; }
+.briefing-section { margin-bottom: 16px; }
+.briefing-title { font-size: 15px; font-weight: 700; color: var(--coral); margin-bottom: 8px; padding: 8px 12px; background: var(--coral-light); border-radius: var(--radius-sm); }
+.briefing-item { font-size: 13px; line-height: 1.7; padding: 4px 0 4px 12px; border-right: 2px solid var(--border); margin-bottom: 4px; }
+.briefing-item strong { color: var(--accent); }
+.storm-signs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+.storm-sign { font-size: 12px; padding: 8px; background: var(--warning-light); border-radius: var(--radius-sm); line-height: 1.4; }
+@media (min-width: 768px) { .content-area { max-width: 640px; margin: 0 auto; } .modal-sheet { max-width: 560px; } }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
 </style>
 
 <div class="app-container">
   <header class="app-header">
     <h1>קרואטיה 2026</h1>
-    <span class="phase-badge" id="phaseBadge">טוען...</span>
+    <div class="header-actions">
+      <span class="phase-badge" id="phaseBadge">טוען...</span>
+      <button class="header-btn" onclick="toggleSettings()" aria-label="הגדרות">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </button>
+    </div>
   </header>
-
   <main class="content-area" id="contentArea">
-    <!-- Dashboard -->
     <div class="tab-content active" id="tab-dashboard">
-      <div class="card countdown-card" id="countdownCard">
-        <div class="countdown-number" id="countdownNum">--</div>
-        <div class="countdown-label" id="countdownLabel">ימים לטיול</div>
-        <div class="countdown-date">16-31 באוגוסט 2026</div>
-      </div>
-
-      <div class="stats-row">
-        <div class="stat-box">
-          <div class="stat-value">16</div>
-          <div class="stat-label">ימים</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value">7</div>
-          <div class="stat-label">ימי הפלגה</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value">6</div>
-          <div class="stat-label">יעדים</div>
+      <div class="card countdown-card" id="countdownCard"><div class="countdown-number" id="countdownNum">--</div><div class="countdown-label" id="countdownLabel">ימים לטיול</div><div class="countdown-date">16-31 באוגוסט 2026</div></div>
+      <div class="stats-row"><div class="stat-box"><div class="stat-value">16</div><div class="stat-label">ימים</div></div><div class="stat-box"><div class="stat-value">7</div><div class="stat-label">ימי הפלגה</div></div><div class="stat-box"><div class="stat-value">6</div><div class="stat-label">יעדים</div></div></div>
+      <div class="card card-accent" id="nextEventCard"><div class="card-subtitle">האירוע הבא</div><div class="card-title" id="nextEventTitle">טוען...</div><div id="nextEventDetail" style="font-size:13px;color:var(--text-secondary)"></div></div>
+      <div class="card emergency-card">
+        <div class="card-title">אנשי קשר לחירום</div>
+        <div class="emergency-grid">
+          <a href="tel:112" class="emer-btn"><span class="emer-icon">🚨</span><span>חירום קרואטיה<br>112</span></a>
+          <a href="tel:+38523393230" class="emer-btn"><span class="emer-icon">⛵</span><span>Master Yachting<br>+385 23 393 230</span></a>
+          <button class="emer-btn" onclick="alert('VHF ערוץ 16 - חירום ימי\nVHF ערוץ 67 - תקשורת פלוטילה')"><span class="emer-icon">📡</span><span>VHF 16 חירום<br>VHF 67 פלוטילה</span></button>
+          <a href="tel:+494036984949" class="emer-btn"><span class="emer-icon">🛡️</span><span>ביטוח Schomacker<br>+49 40 36984949</span></a>
         </div>
       </div>
-
-      <div class="card card-accent" id="nextEventCard">
-        <div class="card-subtitle">האירוע הבא</div>
-        <div class="card-title" id="nextEventTitle">טוען...</div>
-        <div id="nextEventDetail" style="font-size:13px;color:var(--text-secondary)"></div>
-      </div>
-
-      <div class="card weather-card">
-        <div class="card-title">מזג אוויר והפלגה</div>
-        <p>אוגוסט בקרואטיה: 28-35 מעלות, ימים ארוכים ושמשיים. רוחות Maestral (צפון-מערב) מתחזקות אחה"צ - מושלם להפלגה. שימו לב לסופות Bura (צפון-מזרח) שיכולות להגיע ללא אזהרה. בדקו Windy.com מדי בוקר!</p>
-      </div>
-
-      <div class="card card-coral">
-        <div class="card-title">תזכורת חשובה</div>
-        <p style="font-size:13px;line-height:1.6">אסור בהחלט לעבור מתחת לגשר Zdrelac בין Ugljan ל-Pasman! חזרה לבסיס ערב לפני הצ'ק-אאוט עד 18:00. החזרת היאכטה עם מיכלי דלק מלאים.</p>
-      </div>
+      <div class="card weather-card"><div class="card-title">מזג אוויר והפלגה</div><p>אוגוסט בקרואטיה: 28-35 מעלות. רוחות Maestral (צפון-מערב) אחה"צ - מושלמות להפלגה. היזהרו מסופות Nevera שיכולות להגיע ללא אזהרה. בדקו Windy.com מדי בוקר!</p></div>
+      <div class="card card-coral"><div class="card-title">תזכורות חשובות</div><p style="font-size:13px;line-height:1.6">אסור לעבור מתחת לגשר Zdrelac! חזרה למרינה 28.8 עד 17:00. החזרת יאכטה עם מיכלי דלק מלאים. שירותים: רק נייר טואלט ימי!</p></div>
     </div>
-
-    <!-- Schedule -->
-    <div class="tab-content" id="tab-schedule">
-      <div class="section-header">לוח זמנים</div>
-      <div id="scheduleContainer"></div>
-    </div>
-
-    <!-- Documents -->
-    <div class="tab-content" id="tab-docs">
-      <div class="section-header">מסמכים</div>
-      <div id="docsContainer"></div>
-    </div>
-
-    <!-- Yacht -->
+    <div class="tab-content" id="tab-schedule"><div class="section-header">לוח זמנים</div><div id="scheduleContainer"></div></div>
+    <div class="tab-content" id="tab-docs"><div class="section-header">מסמכים</div><button class="upload-btn" onclick="uploadDoc()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> העלאת מסמך / צילום</button><div id="docsContainer"></div></div>
     <div class="tab-content" id="tab-yacht">
       <div class="section-header">יאכטה - Lagoon 43 "GURGUR"</div>
-
-      <div class="card">
-        <div class="card-title">צ'קליסט צ'ק-אין</div>
-        <div class="progress-bar"><div class="progress-fill" id="yachtProgress"></div></div>
-        <div class="progress-text" id="yachtProgressText"></div>
-        <div id="yachtChecklist"></div>
+      <div class="list-subtabs" id="yachtSubtabs">
+        <button class="list-subtab active" onclick="switchYachtView('route')">מסלול</button>
+        <button class="list-subtab" onclick="switchYachtView('checklist')">צ'קליסט</button>
+        <button class="list-subtab" onclick="switchYachtView('briefing')">תדריך צוות</button>
+        <button class="list-subtab" onclick="switchYachtView('storm')">סופת נוורה</button>
       </div>
-
-      <div class="section-sub">כללים חשובים</div>
-
-      <div class="rule-card rule-danger">
-        <div class="rule-title">אסור בהחלט!</div>
-        לעבור מתחת לגשר Zdrelac בין Ugljan ל-Pasman!
-      </div>
-
-      <div class="rule-card rule-danger">
-        <div class="rule-title">חזרה לבסיס</div>
-        ערב לפני הצ'ק-אאוט - חזרה למרינה עד 18:00!
-      </div>
-
-      <div class="rule-card rule-warning">
-        <div class="rule-title">דלק</div>
-        החזרת היאכטה עם מיכלי דלק מלאים (חובה!)
-      </div>
-
-      <div class="rule-card rule-warning">
-        <div class="rule-title">שירותים</div>
-        לא לסתום שירותים - רק נייר טואלט ימי! הסבירו לכולם.
-      </div>
-
-      <div class="rule-card rule-info">
-        <div class="rule-title">מלאכי (5)</div>
-        תמיד עם אפוד הצלה ומבוגר ליד!
-      </div>
-
-      <div class="section-sub">פרוטוקול סופה</div>
-
-      <div class="card">
-        <div class="card-title">לפני ההפלגה</div>
-        <p style="font-size:13px;line-height:1.6">בדקו תחזית ב-Windy.com. אם סופה צפויה: הישארו במרינה מוגנת, עגנו היטב.</p>
-      </div>
-
-      <div class="card">
-        <div class="card-title">סימני אזהרה</div>
-        <p style="font-size:13px;line-height:1.6">ענני Cb (קומולונימבוס), ירידת ברומטר פתאומית, שינוי כיוון רוח חד.</p>
-      </div>
-
-      <div class="card">
-        <div class="card-title">פעולות בסופה</div>
-        <p style="font-size:13px;line-height:1.6">הורידו מפרשים, הפעילו מנוע, נווטו למפרץ מוגן. ודאו שכל הצוות לובש אפודת הצלה!</p>
-      </div>
+      <div id="yachtRoute"></div>
+      <div id="yachtChecklist" style="display:none"></div>
+      <div id="yachtBriefing" style="display:none"></div>
+      <div id="yachtStorm" style="display:none"></div>
     </div>
-
-    <!-- Lists -->
     <div class="tab-content" id="tab-lists">
       <div class="section-header">רשימות</div>
-
-      <div class="list-subtabs">
-        <button class="list-subtab active" onclick="switchListView('packing')">ארוזים</button>
-        <button class="list-subtab" onclick="switchListView('shopping')">קניות ליאכטה</button>
-      </div>
-
-      <div id="listPacking">
-        <div class="person-tabs" id="personTabs"></div>
-        <div class="card">
-          <div class="progress-bar"><div class="progress-fill" id="packProgress"></div></div>
-          <div class="progress-text" id="packProgressText"></div>
-          <div id="packingList"></div>
-          <div class="add-item-row">
-            <input type="text" id="addPackingInput" placeholder="הוסף פריט...">
-            <button class="btn btn-accent" onclick="addPackingItem()">+</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="listShopping" style="display:none">
-        <div class="card">
-          <div class="progress-bar"><div class="progress-fill" id="shopProgress"></div></div>
-          <div class="progress-text" id="shopProgressText"></div>
-          <div class="section-sub">מוצרים כלליים</div>
-          <div id="shoppingGeneral"></div>
-          <div class="section-sub">חומרי ניקוי</div>
-          <div id="shoppingCleaning"></div>
-          <div class="add-item-row">
-            <input type="text" id="addShoppingInput" placeholder="הוסף פריט...">
-            <button class="btn btn-accent" onclick="addShoppingItem()">+</button>
-          </div>
-        </div>
-      </div>
+      <div class="list-subtabs"><button class="list-subtab active" onclick="switchListView('packing',this)">ארוזים</button><button class="list-subtab" onclick="switchListView('shopping',this)">קניות ליאכטה</button></div>
+      <div id="listPacking"><div class="person-tabs" id="personTabs"></div><div class="card"><div class="progress-bar"><div class="progress-fill" id="packProgress"></div></div><div class="progress-text" id="packProgressText"></div><div id="packingList"></div><div class="add-item-row"><input type="text" id="addPackingInput" placeholder="הוסף פריט..." onkeydown="if(event.key==='Enter')addPackingItem()"><button class="btn btn-accent" onclick="addPackingItem()">+</button></div></div></div>
+      <div id="listShopping" style="display:none"></div>
     </div>
-
-    <!-- Budget -->
     <div class="tab-content" id="tab-budget">
       <div class="section-header">תקציב</div>
-      <div class="card">
-        <div id="budgetList"></div>
-        <div class="budget-total">
-          <span>סה"כ</span>
-          <span class="amount" id="budgetTotal">0 EUR</span>
-        </div>
-        <div class="add-item-row" style="margin-top:12px">
-          <input type="text" id="addBudgetName" placeholder="שם הוצאה..." style="flex:1">
-          <input type="text" id="addBudgetAmount" placeholder="סכום EUR" style="width:90px;direction:ltr;text-align:left">
-          <button class="btn btn-accent" onclick="addBudgetItem()">+</button>
-        </div>
-      </div>
+      <div class="currency-sel"><button class="currency-btn active" onclick="setCurrency('EUR',this)">EUR</button><button class="currency-btn" onclick="setCurrency('ILS',this)">ILS</button><button class="currency-btn" onclick="setCurrency('USD',this)">USD</button></div>
+      <div class="card"><div id="budgetList"></div><div class="budget-total"><span>סה"כ</span><span class="amount" id="budgetTotal">0</span></div><div class="add-item-row" style="margin-top:12px"><input type="text" id="addBudgetName" placeholder="שם הוצאה..." style="flex:1" onkeydown="if(event.key==='Enter')addBudgetItem()"><input type="text" id="addBudgetAmount" placeholder="EUR" style="width:90px;direction:ltr;text-align:left" onkeydown="if(event.key==='Enter')addBudgetItem()"><button class="btn btn-accent" onclick="addBudgetItem()">+</button></div></div>
     </div>
   </main>
-
-  <!-- Bottom navigation -->
   <nav class="bottom-nav">
-    <button class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
-      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span>דשבורד</span>
-    </button>
-    <button class="nav-item" data-tab="schedule" onclick="switchTab('schedule')">
-      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      <span>לו"ז</span>
-    </button>
-    <button class="nav-item" data-tab="docs" onclick="switchTab('docs')">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      <span>מסמכים</span>
-    </button>
-    <button class="nav-item" data-tab="yacht" onclick="switchTab('yacht')">
-      <svg viewBox="0 0 24 24"><path d="M2 20h20"/><path d="M12 3v13"/><path d="M4 16l8-13 8 13"/></svg>
-      <span>יאכטה</span>
-    </button>
-    <button class="nav-item" data-tab="lists" onclick="switchTab('lists')">
-      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      <span>רשימות</span>
-    </button>
-    <button class="nav-item" data-tab="budget" onclick="switchTab('budget')">
-      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-      <span>תקציב</span>
-    </button>
+    <button class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>דשבורד</span></button>
+    <button class="nav-item" data-tab="schedule" onclick="switchTab('schedule')"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>לו"ז</span></button>
+    <button class="nav-item" data-tab="docs" onclick="switchTab('docs')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>מסמכים</span></button>
+    <button class="nav-item" data-tab="yacht" onclick="switchTab('yacht')"><svg viewBox="0 0 24 24"><path d="M2 20h20"/><path d="M12 3v13"/><path d="M4 16l8-13 8 13"/></svg><span>יאכטה</span></button>
+    <button class="nav-item" data-tab="lists" onclick="switchTab('lists')"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><span>רשימות</span></button>
+    <button class="nav-item" data-tab="budget" onclick="switchTab('budget')"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg><span>תקציב</span></button>
   </nav>
-
-  <!-- Chat FAB -->
-  <button class="chat-fab" onclick="toggleChat()" aria-label="פתח צ'אט">
-    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
-  </button>
-
-  <!-- Chat Overlay -->
+  <button class="chat-fab" onclick="toggleChat()" aria-label="צ'אט"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></button>
   <div class="chat-overlay" id="chatOverlay">
     <div class="chat-panel">
-      <div class="chat-header">
-        <h3>עוזר הטיול</h3>
-        <button class="chat-close" onclick="toggleChat()">&times;</button>
-      </div>
-      <div class="chat-messages" id="chatMessages">
-        <div class="chat-msg bot">שלום! אני עוזר הטיול של משפחת כהן לקרואטיה. אפשר לשאול אותי על לוח הזמנים, המסמכים, היאכטה, רשימות אריזה, תקציב, ועוד. מה תרצו לדעת?
-          <div class="disclaimer">עוזר מקומי המבוסס על נתוני הטיול בלבד</div>
-        </div>
-      </div>
-      <div class="chat-input-row">
-        <button class="chat-mic" id="micBtn" onclick="toggleMic()" aria-label="הקלטה קולית">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-        </button>
-        <input type="text" id="chatInput" placeholder="שאלו משהו על הטיול..." onkeydown="if(event.key==='Enter')sendChat()">
-        <button class="chat-send" onclick="sendChat()" aria-label="שלח">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>
+      <div class="chat-header"><h3>עוזר הטיול</h3><button class="chat-close" onclick="toggleChat()">&times;</button></div>
+      <div class="chat-messages" id="chatMessages"><div class="chat-msg bot">שלום! אני עוזר הטיול של משפחת כהן. שאלו אותי על לוח הזמנים, מסמכים, יאכטה, מסלול ההפלגה, רשימות, תקציב, אנשי קשר, מזג אוויר ועוד!</div></div>
+      <div class="chat-input-row"><input type="text" id="chatInput" placeholder="שאלו משהו..." onkeydown="if(event.key==='Enter')sendChat()"><button class="chat-send" onclick="sendChat()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div>
     </div>
   </div>
-
-  <!-- Modal -->
-  <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
-    <div class="modal-sheet" id="modalSheet">
+  <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()"><div class="modal-sheet" id="modalSheet"><div class="modal-handle"></div><button class="modal-close" onclick="closeModal()">&times;</button><div id="modalContent"></div></div></div>
+  <div class="settings-overlay" id="settingsOverlay" onclick="if(event.target===this)toggleSettings()">
+    <div class="settings-panel">
       <div class="modal-handle"></div>
-      <button class="modal-close" onclick="closeModal()" aria-label="סגור">&times;</button>
-      <div id="modalContent"></div>
+      <div class="modal-title">הגדרות</div>
+      <div class="settings-row"><div><div class="settings-label">מצב תצוגה</div></div><div class="theme-toggle"><button class="theme-btn" onclick="setTheme('light',this)">בהיר</button><button class="theme-btn active" onclick="setTheme('auto',this)">אוטומטי</button><button class="theme-btn" onclick="setTheme('dark',this)">כהה</button></div></div>
+      <div class="settings-row"><div><div class="settings-label">מטבע ברירת מחדל</div><div class="settings-sub">שער: 1 EUR = 4.05 ILS = 1.08 USD</div></div></div>
+      <div class="settings-row" style="flex-direction:column;align-items:stretch"><div><div class="settings-label">מפתח Gemini API</div><div class="settings-sub">נשמר ב-Firebase בלבד, לא מוצג באפליקציה</div></div><div class="api-input-row"><input type="password" id="apiKeyInput" placeholder="הזן מפתח API חדש..."><button class="btn btn-accent" onclick="saveApiKey()">שמור</button></div><div id="apiKeyStatus" style="font-size:12px;color:var(--success);margin-top:4px"></div></div>
+      <div class="settings-row"><div><div class="settings-label">גרסה</div><div class="settings-sub">Croatia Trip App v2.0</div></div></div>
     </div>
   </div>
 </div>
@@ -1269,964 +323,707 @@ button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
-// ========== FIREBASE ==========
-let db = null, tripDoc = null, firebaseData = {}, firebaseReady = false;
+let db=null,tripDoc=null,firebaseData={},firebaseReady=false;
+try{if(typeof firebase!=='undefined'){firebase.initializeApp({apiKey:"AIzaSyDawBz-7hUWUVxRoaQwuddkeGyVx_hYwh8",authDomain:"croatia-vacation-461ab.firebaseapp.com",projectId:"croatia-vacation-461ab",storageBucket:"croatia-vacation-461ab.firebasestorage.app",messagingSenderId:"335257132951",appId:"1:335257132951:web:2a057d9b5dd642f0156ed2"});db=firebase.firestore();tripDoc=db.collection('trips').doc('cohen2026');}}catch(e){}
+function fbSave(k,v){if(!tripDoc)return;firebaseData[k]=v;tripDoc.set({[k]:v},{merge:true}).catch(()=>{});}
+function fbLoad(k,d){if(firebaseReady&&k in firebaseData)return firebaseData[k];return ls(k,d);}
+function ls(k,d){try{const v=localStorage.getItem('croatia_'+k);return v!==null?JSON.parse(v):d;}catch(e){return d;}}
+function ss(k,v){try{localStorage.setItem('croatia_'+k,JSON.stringify(v));}catch(e){}fbSave(k,v);}
+function load(k,d){return fbLoad(k,d);}
 
-try {
-  if (typeof firebase !== 'undefined') {
-    firebase.initializeApp({
-      apiKey: "AIzaSyDawBz-7hUWUVxRoaQwuddkeGyVx_hYwh8",
-      authDomain: "croatia-vacation-461ab.firebaseapp.com",
-      projectId: "croatia-vacation-461ab",
-      storageBucket: "croatia-vacation-461ab.firebasestorage.app",
-      messagingSenderId: "335257132951",
-      appId: "1:335257132951:web:2a057d9b5dd642f0156ed2"
-    });
-    db = firebase.firestore();
-    tripDoc = db.collection('trips').doc('cohen2026');
-  }
-} catch(e) {}
+const TRIP_START=new Date(2026,7,16),TRIP_END=new Date(2026,7,31),SAIL_START=new Date(2026,7,22),SAIL_END=new Date(2026,7,29);
+const FAMILY=[{name:'נועם',role:'אבא, הסקיפר'},{name:'שיר',role:'אמא'},{name:'יונתן',role:'15'},{name:'אורי',role:'13'},{name:'עמית',role:'11'},{name:'עופר',role:'9'},{name:'מלאכי',role:'5'}];
+const RATES={EUR:1,ILS:4.05,USD:1.08};
+let currentCurrency='EUR';
 
-function fbSave(key, val) {
-  if (!tripDoc) return;
-  firebaseData[key] = val;
-  tripDoc.set({[key]: val}, {merge: true}).catch(() => {});
-}
-
-function fbLoad(key, def) {
-  if (firebaseReady && key in firebaseData) return firebaseData[key];
-  return ls(key, def);
-}
-
-// ========== DATA ==========
-const TRIP_START = new Date(2026, 7, 16); // Aug 16
-const TRIP_END = new Date(2026, 7, 31);
-const SAIL_START = new Date(2026, 7, 22);
-const SAIL_END = new Date(2026, 7, 29);
-
-const FAMILY = [
-  {name:'נועם', role:'אבא, הסקיפר', nameEn:'Noam'},
-  {name:'שיר', role:'אמא', nameEn:'Shir'},
-  {name:'יונתן', role:'15', nameEn:'Yonatan'},
-  {name:'אורי', role:'13', nameEn:'Uri'},
-  {name:'עמית', role:'11', nameEn:'Amit'},
-  {name:'עופר', role:'9', nameEn:'Ofer'},
-  {name:'מלאכי', role:'5', nameEn:'Malachi'}
+const SCHEDULE=[
+  {date:'16.8',day:'שבת',title:'נחיתה בזאגרב',badge:'',events:[
+    {icon:'✈️',text:'טיסה LY 5181',time:'21:00',detail:'המראה בן גוריון T1 → נחיתה 23:25 זאגרב'},
+    {icon:'🚕',text:'מונית לשדה התעופה → Hotel Phoenix',detail:'15-20 דקות נסיעה'}
+  ],lodge:'Hotel Phoenix',addr:'Velikogorička 10b, Staro Čiče'},
+  {date:'17.8',day:'יום ראשון',title:'איסוף רכב ופליטביצה',badge:'',events:[
+    {icon:'🏨',text:'צ\'ק-אאוט Hotel Phoenix',time:'06:00-10:00',detail:''},
+    {icon:'🚗',text:'נסיעה לשדה התעופה + איסוף רכב Hertz',time:'10:30',detail:'Opel Vivaro 9 PAX, הזמנה L644E2F0013'},
+    {icon:'🛣️',text:'נסיעה לפליטביצה',time:'~12:00',detail:'~1:45-2 שעות, 135 ק"מ'},
+    {icon:'🏞️',text:'כניסה לפליטביצה',time:'16:00-17:00',detail:'כניסה 1, 4 ילדים €20 + 1 מבוגר €60'}
+  ],lodge:'Hotel Degenija (1/2)',addr:'Selište Drežničko 57A, Rakovica'},
+  {date:'18.8',day:'יום שני',title:'שמורת פליטביצה',badge:'',events:[
+    {icon:'🏞️',text:'יום שלם בשמורה',detail:'אגמי פליטביצה - שמורת טבע עולמית'}
+  ],lodge:'Hotel Degenija (2/2)'},
+  {date:'19.8',day:'יום שלישי',title:'נסיעה לווילה',badge:'',events:[
+    {icon:'🏨',text:'צ\'ק-אאוט Degenija',time:'עד 11:00',detail:''},
+    {icon:'🚗',text:'נסיעה ל-Villa Cvita',detail:'~1:30-1:45, 135 ק"מ'},
+    {icon:'🏠',text:'צ\'ק-אין',time:'אחרי 16:00',detail:''}
+  ],lodge:'Villa Cvita (1/3)',addr:'Ulica Satnije Sv. Ivana 37, Poličnik'},
+  {date:'20.8',day:'יום רביעי',title:'נופש בווילה',badge:'',events:[
+    {icon:'🏖️',text:'יום חופשי',detail:'מנוחה, שחייה, טיולים באזור'}
+  ],lodge:'Villa Cvita (2/3)'},
+  {date:'21.8',day:'יום חמישי',title:'נופש בווילה + הכנות',badge:'',events:[
+    {icon:'🏖️',text:'יום חופשי',detail:'הכנות ליאכטה, קניות ציוד'}
+  ],lodge:'Villa Cvita (3/3)'},
+  {date:'22.8',day:'יום שישי',title:'עלייה ליאכטה!',badge:'sailing',events:[
+    {icon:'🏠',text:'צ\'ק-אאוט Villa Cvita',time:'לפני 10:00',detail:''},
+    {icon:'🚗',text:'נסיעה למרינה סוקושן',detail:'~20-30 דקות'},
+    {icon:'⛵',text:'צ\'ק-אין יאכטה Lagoon 43 "GURGUR"',time:'17:00',detail:'Pier 14, Marina Dalmacija'},
+    {icon:'📋',text:'בדיקת יאכטה',detail:'סקיפר + עוזר אחד. ~1-2 שעות. שאר הצוות בחוץ'},
+    {icon:'💰',text:'תשלומים',detail:'Comfort Pack 550€, Tourist tax 9.31€/אדם, פיקדון 3,000€ (אשראי) או 300€ (מזומן)'}
+  ],lodge:'יאכטה',addr:'Marina Dalmacija, Sukošan'},
+  {date:'23.8',day:'שבת',title:'הפלגה יום 1: סוקושן → מורטר',badge:'sailing',events:[
+    {icon:'⛵',text:'יציאה מסוקושן',time:'09:00',detail:'25-28 מייל ימי, ~4.5-5 שעות'},
+    {icon:'🏖️',text:'עצירת צהריים',detail:'מפרץ נוח באזור ורגדה - שחייה וארוחה'},
+    {icon:'🏘️',text:'הגעה למורטר',time:'15:30-16:00',detail:'עגינת לילה'}
+  ],lodge:'יאכטה - מורטר'},
+  {date:'24.8',day:'יום ראשון',title:'הפלגה יום 2: מורטר → שיבניק',badge:'sailing',events:[
+    {icon:'⛵',text:'יציאה ממורטר',time:'09:00',detail:'20-23 מייל ימי, ~3.5-4 שעות'},
+    {icon:'🏝️',text:'עצירת צהריים',detail:'האיים Prvić או Zlarin - שחייה וארוחה'},
+    {icon:'🏰',text:'הגעה לשיבניק',time:'15:00-16:00',detail:'כניסה דרך תעלת שיבניק, העיר העתיקה'}
+  ],lodge:'יאכטה - שיבניק'},
+  {date:'25.8',day:'יום שני',title:'הפלגה יום 3: שיבניק → סקראדין',badge:'sailing',events:[
+    {icon:'⛵',text:'יציאה משיבניק',time:'10:00',detail:'15-18 מייל ימי, ~3 שעות. בוקר רגוע'},
+    {icon:'🌿',text:'כניסה לנהר קרקה',detail:'הנוף משתנה ממים פתוחים לנהר ירוק'},
+    {icon:'🏘️',text:'הגעה לסקראדין',time:'14:00-15:00',detail:'עיירה רומנטית, שער לפארק קרקה'}
+  ],lodge:'יאכטה - סקראדין'},
+  {date:'26.8',day:'יום שלישי',title:'הפלגה יום 4: קרקה → פרימושטן',badge:'sailing',events:[
+    {icon:'🌊',text:'היום העמוס ביותר!',time:'מוקדם',detail:'25-28 מייל ימי, ~4.5-5 שעות'},
+    {icon:'🏞️',text:'ביקור בפארק קרקה',detail:'Skradinski Buk - מפלים מפורסמים'},
+    {icon:'⛵',text:'הפלגה דרומה לפרימושטן',detail:'אופציה לעצירת שחייה באזור Zlarin/Krapanj'},
+    {icon:'🏘️',text:'הגעה לפרימושטן',time:'16:00-17:00',detail:'עיירה ציורית על חצי אי'}
+  ],lodge:'יאכטה - פרימושטן'},
+  {date:'27.8',day:'יום רביעי',title:'הפלגה יום 5: פרימושטן → קפרייה',badge:'sailing',events:[
+    {icon:'⛵',text:'יציאה רגועה',time:'09:30',detail:'22-25 מייל ימי, ~3-4 שעות'},
+    {icon:'🏖️',text:'עצירת צהריים ארוכה',detail:'מפרץ מוגן - שחייה, שנירקול, ארוחה'},
+    {icon:'🏝️',text:'הגעה לקפרייה',time:'15:00-16:00',detail:'יום רגוע אחרי קרקה. זמן ים חופשי לילדים'}
+  ],lodge:'יאכטה - קפרייה (Kaprije)'},
+  {date:'28.8',day:'יום חמישי',title:'הפלגה יום 6: חזרה לסוקושן',badge:'sailing',events:[
+    {icon:'⚠️',text:'יציאה מוקדמת!',time:'07:30-08:00',detail:'היום הארוך ביותר! 25-30 מייל ימי, ~5-6 שעות'},
+    {icon:'⛵',text:'הפלגה צפונה דרך האיים',detail:'עצירת שחייה קצרה אם יש זמן'},
+    {icon:'🏁',text:'הגעה למרינה סוקושן',time:'15:30-16:30',detail:'כל היאכטות במרינה עד 17:00!'},
+    {icon:'⛽',text:'מילוי דלק',detail:'חובה להחזיר עם מיכל מלא'}
+  ],lodge:'יאכטה (לילה אחרון)'},
+  {date:'29.8',day:'יום שישי',title:'ירידה מהיאכטה → זאגרב',badge:'',events:[
+    {icon:'⛵',text:'צ\'ק-אאוט מהיאכטה',time:'עד 09:00',detail:''},
+    {icon:'🚗',text:'נסיעה סוקושן → זאגרב',detail:'~2:45-3 שעות, 290 ק"מ'},
+    {icon:'🏠',text:'צ\'ק-אין דירה בזאגרב',time:'15:00-23:00',detail:'3 חדרי שינה + מרפסת, ציון 9.9'}
+  ],lodge:'דירה בזאגרב',addr:'Ul. Radoslava Lopašića 2/1, Zagreb'},
+  {date:'30.8',day:'שבת',title:'יום אחרון בזאגרב',badge:'',events:[
+    {icon:'🏙️',text:'סיורים ושופינג בזאגרב',detail:''},
+    {icon:'🚗',text:'הגעה לשדה התעופה, החזרת רכב',time:'~22:00',detail:''}
+  ],lodge:''},
+  {date:'31.8',day:'יום ראשון',title:'טיסה הביתה',badge:'',events:[
+    {icon:'✈️',text:'המראה מזאגרב LY 5182',time:'00:30',detail:''},
+    {icon:'🛬',text:'נחיתה בן גוריון T3',time:'04:40',detail:''}
+  ],lodge:''}
 ];
 
-const SCHEDULE = [
-  {date:'16.8', day:'יום ראשון', title:'נחיתה בזאגרב', badge:'', events:[
-    {icon:'✈️', text:'טיסה LY 5181', time:'21:00', detail:'המראה בן גוריון T1 → נחיתה 23:25 זאגרב'},
-    {icon:'🚕', text:'מונית לשדה התעופה → Hotel Phoenix', detail:'15-20 דקות נסיעה'},
-  ], lodge:'Hotel Phoenix'},
-  {date:'17.8', day:'יום שני', title:'איסוף רכב ונסיעה לפליטביצה', badge:'', events:[
-    {icon:'🚗', text:'איסוף רכב Hertz בשדה התעופה', time:'10:30', detail:'Opel Vivaro 9 PAX, הזמנה L644E2F0013'},
-    {icon:'🛣️', text:'יציאה לפליטביצה', time:'~12:00', detail:'נסיעה ~1:45-2 שעות (135 ק"מ)'},
-  ], lodge:'Hotel Degenija (לילה 1/2)'},
-  {date:'18.8', day:'יום שלישי', title:'שמורת פליטביצה', badge:'', events:[
-    {icon:'🏞️', text:'יום שלם בשמורה', detail:'אגמי פליטביצה - שמורת טבע עולמית'},
-  ], lodge:'Hotel Degenija (לילה 2/2)'},
-  {date:'19.8', day:'יום רביעי', title:'נסיעה לווילה', badge:'', events:[
-    {icon:'🏨', text:'צ\'ק-אאוט מ-Hotel Degenija', detail:''},
-    {icon:'🚗', text:'נסיעה לווילה', detail:'~1:30-1:45 (135 ק"מ)'},
-  ], lodge:'Villa Cvita (לילה 1/3)'},
-  {date:'20.8', day:'יום חמישי', title:'נופש בווילה', badge:'', events:[
-    {icon:'🏖️', text:'יום חופשי בווילה', detail:'מנוחה, שחייה, טיולים באזור'},
-  ], lodge:'Villa Cvita (לילה 2/3)'},
-  {date:'21.8', day:'יום שישי', title:'נופש בווילה', badge:'', events:[
-    {icon:'🏖️', text:'יום חופשי בווילה', detail:'ארוחת שישי, הכנות ליאכטה'},
-  ], lodge:'Villa Cvita (לילה 3/3)'},
-  {date:'22.8', day:'יום שבת', title:'עלייה ליאכטה!', badge:'sailing', events:[
-    {icon:'🏠', text:'יציאה מ-Villa Cvita', detail:''},
-    {icon:'🚗', text:'נסיעה למרינה סוקושאן', detail:'~20-30 דקות'},
-    {icon:'⛵', text:'צ\'ק-אין ביאכטה Lagoon 43 "GURGUR"', time:'17:00', detail:'Pier 14, Marina Dalmacija'},
-    {icon:'💰', text:'תשלומים במרינה', detail:'Comfort Pack 550€, Tourist tax 9.31€/person, Deposit 3000€ (או 300€)'},
-  ], lodge:'יאכטה'},
-  {date:'23.8', day:'יום ראשון', title:'הפלגה יום 1', badge:'sailing', events:[
-    {icon:'⛵', text:'יום הפלגה ראשון', detail:''},
-  ], lodge:'יאכטה'},
-  {date:'24.8', day:'יום שני', title:'הפלגה יום 2', badge:'sailing', events:[
-    {icon:'⛵', text:'יום הפלגה', detail:''},
-  ], lodge:'יאכטה'},
-  {date:'25.8', day:'יום שלישי', title:'הפלגה יום 3', badge:'sailing', events:[
-    {icon:'⛵', text:'יום הפלגה', detail:''},
-  ], lodge:'יאכטה'},
-  {date:'26.8', day:'יום רביעי', title:'הפלגה יום 4', badge:'sailing', events:[
-    {icon:'⛵', text:'יום הפלגה', detail:''},
-  ], lodge:'יאכטה'},
-  {date:'27.8', day:'יום חמישי', title:'הפלגה יום 5', badge:'sailing', events:[
-    {icon:'⛵', text:'יום הפלגה', detail:''},
-  ], lodge:'יאכטה'},
-  {date:'28.8', day:'יום שישי', title:'הפלגה יום 6 - חזרה לבסיס', badge:'sailing', events:[
-    {icon:'⛵', text:'הפלגה אחרונה', detail:'חזרה למרינה סוקושאן עד 18:00!'},
-    {icon:'⛽', text:'מילוי דלק', detail:'חובה להחזיר עם מיכל מלא'},
-  ], lodge:'יאכטה'},
-  {date:'29.8', day:'יום שבת', title:'ירידה מהיאכטה', badge:'', events:[
-    {icon:'⛵', text:'צ\'ק-אאוט מהיאכטה', time:'עד 09:00', detail:''},
-    {icon:'🚗', text:'נסיעה סוקושאן → זאגרב', detail:'~2:45-3 שעות, 290 ק"מ'},
-  ], lodge:'דירה בזאגרב (ציון 9.9)'},
-  {date:'30.8', day:'יום ראשון', title:'יום אחרון בזאגרב', badge:'', events:[
-    {icon:'🏙️', text:'סיורים ושופינג בזאגרב', detail:''},
-    {icon:'🚗', text:'הגעה לשדה התעופה, החזרת רכב', time:'~22:00', detail:''},
-  ], lodge:''},
-  {date:'31.8', day:'יום שני', title:'טיסה הביתה', badge:'', events:[
-    {icon:'✈️', text:'המראה מזאגרב LY 5182', time:'00:30', detail:''},
-    {icon:'🛬', text:'נחיתה בן גוריון T3', time:'04:40', detail:''},
-  ], lodge:''},
+const FLOTILLA_ROUTE=[
+  {day:1,date:'23.8',from:'סוקושן',to:'מורטר (Murter)',nm:'25-28',hours:'4.5-5',depart:'09:00',arrive:'15:30-16:00',desc:'יציאה בבוקר ממרינה סוקושן והפלגה דרומה בין האיים. עצירה במפרץ נוח באזור ורגדה לשחייה וארוחה. המשך למורטר.',attractions:'הפלגה בין האיים, מפרצים ומים צלולים, נופי צפון דלמטיה, כניסה למפרץ מורטר',planB:'רוח נגדית או קצב איטי → קיצור עצירת צהריים, הגעה מוקדמת למורטר או להישאר באזור פסמן'},
+  {day:2,date:'24.8',from:'מורטר',to:'שיבניק (Šibenik)',nm:'20-23',hours:'3.5-4',depart:'09:00',arrive:'15:00-16:00',desc:'יציאה ממורטר והפלגה דרומה דרך האיים. עצירת צהריים באזור Prvić או Zlarin לשחייה וארוחה. המשך דרך Šibenik Channel לשיבניק.',attractions:'האיים Prvić ו-Zlarin, הכניסה דרך תעלת שיבניק, העיר העתיקה של שיבניק, קתדרלת St. James',planB:'קיצור היום → דילוג על עצירת איים, ישירות לשיבניק'},
+  {day:3,date:'25.8',from:'שיבניק',to:'סקראדין (Skradin)',nm:'15-18',hours:'~3',depart:'10:00',arrive:'14:00-15:00',desc:'בוקר רגוע בשיבניק. יציאה דרך תעלת שיבניק והמשך אל נהר Krka. הפלגה במעלה הנהר עד סקראדין.',attractions:'הכניסה לנהר קרקה היא חלק מרכזי מהחוויה. הנוף משתנה ממים פתוחים לנהר ירוק מוקף בצמחייה',planB:'אם אפשר לבקר בפארק כבר באותו יום, זה ישחרר את היום הבא'},
+  {day:4,date:'26.8',from:'סקראדין',to:'פרימושטן (Primošten)',nm:'25-28',hours:'4.5-5',depart:'מוקדם!',arrive:'16:00-17:00',desc:'יציאה מוקדמת מסקראדין וסיור ב-Krka National Park (Skradinski Buk). חזרה לסירה, יציאה במורד נהר קרקה והמשך דרומה לפרימושטן. אופציונלי: עצירת שחייה באזור Zlarin/Krapanj.',attractions:'Skradinski Buk, נהר קרקה, נופי הפארק הלאומי, העיר העתיקה של פרימושטן',planB:'הזדמנות לבקר בפארק יום לפני'},
+  {day:5,date:'27.8',from:'פרימושטן',to:'קפרייה (Kaprije)',nm:'22-25',hours:'3-4',depart:'09:30',arrive:'15:00-16:00',desc:'יציאה רגועה מפרימושטן והפלגה צפונה דרך האיים. עצירת צהריים ארוכה במפרץ מוגן לשחייה, שנירקול וארוחה. הפלגה קצרה לקפרייה.',attractions:'מפרצים ואיים, מים צלולים, האי זלרין, הכפר והטיילת של זלרין',planB:'רוח חזקה → מפרץ מוגן יותר לאורך הדרך, הגעה לזלרין אחה"צ'},
+  {day:6,date:'28.8',from:'קפרייה',to:'סוקושן (Sukošan)',nm:'25-30',hours:'5-6',depart:'07:30-08:00',arrive:'15:30-16:30',desc:'יציאה מוקדמת מקפרייה והפלגה צפונה. עצירת שחייה קצרה באזור ביוגרד נה מורו אם התנאים מאפשרים. המשך ישיר לסוקושן.',attractions:'הפלגת בוקר ארוכה, עצירת שחייה קצרה, ארוחת צהריים קלה, הפלגה אחרונה צפונה, חזרה למרינה',planB:'תחזית של רוח חלשה או תנאי ים איטיים → שינוי לילה 5 או קיצור עצירת צהריים'}
 ];
 
-const YACHT_CHECKLIST = [
-  'דרכון / תעודת זהות',
-  'Boarding Pass (מודפס או דיגיטלי)',
-  'רישיון סקיפר (מקור! חובה על הסירה)',
-  'רישיון VHF',
-  'רישיון נהיגה בינלאומי',
-  'מילוי Crew List מראש (לזירוז הצ׳ק-אין)',
-  'תשלום Comfort Pack – 550€ מזומן (ניקוי סופי, מצעים, מגבות, Wi-Fi)',
-  'תשלום Tourist Tax – 9.31€ לאדם, מזומן (סה"כ מחושב בצ׳ק-אין)',
-  'פיקדון ביטחון – 3,000€ באשראי / או 300€ מזומן (פיקדון קבוע, לא מוחזר)',
-  'בדיקת מנוע',
-  'בדיקת מפרשים',
-  'בדיקת ציוד בטיחות (אפודות הצלה, זיקוקין, מטף כיבוי)',
-  'בדיקת מערכת מים',
-  'בדיקת שירותים (הסבר על שימוש נכון!)',
-  'בדיקת עוגנים ושרשראות',
-  'בדיקת אורות ניווט',
-  'בדיקת GPS ומכשירי ניווט',
-  'בדיקת VHF',
-  'בדיקת תאורה פנימית',
-  'בדיקת מטבח (גז, כיריים)',
-  'בדיקת מערכת חשמל ושקעים',
-  'בדיקת דינגי (סירת גומי) ומנוע עזר',
-  'צילום כל נזק קיים לפני ההפלגה!',
-  'חתימה על מסמכי קבלה',
-  'תדלוק מלא לפני החזרה (חובה! אחרת חיוב תדלוק + עמלת שירות)',
-  'אסור לעבור מתחת לגשר ז׳דרלאק (Ždrelac) בין אוגליאן לפשמן!'
+const YACHT_CHECKLIST_DATA=[
+  {cat:'מסמכים ותשלומים',items:[
+    {text:'דרכון / תעודת זהות לכל אחד מהצוות',hint:''},
+    {text:'רישיון סקיפר מקורי',hint:'חובה שיהיה על הסירה!'},
+    {text:'רישיון VHF',hint:''},
+    {text:'Boarding Pass (מודפס או דיגיטלי)',hint:''},
+    {text:'מילוי Crew List מראש',hint:'לזירוז הצ\'ק-אין'},
+    {text:'תשלום Comfort Pack – 550€ מזומן',hint:'ניקוי סופי, מצעים, מגבות, Wi-Fi'},
+    {text:'תשלום Tourist Tax – 9.31€ לאדם, מזומן',hint:'סה"כ ~65€ ל-7 אנשים'},
+    {text:'פיקדון ביטחון – 3,000€ באשראי או 300€ מזומן',hint:'פיקדון קבוע, לא מוחזר'}
+  ]},
+  {cat:'בדיקה חיצונית',items:[
+    {text:'בדיקת גוף חיצוני - שריטות ונזקים',hint:'צלמו הכל! הוכחה לפני יציאה'},
+    {text:'צלילה מתחת לגוף - בדיקת הגה ושלמות',hint:'מומלץ עם מסכה, לבדוק גם כיוון ההגה'},
+    {text:'סיפון וקוקפיט - ריילינג, עמודים, חלונות, פלטפורמה',hint:'בדיקת שברים או נזקים'},
+    {text:'הגאים / Gangway - תקינות, סיבוב חופשי, נעילה',hint:''},
+    {text:'חבלי היקשרות - לפחות 4, כולל 1 ארוך (50 מ\')',hint:'לקשירה לחוף בעגינה ים-תיכונית'},
+    {text:'מפרשים - פתיחה מלאה במרינה לבדיקת תקינות',hint:'זהו כל החבלים (שיטים, הרכבות, גלגלת). בדקו מערכת גלגול'},
+    {text:'פנדרים - מספר נכון, תקינות, קשירה מאובטחת',hint:'כריות מגן שתולות בדופן הסירה'},
+    {text:'דינגי - ניפוח, מנוע, דלק מלא + ג\'ריקן',hint:'סירת גומי קטנה. בדיקת תקינות, כפתורים, חבל'},
+    {text:'מנוע דינגי - הנעה, בדיקת תקינות ודלק',hint:'מיכל מלא + ג\'ריקן סולר ספייר + משפך'}
+  ]},
+  {cat:'מנוע ומערכות מכניות',items:[
+    {text:'מנוע - בדיקה ויזואלית (ניקיון, שמן, מים, רצועות)',hint:''},
+    {text:'מנוע - הפעלה בסרק, בדיקת RPM',hint:'ודאו שעובד תקין לפני שיוצאים'},
+    {text:'אימפלר ומסננים',hint:'חלק שדוחף מים לקירור המנוע'},
+    {text:'מערכת עוגן - שרשרת, סימוני עומק, הורדת חירום',hint:'בדקו אורך שרשרת ואיפה הפיוז של הכננת'},
+    {text:'באו-ת\'רסטר (אם יש) - בדיקת סוללה נפרדת',hint:'מנוע קטן בחרטום שעוזר בתמרון במרינה'},
+    {text:'כננת עוגן - בדיקת שלט, פיוז, שחרור קלאצ\'',hint:''},
+    {text:'גנרטור (אם יש) - בדיקת תפעול',hint:''}
+  ]},
+  {cat:'חשמל וניווט',items:[
+    {text:'מצברים - מעל 12V, בטעינה מעל 13.5V',hint:''},
+    {text:'חיבור חשמל חוף ומתאמי שקעים',hint:''},
+    {text:'אורות ניווט - בדיקת כולם',hint:'אדום (שמאל), ירוק (ימין), לבן (אחורי), ראש תורן, עוגן'},
+    {text:'תאורה פנימית - כל האורות עובדים',hint:''},
+    {text:'GPS / צ\'ארטפלוטר - דיוק ותפעול',hint:''},
+    {text:'מד עומק - כיול ובדיקת קריאה',hint:''},
+    {text:'אוטופיילוט - תפעול',hint:''},
+    {text:'VHF רדיו - בדיקת שידור וקליטה',hint:'ערוץ 16 חירום, ערוץ 67 פלוטילה'},
+    {text:'מפות ים ופיילוט בוק',hint:''},
+    {text:'כפתור MOB - מיקום והבנת פעולה',hint:'Man Overboard - לחיצה מסמנת מיקום GPS'}
+  ]},
+  {cat:'משאבות ומים',items:[
+    {text:'משאבות ביליג\' - אוטומטית וידנית',hint:'משאבות שמוציאות מים מתחתית הסירה'},
+    {text:'משאבות ניקוז מקלחות',hint:''},
+    {text:'מיכלי מים מתוקים - קיבולת ומיקומי מילוי',hint:''},
+    {text:'בוילר (מים חמים) - תפעול',hint:''},
+    {text:'מיכל שפכים (Holding Tank) - כמות, משאבת סיפון',hint:''},
+    {text:'ברזי ים (Sea Cocks) - מיקום ותפעול',hint:'שסתומים שמונעים כניסת מים. חשוב למקרה הצפה'}
+  ]},
+  {cat:'בטיחות',items:[
+    {text:'אפודות הצלה - מספיק לכל הצוות',hint:'הקצאה אישית ביום 1!'},
+    {text:'זיקוקי מצוקה - בדיקת תוקף ומיקום',hint:''},
+    {text:'מטפי כיבוי - לחץ תקין, מיקומים',hint:'קוקפיט, מטבח, תא מנוע'},
+    {text:'רפסודת הצלה - תוקף ומיקום',hint:''},
+    {text:'ערכת עזרה ראשונה',hint:'בדקו תכולה'},
+    {text:'צופר - בדיקה (ידני וחשמלי)',hint:''},
+    {text:'סולם ים - פריסה ובדיקה',hint:''},
+    {text:'משקפת',hint:''},
+    {text:'פנס / פנס ראש',hint:''}
+  ]},
+  {cat:'מטבח וגז',items:[
+    {text:'כיריים - תפעול + נעילת ג\'ימבל',hint:'ג\'ימבל = מנגנון שמאפשר לכיריים להישאר ישרות בנדנוד'},
+    {text:'תנור - בדיקת הפעלה',hint:''},
+    {text:'בלוני גז (2) - בדיקה והחלפה',hint:''},
+    {text:'ברז גז ראשי - מיקום',hint:'לסגור בסוף כל בישול!'},
+    {text:'מקרר - תקינות וקירור',hint:''}
+  ]},
+  {cat:'שירותים',items:[
+    {text:'תפעול שירותים - הדגמה לכל המשפחה!',hint:'חשוב מאוד: מה שלא עבר דרך הבטן לא נכנס לשירותים!'},
+    {text:'ברזי ים לכל שירות',hint:''},
+    {text:'נייר טואלט ימי - לקנות ביום ראשון!',hint:''}
+  ]}
 ];
 
-const PACKING_DEFAULT = [
-  'דרכון בתוקף',
-  'רישיון נהיגה בינלאומי',
-  'בגדים קצרים',
-  'בגדים חמים ומעיל ללילות / ימים קצת קרים',
-  'מעיל רוח / גשם דק',
-  'נעלי הליכה',
-  'סנדלים / נעלי מים לירידה למים – חובה!',
-  'כפכפים',
-  'כובע שמש',
-  'בגד ים',
-  'מגבת חוף (בנוסף על מגבת המקלחת שתקבלו)',
-  'כלי רחצה',
-  'תרופות אישיות',
-  'קרם הגנה',
-  'משקפי שמש',
-  'מטען + כבל (יש שקעים רגילים 220V במרינה, שקעי 12V ו-USB בהפלגה)',
-  'מצלמה'
+const PACKING_DEFAULT=['דרכון בתוקף','בגדים קצרים','בגדים חמים ומעיל ללילות','מעיל רוח / גשם דק','נעלי הליכה','סנדלים / נעלי מים - חובה!','כפכפים','כובע שמש','בגד ים','מגבת חוף','כלי רחצה','תרופות אישיות','קרם הגנה','משקפי שמש','מטען + כבל','מצלמה'];
+const PACKING_NOAM=['רישיון סקיפר מקורי (חובה!)','רישיון VHF','אולר','חבל 4 מ"מ, 10-20 מ\'','סנדלים לקשירת חבלים לחוף','רישיון נהיגה בינלאומי'];
+const PACKING_SHARED=['עזרה ראשונה','ג\'ל אלוורה','אל תוש','אטבי כביסה','פנס','ציוד שנירקול','תרמיל גב קטן','קלפים / שש בש ומשחקים','תגבור תבלינים / קפה מהארץ','מפצל שקעים אירופאי','שקיות ניילון'];
+
+const SHOPPING_CATS=[
+  {id:'dairy',name:'חלבי וקירור',items:['חלב טרי x3','יוגורט 1 ק"ג','חמאה','גבינת פטה 400 גרם','גבינת גאודה','גבינת אדם','ביצים x4 (אריזות של 6)']},
+  {id:'bread',name:'לחם וארוחת בוקר',items:['לחם פרוס','לחם טרי','גרנולה','טוסט','קרואסונים x7','דבש','ממרח שוקולד']},
+  {id:'drinks',name:'שתייה',items:['תה (פירות + רגיל)','נסקפה גולד 100 גרם','קפסולות אספרסו','קפה יווני/תורכי','סוכר לבן','מים מינרלים 6x1.5L','מים מינרלים 12x0.5L']},
+  {id:'pasta',name:'פסטה, אורז ורטבים',items:['ספגטי x4','אורז x4','רסק עגבניות','רוטב עגבניות x3','עגבניות קלופות']},
+  {id:'canned',name:'שימורים',items:['תירס','טונה במים x2','מלפפונים חמוצים','זיתים ירוקים','זיתים שחורים','עגבניות מיובשות']},
+  {id:'cooking',name:'בישול ותיבול',items:['שמן זית 1L','שמן לבישול','מלח','פלפל','אורגנו','מיונז','קטשופ']},
+  {id:'snacks',name:'חטיפים ומתוקים',items:['פרינגלס x2','צ\'יפס מלח-אורגנו 180 גרם','ראפלס 140 גרם','ביסקוויט דייג\'סטיב','עוגיות חמאה','ביסקוויט פטי-בר','שוקולד קדבורי','שקדים בשוקולד']},
+  {id:'nuts',name:'פיצוחים',items:['שקדים','פיסטוקים','בוטנים','קשיו']},
+  {id:'produce',name:'ירקות ופירות',items:['תפו"א 4 ק"ג','עגבניות 8 ק"ג','בצל','גזר','מלפפונים x15','קישוא','פלפל אדום','לימונים x2','שום','תפוחים','דובדבנים','תותים','אבטיחים','ענבים']},
+  {id:'meat',name:'בשר וקפואים',items:['חזה עוף 3 ק"ג','בשר טחון x2','פיצות קפואות x2','אפונה קפואה']},
+  {id:'cleaning',name:'ניקיון והיגיינה',items:['מגבוני דטול','סבון ידיים דטול x4','שמפו','מגבונים לחים x3','משחת שיניים','סבון גוף x2','מנקה חלונות','סבון כלים','שקיות זבל','אבקת כביסה','מנקה שירותים','מגבות נייר','נייר טואלט x2 (8 גלילים)','נייר כסף','ניילון נצמד','נייר אפייה','גפרורים x2','כוסות פלסטיק 50 יח\'']}
 ];
 
-const PACKING_NOAM = [
-  'רישיון סקיפר מקורי (חובה על הסירה!)',
-  'רישיון VHF',
-  'אולר',
-  'חבל 4 מ"מ לשפצורים במידת הצורך, 10-20 מ\'',
-  'סנדלים / נעלים נוחות לקשירת חבלים לחוף'
+const DEFAULT_BUDGET=[
+  {name:'רכב Hertz (14 ימים)',amount:2998.47,editable:false},
+  {name:'יאכטה (שכירות)',amount:7150,editable:false},
+  {name:'Comfort Pack',amount:550,editable:false},
+  {name:'Tourist Tax (7 אנשים)',amount:65.17,editable:false},
+  {name:'פיקדון יאכטה',amount:3000,editable:false,note:'מוחזר'},
+  {name:'ביטוח ביטול השתתפות עצמית',amount:280,editable:false},
+  {name:'Hotel Phoenix (לילה 1)',amount:120.47,editable:false},
+  {name:'Hotel Degenija (2 לילות)',amount:0,editable:true},
+  {name:'Villa Cvita (3 לילות)',amount:1509,editable:false},
+  {name:'פיקדון Villa Cvita',amount:500,editable:false,note:'מוחזר'},
+  {name:'דירה זאגרב (2 לילות)',amount:654.48,editable:false},
+  {name:'כרטיסי פליטביצה',amount:140,editable:false},
+  {name:'טיסות',amount:0,editable:true},
+  {name:'דלק וכבישי אגרה',amount:0,editable:true},
+  {name:'אוכל וקניות',amount:0,editable:true}
 ];
 
-const PACKING_SHARED = [
-  'עזרה ראשונה',
-  'אלוורה',
-  'אל תוש',
-  'אטבי כביסה לתליית מגבות ובגדים לייבוש',
-  'פנס',
-  'ציוד שנירקול',
-  'תרמיל גב קטן לטיולי יבשה',
-  'קלפים / שש בש ומשחקים',
-  'תגבור תבלינים / קפה מהארץ',
-  'תבלינים באריזות קטנות (חוסכים קנייה מיותרת)',
-  'מפצל שקעים (תקע אירופאי עם שני פינים, נוח להטענת כל הסלולרים)',
-  'שקיות ניילון'
-];
-
-const SHOPPING_GENERAL = [
-  'תבניות אלומיניום לתנור',
-  'גליל נייר כסף',
-  'גליל ניילון נצמד',
-  'קופסאות אחסון לאוכל',
-  'פסטה',
-  'אורז',
-  'רסק עגבניות',
-  'עגבניות מרוסקות',
-  'ירקות קפואים (תירס, אפונה וכד׳)',
-  'ביצים',
-  'תבלינים',
-  'שמן',
-  'שמן זית',
-  'תה',
-  'קפה',
-  'סוכר',
-  'חלב',
-  'גבינות',
-  'פירות',
-  'ירקות',
-  'לחם (עדיף ארוז)',
-  'חטיפים / ממתקים',
-  'עוגיות, פיצוחים, פירות יבשים',
-  'שתייה מתוקה',
-  'מים מינרלים (3-4 ליטר לאדם ליום! קנו ל-4 ימים ברכישה ראשונה)',
-  'אלכוהול (בירה, יין, קמפרי/אפרול לקוקטיילים)'
-];
-
-const SHOPPING_CLEANING = [
-  'סבון כלים',
-  'סקוטשים',
-  'גלילי נייר סופג',
-  'מטליות ניקוי מטבח',
-  'מטליות ניקוי רצפה',
-  'סבוני ידיים',
-  'נייר טואלט (ימי! חובה לקנות ביום הראשון)',
-  'מגבונים לחים',
-  'שקיות זבל גדולות',
-  'שקיות זבל קטנות לפחי שירותים',
-  'חומר ניקוי שירותים',
-  'שפריצר ניקוי כללי',
-  'אטבי כביסה לתליית מגבות, בגדי ים ובגדים לייבוש'
-];
-
-const DEFAULT_BUDGET = [
-  {name:'רכב Hertz (14 ימים)', amount:2998.47, editable:false},
-  {name:'יאכטה (שכירות)', amount:7150, editable:false},
-  {name:'Comfort Pack', amount:550, editable:false},
-  {name:'Tourist Tax (7 אנשים)', amount:65.17, editable:false},
-  {name:'פיקדון (מוחזר)', amount:0, editable:true},
-  {name:'Hotel Phoenix', amount:0, editable:true},
-  {name:'Hotel Degenija (2 לילות)', amount:0, editable:true},
-  {name:'Villa Cvita (3 לילות)', amount:0, editable:true},
-  {name:'דירה זאגרב', amount:0, editable:true},
-  {name:'טיסות', amount:0, editable:true},
-];
-
-// ========== STORAGE ==========
-function ls(key, def) {
-  try { const v = localStorage.getItem('croatia_' + key); return v !== null ? JSON.parse(v) : def; }
-  catch(e) { return def; }
-}
-function ss(key, val) {
-  try { localStorage.setItem('croatia_' + key, JSON.stringify(val)); } catch(e) {}
-  fbSave(key, val);
-}
-function load(key, def) {
-  return fbLoad(key, def);
-}
-
-// ========== TAB SWITCHING ==========
-function switchTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
+function switchTab(tab){
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
   document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-  document.getElementById('contentArea').scrollTop = 0;
+  document.getElementById('contentArea').scrollTop=0;
   document.getElementById('chatOverlay').classList.remove('open');
   document.getElementById('modalOverlay').classList.remove('open');
-  ss('activeTab', tab);
+  ss('activeTab',tab);
 }
 
-// ========== DASHBOARD ==========
-function updateDashboard() {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const start = new Date(TRIP_START);
-  const diff = Math.ceil((start - today) / (1000*60*60*24));
-
-  const countdownEl = document.getElementById('countdownNum');
-  const labelEl = document.getElementById('countdownLabel');
-  const badgeEl = document.getElementById('phaseBadge');
-
-  if (diff > 0) {
-    countdownEl.textContent = diff;
-    labelEl.textContent = 'ימים לטיול';
-    badgeEl.textContent = 'לפני הטיול';
-  } else if (today >= TRIP_START && today <= TRIP_END) {
-    const tripDay = Math.floor((today - TRIP_START) / (1000*60*60*24)) + 1;
-    countdownEl.textContent = tripDay;
-    labelEl.textContent = 'יום בטיול';
-    if (today >= SAIL_START && today < SAIL_END) {
-      badgeEl.textContent = 'הפלגה!';
-    } else if (today < SAIL_START) {
-      badgeEl.textContent = 'סיור יבשתי';
-    } else {
-      badgeEl.textContent = 'חזרה';
-    }
-  } else {
-    countdownEl.textContent = '✓';
-    labelEl.textContent = 'הטיול הסתיים';
-    badgeEl.textContent = 'חזרנו';
-  }
-
-  // Next event
-  const titleEl = document.getElementById('nextEventTitle');
-  const detailEl = document.getElementById('nextEventDetail');
-  const dayIdx = Math.floor((today - TRIP_START) / (1000*60*60*24));
-
-  if (dayIdx < 0) {
-    titleEl.textContent = SCHEDULE[0].title;
-    detailEl.textContent = SCHEDULE[0].date + ' ' + SCHEDULE[0].day + ' - ' + (SCHEDULE[0].events[0]?.text || '');
-  } else if (dayIdx >= 0 && dayIdx < SCHEDULE.length) {
-    const s = SCHEDULE[dayIdx];
-    titleEl.textContent = s.title;
-    detailEl.textContent = s.date + ' ' + s.day;
-  } else {
-    titleEl.textContent = 'הטיול הסתיים';
-    detailEl.textContent = 'תודה על הזיכרונות!';
-  }
+function updateDashboard(){
+  const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const diff=Math.ceil((TRIP_START-today)/(1000*60*60*24));
+  const cEl=document.getElementById('countdownNum'),lEl=document.getElementById('countdownLabel'),bEl=document.getElementById('phaseBadge');
+  if(diff>0){cEl.textContent=diff;lEl.textContent='ימים לטיול';bEl.textContent='לפני הטיול';}
+  else if(today>=TRIP_START&&today<=TRIP_END){const d=Math.floor((today-TRIP_START)/(1000*60*60*24))+1;cEl.textContent=d;lEl.textContent='יום בטיול';bEl.textContent=today>=SAIL_START&&today<SAIL_END?'הפלגה!':today<SAIL_START?'סיור יבשתי':'חזרה';}
+  else{cEl.textContent='✓';lEl.textContent='הטיול הסתיים';bEl.textContent='חזרנו';}
+  const tEl=document.getElementById('nextEventTitle'),dEl=document.getElementById('nextEventDetail');
+  const dayIdx=Math.floor((today-TRIP_START)/(1000*60*60*24));
+  if(dayIdx<0){tEl.textContent=SCHEDULE[0].title;dEl.textContent=SCHEDULE[0].date+' '+SCHEDULE[0].day;}
+  else if(dayIdx<SCHEDULE.length){tEl.textContent=SCHEDULE[dayIdx].title;dEl.textContent=SCHEDULE[dayIdx].date+' '+SCHEDULE[dayIdx].day;}
+  else{tEl.textContent='הטיול הסתיים';dEl.textContent='תודה על הזיכרונות!';}
 }
 
-// ========== SCHEDULE ==========
-function renderSchedule() {
-  const c = document.getElementById('scheduleContainer');
-  c.innerHTML = SCHEDULE.map((s, i) => {
-    const badgeClass = s.badge === 'sailing' ? 'day-badge sailing' : (s.badge === 'today' ? 'day-badge today' : 'day-badge');
-    const badgeText = s.badge === 'sailing' ? 'הפלגה' : '';
-    return `<div class="day-card" data-day="${i}">
-      <div class="day-header" onclick="toggleDay(${i})">
-        <div>
-          <div class="day-date">${s.date} ${s.day}</div>
-          <div class="day-title">${s.title}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          ${badgeText ? `<span class="${badgeClass}">${badgeText}</span>` : ''}
-          <svg class="day-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-      </div>
-      <div class="day-body">
-        ${s.events.map(e => `<div class="event-item">
-          <div class="event-icon">${e.icon}</div>
-          <div class="event-text">
-            <div>${e.time ? '<span class="event-time">' + e.time + '</span> ' : ''}${e.text}</div>
-            ${e.detail ? '<div class="event-note">' + e.detail + '</div>' : ''}
-          </div>
-        </div>`).join('')}
-        ${s.lodge ? `<div class="lodge-tag">🏨 ${s.lodge}</div>` : ''}
-      </div>
-    </div>`;
+function mapsUrl(addr){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(addr);}
+
+function renderSchedule(){
+  document.getElementById('scheduleContainer').innerHTML=SCHEDULE.map((s,i)=>{
+    const badge=s.badge==='sailing'?'<span class="day-badge sailing">הפלגה</span>':'';
+    const mapBtn=s.addr?`<a href="${mapsUrl(s.addr)}" target="_blank" class="map-link" onclick="event.stopPropagation()">📍 מפה</a>`:'';
+    return `<div class="day-card" data-day="${i}"><div class="day-header" onclick="toggleDay(${i})"><div><div class="day-date">${s.date} ${s.day}</div><div class="day-title">${s.title}</div></div><div style="display:flex;align-items:center;gap:8px">${badge}<svg class="day-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="day-body">${s.events.map(e=>`<div class="event-item"><div class="event-icon">${e.icon}</div><div class="event-text"><div>${e.time?'<span class="event-time">'+e.time+'</span> ':''}${e.text}</div>${e.detail?'<div class="event-note">'+e.detail+'</div>':''}</div></div>`).join('')}${s.lodge?'<div class="lodge-tag">🏨 '+s.lodge+'</div>':''}${mapBtn}</div></div>`;
   }).join('');
 }
 
-function toggleDay(i) {
-  const card = document.querySelector(`[data-day="${i}"]`);
-  card.classList.toggle('open');
+function toggleDay(i){document.querySelector(`[data-day="${i}"]`).classList.toggle('open');}
+
+function renderDocs(){
+  const docs=[
+    {icon:'✈️',cls:'flight',title:'טיסות',sub:'LY 5181/5182 · Ref: 9JOHWG',modal:'flights'},
+    {icon:'🚗',cls:'car',title:'רכב',sub:'Hertz · Opel Vivaro 9 PAX',modal:'car'},
+    {icon:'⛵',cls:'yacht',title:'יאכטה',sub:'Lagoon 43 "GURGUR" · #24332',modal:'yacht'},
+    {icon:'🏨',cls:'hotel',title:'לינה',sub:'4 מקומות לינה',modal:'hotels'},
+    {icon:'🎫',cls:'ticket',title:'כרטיסי פליטביצה',sub:'17.8 · כניסה 1 · 16:00-17:00',modal:'plitvice'},
+    {icon:'🛡️',cls:'insurance',title:'ביטוח יאכטה',sub:'Schomacker · Ref: 97759K · €280',modal:'insurance'}
+  ];
+  document.getElementById('docsContainer').innerHTML=docs.map(d=>`<div class="doc-card" onclick="openDocModal('${d.modal}')"><div class="doc-header"><div class="doc-icon-wrap ${d.cls}">${d.icon}</div><div class="doc-info"><h3>${d.title}</h3><p>${d.sub}</p></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div></div>`).join('');
 }
 
-// ========== DOCUMENTS ==========
-function renderDocs() {
-  const c = document.getElementById('docsContainer');
-  const docs = [
-    {icon:'✈️', iconClass:'flight', title:'טיסות', subtitle:'LY 5181/5182 · Ref: 9JOHWG', modal:'flights'},
-    {icon:'🚗', iconClass:'car', title:'רכב', subtitle:'Hertz · Opel Vivaro 9 PAX', modal:'car'},
-    {icon:'⛵', iconClass:'yacht', title:'יאכטה', subtitle:'Lagoon 43 "GURGUR" · #24332', modal:'yacht'},
-    {icon:'🏨', iconClass:'hotel', title:'לינה', subtitle:'4 מקומות לינה', modal:'hotels'},
-  ];
-  c.innerHTML = docs.map(d => `<div class="doc-card" onclick="openDocModal('${d.modal}')">
-    <div class="doc-header">
-      <div class="doc-icon-wrap ${d.iconClass}">${d.icon}</div>
-      <div class="doc-info"><h3>${d.title}</h3><p>${d.subtitle}</p></div>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-    </div>
+function openDocModal(type){
+  const c=document.getElementById('modalContent');let h='';
+  if(type==='flights'){
+    h=`<div class="modal-title">טיסות</div>
+    <div class="detail-section">הזמנה: 9JOHWG</div>
+    <div class="detail-section">הלוך - 16.8 שבת</div>
+    <div class="detail-row"><span class="detail-label">טיסה</span><span class="detail-value">LY 5181</span></div>
+    <div class="detail-row"><span class="detail-label">המראה</span><span class="detail-value">21:00 TLV T1</span></div>
+    <div class="detail-row"><span class="detail-label">נחיתה</span><span class="detail-value">23:25 ZAG</span></div>
+    <div class="detail-section">מושבים הלוך</div>
+    <div class="detail-row"><span class="detail-label">נועם</span><span class="detail-value">02D</span></div>
+    <div class="detail-row"><span class="detail-label">שיר</span><span class="detail-value">03A</span></div>
+    <div class="detail-row"><span class="detail-label">יונתן</span><span class="detail-value">03C</span></div>
+    <div class="detail-row"><span class="detail-label">אורי</span><span class="detail-value">03B</span></div>
+    <div class="detail-row"><span class="detail-label">עמית</span><span class="detail-value">02A</span></div>
+    <div class="detail-row"><span class="detail-label">עופר</span><span class="detail-value">02C</span></div>
+    <div class="detail-row"><span class="detail-label">מלאכי</span><span class="detail-value">02B</span></div>
+    <div class="detail-section">חזור - 31.8 יום ראשון</div>
+    <div class="detail-row"><span class="detail-label">טיסה</span><span class="detail-value">LY 5182</span></div>
+    <div class="detail-row"><span class="detail-label">המראה</span><span class="detail-value">00:30 ZAG</span></div>
+    <div class="detail-row"><span class="detail-label">נחיתה</span><span class="detail-value">04:40 TLV T3</span></div>
+    <div class="detail-section">מושבים חזור</div>
+    <div class="detail-row"><span class="detail-label">נועם</span><span class="detail-value">05D</span></div>
+    <div class="detail-row"><span class="detail-label">שיר</span><span class="detail-value">06D</span></div>
+    <div class="detail-row"><span class="detail-label">יונתן</span><span class="detail-value">06F</span></div>
+    <div class="detail-row"><span class="detail-label">אורי</span><span class="detail-value">06E</span></div>
+    <div class="detail-row"><span class="detail-label">עמית</span><span class="detail-value">06A</span></div>
+    <div class="detail-row"><span class="detail-label">עופר</span><span class="detail-value">06C</span></div>
+    <div class="detail-row"><span class="detail-label">מלאכי</span><span class="detail-value">06B</span></div>`;
+  } else if(type==='car'){
+    h=`<div class="modal-title">רכב</div>
+    <div class="detail-row"><span class="detail-label">חברה</span><span class="detail-value">Hertz/Kesher</span></div>
+    <div class="detail-row"><span class="detail-label">רכב</span><span class="detail-value">Opel Vivaro 9 PAX</span></div>
+    <div class="detail-row"><span class="detail-label">הילוכים</span><span class="detail-value rtl-val">ידני, מזגן</span></div>
+    <div class="detail-row"><span class="detail-label">הזמנה</span><span class="detail-value">L644E2F0013</span></div>
+    <div class="detail-row"><span class="detail-label">שובר</span><span class="detail-value">25810083</span></div>
+    <div class="detail-section">איסוף</div>
+    <div class="detail-row"><span class="detail-label">תאריך</span><span class="detail-value rtl-val">17.8 10:30</span></div>
+    <div class="detail-row"><span class="detail-label">מיקום</span><span class="detail-value rtl-val">שדה התעופה זאגרב</span></div>
+    <div class="detail-section">החזרה</div>
+    <div class="detail-row"><span class="detail-label">תאריך</span><span class="detail-value rtl-val">30.8 21:45</span></div>
+    <div class="detail-row"><span class="detail-label">מחיר</span><span class="detail-value">2,998.47 EUR</span></div>
+    <div class="detail-row"><span class="detail-label">כולל</span><span class="detail-value rtl-val">CDW, ק"מ ללא הגבלה, TPL, הגנה מגניבה</span></div>`;
+  } else if(type==='yacht'){
+    h=`<div class="modal-title">יאכטה</div>
+    <div class="detail-row"><span class="detail-label">דגם</span><span class="detail-value">Lagoon 43 "GURGUR"</span></div>
+    <div class="detail-row"><span class="detail-label">הזמנה</span><span class="detail-value">24332</span></div>
+    <div class="detail-row"><span class="detail-label">חברה</span><span class="detail-value">Master Yachting d.o.o.</span></div>
+    <div class="detail-row"><span class="detail-label">מרינה</span><span class="detail-value">Marina Dalmacija 14, Sukošan</span></div>
+    <div class="detail-row"><span class="detail-label">טלפון</span><span class="detail-value"><a href="tel:+38523393230" style="color:var(--accent)">+385 23 393 230</a></span></div>
+    <div class="detail-row"><span class="detail-label">מייל</span><span class="detail-value">team@masteryachting.hr</span></div>
+    <div class="detail-section">צ'ק-אין: 22.8 מ-17:00 · Pier 14</div>
+    <div class="detail-section">צ'ק-אאוט: 29.8 עד 09:00</div>
+    <div class="detail-section">עלויות</div>
+    <div class="detail-row"><span class="detail-label">שכירות</span><span class="detail-value">7,150 EUR</span></div>
+    <div class="detail-row"><span class="detail-label">Comfort Pack</span><span class="detail-value">550 EUR (מזומן)</span></div>
+    <div class="detail-row"><span class="detail-label">Tourist Tax</span><span class="detail-value">9.31 EUR/אדם</span></div>
+    <div class="detail-row"><span class="detail-label">פיקדון</span><span class="detail-value">3,000 EUR (אשראי)</span></div>`;
+  } else if(type==='hotels'){
+    h=`<div class="modal-title">מקומות לינה</div>
+    <div class="detail-section">Hotel Phoenix - ליד זאגרב (16.8)</div>
+    <div class="detail-row"><span class="detail-label">כתובת</span><span class="detail-value">Velikogorička 10b, Staro Čiče</span></div>
+    <div class="detail-row"><span class="detail-label">הזמנה</span><span class="detail-value">5696.518.289</span></div>
+    <div class="detail-row"><span class="detail-label">קוד</span><span class="detail-value">9263</span></div>
+    <div class="detail-row"><span class="detail-label">צ'ק-אין</span><span class="detail-value rtl-val">15:00-22:00</span></div>
+    <div class="detail-row"><span class="detail-label">צ'ק-אאוט</span><span class="detail-value rtl-val">06:00-10:00</span></div>
+    <div class="detail-row"><span class="detail-label">מחיר</span><span class="detail-value">120.47 EUR (לא ניתן לביטול)</span></div>
+    <div class="detail-row"><span class="detail-label">מפה</span><span class="detail-value"><a href="${mapsUrl('Velikogorička 10b, Staro Čiče, Croatia')}" target="_blank" style="color:var(--accent)">📍 פתח במפות</a></span></div>
+    <div class="detail-section">Hotel Degenija - פליטביצה (17-18.8)</div>
+    <div class="detail-row"><span class="detail-label">כתובת</span><span class="detail-value">Selište Drežničko 57A, Rakovica</span></div>
+    <div class="detail-row"><span class="detail-label">קוד</span><span class="detail-value">DQ1N4KML</span></div>
+    <div class="detail-row"><span class="detail-label">חדרים</span><span class="detail-value rtl-val">2 Comfort #32, #33</span></div>
+    <div class="detail-row"><span class="detail-label">צ'ק-אין</span><span class="detail-value rtl-val">מ-14:00</span></div>
+    <div class="detail-row"><span class="detail-label">צ'ק-אאוט</span><span class="detail-value rtl-val">עד 11:00</span></div>
+    <div class="detail-row"><span class="detail-label">ארוחות</span><span class="detail-value rtl-val">B&B (ארוחת בוקר כלולה)</span></div>
+    <div class="detail-row"><span class="detail-label">מפה</span><span class="detail-value"><a href="${mapsUrl('Selište Drežničko 57A, Rakovica, Croatia')}" target="_blank" style="color:var(--accent)">📍 פתח במפות</a></span></div>
+    <div class="detail-section">Villa Cvita - ליד זאדאר (19-21.8)</div>
+    <div class="detail-row"><span class="detail-label">כתובת</span><span class="detail-value">Ulica Satnije Sv. Ivana 37, Poličnik</span></div>
+    <div class="detail-row"><span class="detail-label">מחיר</span><span class="detail-value">1,509 EUR</span></div>
+    <div class="detail-row"><span class="detail-label">פיקדון</span><span class="detail-value rtl-val">500 EUR (מוחזר)</span></div>
+    <div class="detail-row"><span class="detail-label">שולם</span><span class="detail-value rtl-val">30% (453€), 70% ב-23.7 (1,056€)</span></div>
+    <div class="detail-row"><span class="detail-label">צ'ק-אין</span><span class="detail-value rtl-val">אחרי 16:00</span></div>
+    <div class="detail-row"><span class="detail-label">צ'ק-אאוט</span><span class="detail-value rtl-val">לפני 10:00</span></div>
+    <div class="detail-row"><span class="detail-label">מפה</span><span class="detail-value"><a href="${mapsUrl('Ulica Satnije Sv. Ivana 37, Poličnik, Croatia')}" target="_blank" style="color:var(--accent)">📍 פתח במפות</a></span></div>
+    <div class="detail-section">דירה בזאגרב (29-30.8)</div>
+    <div class="detail-row"><span class="detail-label">כתובת</span><span class="detail-value">Ul. Radoslava Lopašića 2/1, Zagreb</span></div>
+    <div class="detail-row"><span class="detail-label">הזמנה</span><span class="detail-value">5446.564.907</span></div>
+    <div class="detail-row"><span class="detail-label">קוד</span><span class="detail-value">7237</span></div>
+    <div class="detail-row"><span class="detail-label">סוג</span><span class="detail-value rtl-val">3 חד"ש + מרפסת, ציון 9.9</span></div>
+    <div class="detail-row"><span class="detail-label">מחיר</span><span class="detail-value">654.48 EUR</span></div>
+    <div class="detail-row"><span class="detail-label">צ'ק-אין</span><span class="detail-value rtl-val">15:00-23:00</span></div>
+    <div class="detail-row"><span class="detail-label">צ'ק-אאוט</span><span class="detail-value rtl-val">עד 10:00</span></div>
+    <div class="detail-row"><span class="detail-label">חניה</span><span class="detail-value rtl-val">חינם (צריך הזמנה מראש)</span></div>
+    <div class="detail-row"><span class="detail-label">ביטול</span><span class="detail-value rtl-val">חינם עד 25.8</span></div>
+    <div class="detail-row"><span class="detail-label">מפה</span><span class="detail-value"><a href="${mapsUrl('Ul. Radoslava Lopašića 2/1, Zagreb, Croatia')}" target="_blank" style="color:var(--accent)">📍 פתח במפות</a></span></div>`;
+  } else if(type==='plitvice'){
+    h=`<div class="modal-title">כרטיסי פליטביצה</div>
+    <div class="detail-row"><span class="detail-label">תאריך</span><span class="detail-value rtl-val">17.8</span></div>
+    <div class="detail-row"><span class="detail-label">כניסה</span><span class="detail-value rtl-val">כניסה 1, 16:00-17:00</span></div>
+    <div class="detail-section">כרטיסים</div>
+    <div class="detail-row"><span class="detail-label">ילדים (7-18)</span><span class="detail-value rtl-val">4 כרטיסים × 20€ = 80€</span></div>
+    <div class="detail-row"><span class="detail-label">מבוגרים</span><span class="detail-value rtl-val">1 כרטיס × 60€ = 60€</span></div>
+    <div class="detail-row"><span class="detail-label">סה"כ</span><span class="detail-value">140 EUR</span></div>`;
+  } else if(type==='insurance'){
+    h=`<div class="modal-title">ביטוח ביטול השתתפות עצמית</div>
+    <div class="detail-row"><span class="detail-label">חברה</span><span class="detail-value">Hamburger Yachtversicherung Schomacker</span></div>
+    <div class="detail-row"><span class="detail-label">מספר</span><span class="detail-value">97759K</span></div>
+    <div class="detail-row"><span class="detail-label">תקופה</span><span class="detail-value">22.08-29.08.2026</span></div>
+    <div class="detail-row"><span class="detail-label">כיסוי פיקדון</span><span class="detail-value">3,000 EUR</span></div>
+    <div class="detail-row"><span class="detail-label">פרמיה</span><span class="detail-value rtl-val">280 EUR (שולמה)</span></div>
+    <div class="detail-row"><span class="detail-label">חברת צ'ארטר</span><span class="detail-value">Sailing Around</span></div>
+    <div class="detail-section">איש קשר</div>
+    <div class="detail-row"><span class="detail-label">שם</span><span class="detail-value">Katja Pilski</span></div>
+    <div class="detail-row"><span class="detail-label">טלפון</span><span class="detail-value"><a href="tel:+494036984949" style="color:var(--accent)">+49 40 36984949</a></span></div>
+    <div class="detail-row"><span class="detail-label">מייל</span><span class="detail-value">charter@schomacker.de</span></div>
+    <div class="detail-section">חשוב!</div>
+    <div class="detail-row"><span class="detail-value rtl-val" style="color:var(--coral);font-weight:700">אל תזכירו את קיום הביטוח בבסיס הצ'ארטר! התנהגו כאילו אין לכם ביטוח.</span></div>
+    <div class="detail-row"><span class="detail-value rtl-val">דיווח נזק: עד 30 יום מסוף הטיול באתר או בטלפון (ימים א'-ה' 09:00-17:00)</span></div>`;
+  }
+  c.innerHTML=h;document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
+
+function switchYachtView(view){
+  ['route','checklist','briefing','storm'].forEach(v=>{
+    const el=document.getElementById('yacht'+v.charAt(0).toUpperCase()+v.slice(1));
+    if(el)el.style.display=v===view?'block':'none';
+  });
+  document.querySelectorAll('#yachtSubtabs .list-subtab').forEach((b,i)=>{
+    b.classList.toggle('active',['route','checklist','briefing','storm'][i]===view);
+  });
+  if(view==='route')renderRoute();
+  if(view==='checklist')renderYachtChecklist();
+  if(view==='briefing')renderBriefing();
+  if(view==='storm')renderStorm();
+}
+
+function renderRoute(){
+  document.getElementById('yachtRoute').innerHTML=FLOTILLA_ROUTE.map(r=>`<div class="route-card">
+    <div class="route-day">יום ${r.day} - ${r.date}</div>
+    <div class="route-path">${r.from} → ${r.to}</div>
+    <div class="route-stats"><span>⛵ ${r.nm} NM</span><span>⏱️ ~${r.hours} שעות</span><span>🚀 יציאה ${r.depart}</span><span>🏁 הגעה ${r.arrive}</span></div>
+    <div class="route-desc">${r.desc}</div>
+    <div class="route-attractions">📍 ${r.attractions}</div>
+    <div class="route-planb">Plan B: ${r.planB}</div>
   </div>`).join('');
 }
 
-function openDocModal(type) {
-  const content = document.getElementById('modalContent');
-  let html = '';
-
-  if (type === 'flights') {
-    html = `<div class="modal-title">טיסות</div>
-      <div class="detail-section">פרטי הזמנה</div>
-      <div class="detail-row"><span class="detail-label">מספר הזמנה</span><span class="detail-value">9JOHWG</span></div>
-      <div class="detail-section">הלוך - 16.8</div>
-      <div class="detail-row"><span class="detail-label">טיסה</span><span class="detail-value">LY 5181</span></div>
-      <div class="detail-row"><span class="detail-label">המראה</span><span class="detail-value">21:00 TLV T1</span></div>
-      <div class="detail-row"><span class="detail-label">נחיתה</span><span class="detail-value">23:25 ZAG</span></div>
-      <div class="detail-section">מושבים הלוך</div>
-      <div class="detail-row"><span class="detail-label">נועם</span><span class="detail-value">02D</span></div>
-      <div class="detail-row"><span class="detail-label">שיר</span><span class="detail-value">03A</span></div>
-      <div class="detail-row"><span class="detail-label">יונתן</span><span class="detail-value">03C</span></div>
-      <div class="detail-row"><span class="detail-label">אורי</span><span class="detail-value">03B</span></div>
-      <div class="detail-row"><span class="detail-label">עמית</span><span class="detail-value">02A</span></div>
-      <div class="detail-row"><span class="detail-label">עופר</span><span class="detail-value">02C</span></div>
-      <div class="detail-row"><span class="detail-label">מלאכי</span><span class="detail-value">02B</span></div>
-      <div class="detail-section">חזור - 31.8</div>
-      <div class="detail-row"><span class="detail-label">טיסה</span><span class="detail-value">LY 5182</span></div>
-      <div class="detail-row"><span class="detail-label">המראה</span><span class="detail-value">00:30 ZAG</span></div>
-      <div class="detail-row"><span class="detail-label">נחיתה</span><span class="detail-value">04:40 TLV T3</span></div>
-      <div class="detail-section">מושבים חזור</div>
-      <div class="detail-row"><span class="detail-label">נועם</span><span class="detail-value">05D</span></div>
-      <div class="detail-row"><span class="detail-label">שיר</span><span class="detail-value">06D</span></div>
-      <div class="detail-row"><span class="detail-label">יונתן</span><span class="detail-value">06F</span></div>
-      <div class="detail-row"><span class="detail-label">אורי</span><span class="detail-value">06E</span></div>
-      <div class="detail-row"><span class="detail-label">עמית</span><span class="detail-value">06A</span></div>
-      <div class="detail-row"><span class="detail-label">עופר</span><span class="detail-value">06C</span></div>
-      <div class="detail-row"><span class="detail-label">מלאכי</span><span class="detail-value">06B</span></div>
-      <div class="detail-section">E-Tickets</div>
-      <div class="detail-row"><span class="detail-label">עמית</span><span class="detail-value">LY114-9480463482</span></div>
-      <div class="detail-row"><span class="detail-label">מלאכי</span><span class="detail-value">LY114-9480463483</span></div>
-      <div class="detail-row"><span class="detail-label">עופר</span><span class="detail-value">LY114-9480463484</span></div>
-      <div class="detail-row"><span class="detail-label">נועם</span><span class="detail-value">LY114-9480468703</span></div>
-      <div class="detail-row"><span class="detail-label">שיר</span><span class="detail-value">LY114-9480468704</span></div>
-      <div class="detail-row"><span class="detail-label">אורי</span><span class="detail-value">LY114-9480468705</span></div>
-      <div class="detail-row"><span class="detail-label">יונתן</span><span class="detail-value">LY114-9480468706</span></div>`;
-  } else if (type === 'car') {
-    html = `<div class="modal-title">רכב</div>
-      <div class="detail-row"><span class="detail-label">חברה</span><span class="detail-value rtl-val">Hertz/Kesher</span></div>
-      <div class="detail-row"><span class="detail-label">רכב</span><span class="detail-value">Opel Vivaro 9 PAX</span></div>
-      <div class="detail-row"><span class="detail-label">תיבת הילוכים</span><span class="detail-value rtl-val">ידני, מזגן</span></div>
-      <div class="detail-row"><span class="detail-label">הזמנה</span><span class="detail-value">L644E2F0013</span></div>
-      <div class="detail-row"><span class="detail-label">שובר</span><span class="detail-value">25810083</span></div>
-      <div class="detail-section">איסוף</div>
-      <div class="detail-row"><span class="detail-label">תאריך</span><span class="detail-value rtl-val">17.8 10:30</span></div>
-      <div class="detail-row"><span class="detail-label">מיקום</span><span class="detail-value rtl-val">שדה התעופה זאגרב</span></div>
-      <div class="detail-section">החזרה</div>
-      <div class="detail-row"><span class="detail-label">תאריך</span><span class="detail-value rtl-val">30.8 21:45</span></div>
-      <div class="detail-row"><span class="detail-label">מיקום</span><span class="detail-value rtl-val">שדה התעופה זאגרב</span></div>
-      <div class="detail-section">עלות</div>
-      <div class="detail-row"><span class="detail-label">תקופה</span><span class="detail-value rtl-val">14 ימים</span></div>
-      <div class="detail-row"><span class="detail-label">מחיר</span><span class="detail-value">2,998.47 EUR</span></div>
-      <div class="detail-row"><span class="detail-label">כולל</span><span class="detail-value rtl-val">CDW, קילומטראז' ללא הגבלה, TPL, הגנה מגניבה</span></div>`;
-  } else if (type === 'yacht') {
-    html = `<div class="modal-title">יאכטה</div>
-      <div class="detail-row"><span class="detail-label">דגם</span><span class="detail-value">Lagoon 43 "GURGUR"</span></div>
-      <div class="detail-row"><span class="detail-label">הזמנה</span><span class="detail-value">24332</span></div>
-      <div class="detail-row"><span class="detail-label">חברה</span><span class="detail-value">Master Yachting d.o.o.</span></div>
-      <div class="detail-row"><span class="detail-label">מרינה</span><span class="detail-value">Marina Dalmacija 14, Sukosan</span></div>
-      <div class="detail-row"><span class="detail-label">טלפון</span><span class="detail-value">+385 23 393 230</span></div>
-      <div class="detail-row"><span class="detail-label">מייל</span><span class="detail-value">team@masteryachting.hr</span></div>
-      <div class="detail-section">צ'ק-אין</div>
-      <div class="detail-row"><span class="detail-label">תאריך</span><span class="detail-value rtl-val">22.8 שבת מ-17:00</span></div>
-      <div class="detail-row"><span class="detail-label">מיקום</span><span class="detail-value">Pier 14</span></div>
-      <div class="detail-section">צ'ק-אאוט</div>
-      <div class="detail-row"><span class="detail-label">תאריך</span><span class="detail-value rtl-val">29.8 שבת עד 09:00</span></div>
-      <div class="detail-row"><span class="detail-label">חזרה לבסיס</span><span class="detail-value rtl-val">ערב קודם עד 18:00!</span></div>
-      <div class="detail-section">עלויות</div>
-      <div class="detail-row"><span class="detail-label">שכירות</span><span class="detail-value">7,150 EUR</span></div>
-      <div class="detail-row"><span class="detail-label">Comfort Pack</span><span class="detail-value">550 EUR (מזומן)</span></div>
-      <div class="detail-row"><span class="detail-label">Tourist Tax</span><span class="detail-value">9.31 EUR/אדם (מזומן)</span></div>
-      <div class="detail-row"><span class="detail-label">פיקדון</span><span class="detail-value">3,000 EUR (אשראי) / 300 EUR (מזומן)</span></div>
-      <div class="detail-section">מסמכים נדרשים</div>
-      <div class="detail-row"><span class="detail-label" style="min-width:auto" class="detail-value rtl-val">דרכון, boarding pass, רישיון סקיפר מקורי, רישיון VHF</span></div>`;
-  } else if (type === 'hotels') {
-    html = `<div class="modal-title">לינה</div>
-      <div class="detail-section">Hotel Phoenix - זאגרב</div>
-      <div class="detail-row"><span class="detail-label">תאריך</span><span class="detail-value rtl-val">16.8 (לילה 1)</span></div>
-      <div class="detail-section">Hotel Degenija - פליטביצה</div>
-      <div class="detail-row"><span class="detail-label">תאריכים</span><span class="detail-value rtl-val">17-18.8 (2 לילות)</span></div>
-      <div class="detail-section">Villa Cvita</div>
-      <div class="detail-row"><span class="detail-label">תאריכים</span><span class="detail-value rtl-val">19-21.8 (3 לילות)</span></div>
-      <div class="detail-section">דירה בזאגרב</div>
-      <div class="detail-row"><span class="detail-label">תאריך</span><span class="detail-value rtl-val">29.8 (לילה 1)</span></div>
-      <div class="detail-row"><span class="detail-label">סוג</span><span class="detail-value rtl-val">Spacious 3BR Downtown Apartment</span></div>
-      <div class="detail-row"><span class="detail-label">ציון</span><span class="detail-value">9.9</span></div>`;
-  }
-
-  content.innerHTML = html;
-  document.getElementById('modalOverlay').classList.add('open');
+function renderYachtChecklist(){
+  const state=load('yachtCL',{});
+  let total=0,done=0;
+  let html='<div class="card"><div class="card-title">צ\'קליסט צ\'ק-אין יאכטה</div><div class="progress-bar"><div class="progress-fill" id="ycProg"></div></div><div class="progress-text" id="ycProgText"></div>';
+  YACHT_CHECKLIST_DATA.forEach(cat=>{
+    html+=`<div class="section-sub">${cat.cat}</div>`;
+    cat.items.forEach((item,i)=>{
+      const key=cat.cat+'_'+i;
+      const checked=state[key]||false;
+      if(checked)done++;total++;
+      html+=`<div class="checklist-item ${checked?'checked':''}"><input type="checkbox" id="yc_${key}" ${checked?'checked':''} onchange="toggleYC('${key}')"><label for="yc_${key}">${item.text}${item.hint?'<span class="item-hint">'+item.hint+'</span>':''}</label></div>`;
+    });
+  });
+  html+='</div>';
+  document.getElementById('yachtChecklist').innerHTML=html;
+  const pEl=document.getElementById('ycProg'),tEl=document.getElementById('ycProgText');
+  if(pEl){pEl.style.width=(done/total*100)+'%';}
+  if(tEl){tEl.textContent=done+'/'+total+' הושלמו';}
 }
 
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
+function toggleYC(key){const s=load('yachtCL',{});s[key]=!s[key];ss('yachtCL',s);renderYachtChecklist();}
+
+function renderBriefing(){
+  document.getElementById('yachtBriefing').innerHTML=`
+  <div class="briefing-section"><div class="briefing-title">סדר יומי בפלוטילה</div>
+  <div class="briefing-item"><strong>בוקר:</strong> מפגש סקיפרים, בדיקת מזג אוויר, תכנון מסלול</div>
+  <div class="briefing-item"><strong>09:00:</strong> יציאה להפלגה (אלא אם נאמר אחרת)</div>
+  <div class="briefing-item"><strong>צהריים:</strong> עצירה במפרץ - שחייה, שנירקול, ארוחה</div>
+  <div class="briefing-item"><strong>אחה"צ:</strong> הפלגה קצרה ליעד הערב</div>
+  <div class="briefing-item"><strong>~16:00:</strong> הגעה ליעד, עגינה</div>
+  <div class="briefing-item"><strong>19:00:</strong> סיכום יום, ארוחת ערב</div></div>
+
+  <div class="briefing-section"><div class="briefing-title">בטיחות - הכי חשוב!</div>
+  <div class="rule-card rule-danger"><div class="rule-title">נפילה לים (MOB)</div>צעקו בקול! הצביעו על הנופל ואל תפסיקו! מנוע לעצירה! דווחו לסקיפר מיד!</div>
+  <div class="rule-card rule-danger"><div class="rule-title">אש</div>דווחו לסקיפר! השתמשו במטפים. דעו היכן ברזי הגז והדלק. לתא המנוע יש מטף משלו.</div>
+  <div class="rule-card rule-danger"><div class="rule-title">הצפה</div>דווחו לסקיפר! השתמשו בפקקים (דעו מיקומם). הפעילו משאבות ביליג'.</div>
+  <div class="rule-card rule-coral" style="background:var(--coral-light);border-right:3px solid var(--coral)"><div class="rule-title">מלאכי (גיל 5)</div>תמיד עם אפוד הצלה ומבוגר ליד. ללא יוצא מן הכלל!</div></div>
+
+  <div class="briefing-section"><div class="briefing-title">תנועה על הסיפון</div>
+  <div class="briefing-item">תמיד להחזיק במשהו בזמן תנועה</div>
+  <div class="briefing-item"><strong>ירידה במדרגות:</strong> פנים למדרגות (לרדת אחורה)</div>
+  <div class="briefing-item">יד אחת לך, יד אחת לסירה</div>
+  <div class="briefing-item">נעליים נגד החלקה או יחפים בלבד</div>
+  <div class="briefing-item">היזהרו מהבום בזמן פניות!</div></div>
+
+  <div class="briefing-section"><div class="briefing-title">עגינה ועזיבת נמל</div>
+  <div class="briefing-item">כולם משתתפים בעגינה</div>
+  <div class="briefing-item">אין קפיצות בין הסירה לרציף!</div>
+  <div class="briefing-item">אין קפיצה למים בזמן עגינה/עוגן</div>
+  <div class="briefing-item">למדו קשר בסיסי לרציף (קשר ברווז)</div></div>
+
+  <div class="briefing-section"><div class="briefing-title">מים וחשמל - חיסכון!</div>
+  <div class="briefing-item">המים המתוקים מוגבלים! מקלחות קצרות</div>
+  <div class="briefing-item">שטיפת כלים: קודם במי ים, שטיפה במים מתוקים</div>
+  <div class="briefing-item">כבו אורות כשיוצאים מהתא</div>
+  <div class="briefing-item">טעינת טלפונים: רק עד הנמל האחרון (סכנת שריפה בלילה בים)</div></div>
+
+  <div class="briefing-section"><div class="briefing-title">שירותים - חשוב מאוד!</div>
+  <div class="rule-card rule-warning"><div class="rule-title">הכלל הזהב</div>מה שלא עבר דרך הבטן - לא נכנס לשירותים! אין נייר רגיל, מגבונים או כל דבר אחר. רק נייר טואלט ימי!</div></div>
+
+  <div class="briefing-section"><div class="briefing-title">טיפים לבישול</div>
+  <div class="briefing-item">מלאו סירים 2/3 בים רגוע, 1/2 בים סוער</div>
+  <div class="briefing-item">נעילת ג'ימבל בנמל</div>
+  <div class="briefing-item">שטיפת כלים במי ים, שטיפה במתוקים</div></div>
+
+  <div class="briefing-section"><div class="briefing-title">דינגי (סירת גומי)</div>
+  <div class="briefing-item">תמיד לקחת: משוטים, פנס, טלפון</div>
+  <div class="briefing-item">בדיקת דלק לפני יציאה</div>
+  <div class="briefing-item">עלייה זהירה - אדם אחד במרכז בכל פעם</div>
+  <div class="briefing-item">היזהרו משוחים כשמפעילים מנוע</div></div>`;
 }
 
-// ========== YACHT CHECKLIST ==========
-function renderYachtChecklist() {
-  const state = load('yachtChecklist', {});
-  const container = document.getElementById('yachtChecklist');
-  container.innerHTML = YACHT_CHECKLIST.map((item, i) => {
-    const checked = state[i] || false;
-    return `<div class="checklist-item ${checked ? 'checked' : ''}">
-      <input type="checkbox" id="yc${i}" ${checked ? 'checked' : ''} onchange="toggleYachtItem(${i})">
-      <label for="yc${i}">${item}</label>
-    </div>`;
-  }).join('');
-  updateYachtProgress();
+function renderStorm(){
+  document.getElementById('yachtStorm').innerHTML=`
+  <div class="card card-coral"><div class="card-title">סופת Nevera - מה זה?</div>
+  <p style="font-size:13px;line-height:1.7">Nevera היא סופת קיץ קצרה, אלימה ופתאומית, שמגיעה מהים האדריאטי, בדרך כלל מכיוון מערב. היא מופיעה לרוב מסוף יוני עד סוף אוגוסט.</p>
+  <p style="font-size:13px;line-height:1.7;margin-top:8px;font-weight:700;color:var(--coral)">הסופה יכולה להתפתח תוך דקות, עם רוחות של 40-50 קשר ואף יותר! הסכנה העיקרית: היא יכולה להגיע במהירות רבה.</p></div>
+
+  <div class="card"><div class="card-title">סימני זיהוי - Nevera מתקרבת</div>
+  <div class="storm-signs">
+    <div class="storm-sign">קיר עננים כהה ובהיר באופק המערבי</div>
+    <div class="storm-sign">חזית קדמית חדה ומוגדרת</div>
+    <div class="storm-sign">לעיתים גוון ירקרק או אפור-שחור</div>
+    <div class="storm-sign">ירידה פתאומית בטמפרטורה</div>
+    <div class="storm-sign">אוויר כבד ולח</div>
+    <div class="storm-sign">ירידה בלחץ הברומטרי</div>
+    <div class="storm-sign">ברקים מעל הים ממערב</div>
+    <div class="storm-sign">שינוי פתאומי במצב הים</div>
+  </div>
+  <div class="rule-card rule-danger" style="margin-top:8px"><div class="rule-title">כלל הזהב</div>רואים קיר עננים במערב? לא מחכים שהרוח תגיע. מתחילים להתכונן מיד!</div></div>
+
+  <div class="card"><div class="card-title">פרוטוקול 30 דקות לפני הסופה</div>
+  <div class="section-sub">אם אתם בעוגן:</div>
+  <div class="briefing-item">1. כולם עולים לסיפון</div>
+  <div class="briefing-item">2. מורידים ומקפלים בימיני, סוככים - כל דבר שיכול להפוך למפרש</div>
+  <div class="briefing-item">3. סוגרים חלונות ופתחים</div>
+  <div class="briefing-item">4. בודקים עוגן וכיוון המשיכה</div>
+  <div class="briefing-item">5. מוודאים שיש מספיק שרשרת ומרחב תמרון</div>
+  <div class="briefing-item">6. מניעים מנועים</div>
+  <div class="briefing-item">7. מתכוננים להפעיל מנוע כנגד השרשרת אם העוגן מתחיל להיגרר</div>
+
+  <div class="section-sub">אם אתם תחת מפרשים:</div>
+  <div class="briefing-item">מצמצמים מפרשים מוקדם וחזק</div>
+  <div class="briefing-item">במידת הצורך מורידים מפרשים לחלוטין</div>
+  <div class="briefing-item">עוברים למנועים</div>
+  <div class="briefing-item">מחזיקים את הסירה בשליטה מלאה</div>
+  <div class="briefing-item" style="color:var(--coral);font-weight:700">לא מנסים "לתפוס עוד כמה דקות הפלגה" לפני שהסופה מגיעה!</div></div>
+
+  <div class="card"><div class="card-title">מפרץ עגינה בלילה</div>
+  <p style="font-size:13px;line-height:1.7">מפרץ שנראה מושלם ברוח מזרחית יכול להפוך לבעייתי כשנוורה מגיעה ממערב. חפשו מפרץ שיש בו:</p>
+  <p style="font-size:13px;line-height:1.7;font-weight:700;margin-top:6px">מערב ← סלעים / הרים / מצוק = מחסה</p>
+  <p style="font-size:12px;color:var(--text-secondary);margin-top:4px">זכרו: מחסה מהרוח ≠ מחסה מגלים בכל כיוון!</p></div>
+
+  <div class="card"><div class="card-title">סוגי רוח באדריאטי</div>
+  <div class="briefing-item"><strong>Bora (בורה):</strong> רוח צפונית-מזרחית קרה וחזקה, יכולה להופיע כל השנה</div>
+  <div class="briefing-item"><strong>Maestral (מאסטרל):</strong> רוח מערבית-צפונית, אחה"צ בקיץ, בדרך כלל נעימה להפלגה</div>
+  <div class="briefing-item"><strong>Nevera (נוורה):</strong> אירוע קצר, פתאומי ואינטנסיבי - סופת רעמים עם גשם כבד, ואחר מכן רגיעה פתאומית</div></div>`;
 }
 
-function toggleYachtItem(i) {
-  const state = load('yachtChecklist', {});
-  state[i] = !state[i];
-  ss('yachtChecklist', state);
-  renderYachtChecklist();
+let currentPerson='נועם';
+function renderPersonTabs(){
+  const p=[...FAMILY.map(f=>f.name),'משותף'];
+  document.getElementById('personTabs').innerHTML=p.map(n=>`<button class="person-tab ${n===currentPerson?'active':''}" onclick="selectPerson('${n}')">${n}</button>`).join('');
 }
-
-function updateYachtProgress() {
-  const state = load('yachtChecklist', {});
-  const total = YACHT_CHECKLIST.length;
-  const done = Object.values(state).filter(Boolean).length;
-  document.getElementById('yachtProgress').style.width = (done/total*100) + '%';
-  document.getElementById('yachtProgressText').textContent = `${done}/${total} הושלמו`;
-}
-
-// ========== PACKING LIST ==========
-let currentPerson = 'נועם';
-
-function renderPersonTabs() {
-  const people = [...FAMILY.map(f => f.name), 'משותף'];
-  document.getElementById('personTabs').innerHTML = people.map(p =>
-    `<button class="person-tab ${p === currentPerson ? 'active' : ''}" onclick="selectPerson('${p}')">${p}</button>`
-  ).join('');
-}
-
-function selectPerson(p) {
-  currentPerson = p;
-  renderPersonTabs();
-  renderPackingList();
-}
-
-function getDefaultPacking(person) {
-  if (person === 'משותף') return [...PACKING_SHARED];
-  if (person === 'נועם') return [...PACKING_DEFAULT, ...PACKING_NOAM];
-  return [...PACKING_DEFAULT];
-}
-
-function renderPackingList() {
-  const key = 'packing_' + currentPerson;
-  let items = load(key, null);
-  if (items === null) {
-    items = getDefaultPacking(currentPerson).map(t => ({text: t, checked: false}));
-    ss(key, items);
-  }
-  const container = document.getElementById('packingList');
-  container.innerHTML = items.map((item, i) => {
-    return `<div class="checklist-item ${item.checked ? 'checked' : ''}">
-      <input type="checkbox" id="pi${i}" ${item.checked ? 'checked' : ''} onchange="togglePackingItem(${i})">
-      <label for="pi${i}">${item.text}</label>
-      <button class="delete-btn" onclick="deletePackingItem(${i})" aria-label="מחק">&times;</button>
-    </div>`;
-  }).join('');
+function selectPerson(p){currentPerson=p;renderPersonTabs();renderPackingList();}
+function getDefaultPacking(p){if(p==='משותף')return[...PACKING_SHARED];if(p==='נועם')return[...PACKING_DEFAULT,...PACKING_NOAM];return[...PACKING_DEFAULT];}
+function renderPackingList(){
+  const key='packing_'+currentPerson;let items=load(key,null);
+  if(items===null){items=getDefaultPacking(currentPerson).map(t=>({text:t,checked:false}));ss(key,items);}
+  document.getElementById('packingList').innerHTML=items.map((item,i)=>`<div class="checklist-item ${item.checked?'checked':''}"><input type="checkbox" id="pi${i}" ${item.checked?'checked':''} onchange="togglePackingItem(${i})"><label for="pi${i}">${item.text}</label><button class="delete-btn" onclick="deletePackingItem(${i})">&times;</button></div>`).join('');
   updatePackProgress();
 }
+function togglePackingItem(i){const k='packing_'+currentPerson,items=load(k,[]);items[i].checked=!items[i].checked;ss(k,items);renderPackingList();}
+function deletePackingItem(i){const k='packing_'+currentPerson,items=load(k,[]);items.splice(i,1);ss(k,items);renderPackingList();}
+function addPackingItem(){const inp=document.getElementById('addPackingInput'),t=inp.value.trim();if(!t)return;const k='packing_'+currentPerson,items=load(k,[]);items.push({text:t,checked:false});ss(k,items);inp.value='';renderPackingList();}
+function updatePackProgress(){const k='packing_'+currentPerson,items=load(k,[]),total=items.length,done=items.filter(i=>i.checked).length;document.getElementById('packProgress').style.width=total?(done/total*100)+'%':'0%';document.getElementById('packProgressText').textContent=done+'/'+total+' נארזו';}
 
-function togglePackingItem(i) {
-  const key = 'packing_' + currentPerson;
-  const items = load(key, []);
-  items[i].checked = !items[i].checked;
-  ss(key, items);
-  renderPackingList();
-}
-
-function deletePackingItem(i) {
-  const key = 'packing_' + currentPerson;
-  const items = load(key, []);
-  items.splice(i, 1);
-  ss(key, items);
-  renderPackingList();
-}
-
-function addPackingItem() {
-  const input = document.getElementById('addPackingInput');
-  const text = input.value.trim();
-  if (!text) return;
-  const key = 'packing_' + currentPerson;
-  const items = load(key, []);
-  items.push({text, checked: false});
-  ss(key, items);
-  input.value = '';
-  renderPackingList();
-}
-
-function updatePackProgress() {
-  const key = 'packing_' + currentPerson;
-  const items = load(key, []);
-  const total = items.length;
-  const done = items.filter(i => i.checked).length;
-  document.getElementById('packProgress').style.width = total ? (done/total*100) + '%' : '0%';
-  document.getElementById('packProgressText').textContent = `${done}/${total} נארזו`;
-}
-
-// ========== SHOPPING LIST ==========
-function renderShoppingList() {
-  renderShoppingSection('shoppingGeneral', 'shop_general', SHOPPING_GENERAL);
-  renderShoppingSection('shoppingCleaning', 'shop_cleaning', SHOPPING_CLEANING);
+function renderShoppingList(){
+  let html='<div class="card"><div class="progress-bar"><div class="progress-fill" id="shopProgress"></div></div><div class="progress-text" id="shopProgressText"></div>';
+  SHOPPING_CATS.forEach(cat=>{
+    html+=`<div class="section-sub">${cat.name}</div>`;
+    let items=load('shop_'+cat.id,null);
+    if(items===null){items=cat.items.map(t=>({text:t,checked:false}));ss('shop_'+cat.id,items);}
+    items.forEach((item,i)=>{html+=`<div class="checklist-item ${item.checked?'checked':''}"><input type="checkbox" id="sh_${cat.id}_${i}" ${item.checked?'checked':''} onchange="toggleShopItem('${cat.id}',${i})"><label for="sh_${cat.id}_${i}">${item.text}</label><button class="delete-btn" onclick="deleteShopItem('${cat.id}',${i})">&times;</button></div>`;});
+  });
+  html+=`<div class="add-item-row"><input type="text" id="addShoppingInput" placeholder="הוסף פריט..." onkeydown="if(event.key==='Enter')addShoppingItem()"><button class="btn btn-accent" onclick="addShoppingItem()">+</button></div></div>`;
+  document.getElementById('listShopping').innerHTML=html;
   updateShopProgress();
 }
-
-function renderShoppingSection(containerId, storageKey, defaults) {
-  let items = load(storageKey, null);
-  if (items === null) {
-    items = defaults.map(t => ({text: t, checked: false}));
-    ss(storageKey, items);
-  }
-  const container = document.getElementById(containerId);
-  container.innerHTML = items.map((item, i) => {
-    return `<div class="checklist-item ${item.checked ? 'checked' : ''}">
-      <input type="checkbox" id="${storageKey}${i}" ${item.checked ? 'checked' : ''} onchange="toggleShopItem('${storageKey}',${i})">
-      <label for="${storageKey}${i}">${item.text}</label>
-      <button class="delete-btn" onclick="deleteShopItem('${storageKey}',${i})" aria-label="מחק">&times;</button>
-    </div>`;
-  }).join('');
+function toggleShopItem(catId,i){const k='shop_'+catId,items=load(k,[]);items[i].checked=!items[i].checked;ss(k,items);renderShoppingList();}
+function deleteShopItem(catId,i){const k='shop_'+catId,items=load(k,[]);items.splice(i,1);ss(k,items);renderShoppingList();}
+function addShoppingItem(){const inp=document.getElementById('addShoppingInput'),t=inp.value.trim();if(!t)return;const items=load('shop_dairy',[]);items.push({text:t,checked:false});ss('shop_dairy',items);inp.value='';renderShoppingList();}
+function updateShopProgress(){
+  let total=0,done=0;
+  SHOPPING_CATS.forEach(cat=>{const items=load('shop_'+cat.id,[]);total+=items.length;done+=items.filter(i=>i.checked).length;});
+  const pEl=document.getElementById('shopProgress'),tEl=document.getElementById('shopProgressText');
+  if(pEl)pEl.style.width=total?(done/total*100)+'%':'0%';
+  if(tEl)tEl.textContent=done+'/'+total+' נקנו';
+}
+function switchListView(view,btn){
+  document.getElementById('listPacking').style.display=view==='packing'?'block':'none';
+  document.getElementById('listShopping').style.display=view==='shopping'?'block':'none';
+  const container=btn?btn.parentElement:document.querySelector('.list-tabs');
+  if(container)container.querySelectorAll('.list-subtab').forEach(el=>{el.classList.toggle('active',el.textContent.trim()===(view==='packing'?'ארוזים':'קניות ליאכטה'));});
+  if(btn)btn.classList.add('active');
+  if(view==='shopping')renderShoppingList();
 }
 
-function toggleShopItem(key, i) {
-  const items = load(key, []);
-  items[i].checked = !items[i].checked;
-  ss(key, items);
-  renderShoppingList();
+function setCurrency(c,btn){
+  currentCurrency=c;ss('currency',c);
+  const container=btn?btn.parentElement:document.querySelector('.currency-sel');
+  if(container)container.querySelectorAll('.currency-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===c));
+  renderBudget();
 }
-
-function deleteShopItem(key, i) {
-  const items = load(key, []);
-  items.splice(i, 1);
-  ss(key, items);
-  renderShoppingList();
+function convertAmount(eur){return eur*RATES[currentCurrency];}
+function fmtAmount(val){
+  const sym={EUR:'€',ILS:'₪',USD:'$'}[currentCurrency];
+  return val.toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0})+' '+sym;
 }
-
-function addShoppingItem() {
-  const input = document.getElementById('addShoppingInput');
-  const text = input.value.trim();
-  if (!text) return;
-  const items = load('shop_general', []);
-  items.push({text, checked: false});
-  ss('shop_general', items);
-  input.value = '';
-  renderShoppingList();
-}
-
-function updateShopProgress() {
-  const g = load('shop_general', []);
-  const c = load('shop_cleaning', []);
-  const all = [...g, ...c];
-  const total = all.length;
-  const done = all.filter(i => i.checked).length;
-  document.getElementById('shopProgress').style.width = total ? (done/total*100) + '%' : '0%';
-  document.getElementById('shopProgressText').textContent = `${done}/${total} נקנו`;
-}
-
-function switchListView(view) {
-  document.getElementById('listPacking').style.display = view === 'packing' ? 'block' : 'none';
-  document.getElementById('listShopping').style.display = view === 'shopping' ? 'block' : 'none';
-  document.querySelectorAll('.list-subtab').forEach(el => el.classList.remove('active'));
-  event.target.classList.add('active');
-}
-
-// ========== BUDGET ==========
-function renderBudget() {
-  let items = load('budget', null);
-  if (items === null) {
-    items = DEFAULT_BUDGET.map(b => ({...b}));
-    ss('budget', items);
-  }
-  const container = document.getElementById('budgetList');
-  container.innerHTML = items.map((item, i) => {
-    const amtDisplay = item.amount > 0 ? item.amount.toLocaleString('en', {minimumFractionDigits: 0, maximumFractionDigits: 2}) : '';
-    return `<div class="budget-item">
-      <div class="budget-name">${item.name}</div>
-      <div class="budget-amount">
-        ${item.editable !== false || item.amount === 0 ?
-          `<input type="text" value="${amtDisplay}" onchange="updateBudgetAmount(${i}, this.value)" placeholder="סכום">` :
-          `<span>${amtDisplay} €</span>`
-        }
-      </div>
-      ${i >= DEFAULT_BUDGET.length ? `<button class="budget-delete" onclick="deleteBudgetItem(${i})">&times;</button>` : ''}
-    </div>`;
+function renderBudget(){
+  let items=load('budget',null);
+  if(items===null){items=DEFAULT_BUDGET.map(b=>({...b}));ss('budget',items);}
+  document.getElementById('budgetList').innerHTML=items.map((item,i)=>{
+    const amt=convertAmount(item.amount);const amtStr=item.amount>0?fmtAmount(amt):'';
+    const noteHtml=item.note?`<div class="budget-note">(${item.note})</div>`:'';
+    return `<div class="budget-item"><div class="budget-name">${item.name}${noteHtml}</div><div class="budget-amount">${item.editable!==false||item.amount===0?`<input type="text" value="${item.amount||''}" onchange="updateBudgetAmount(${i},this.value)" placeholder="EUR">`:`<span>${amtStr}</span>`}</div>${i>=DEFAULT_BUDGET.length?`<button class="budget-delete" onclick="deleteBudgetItem(${i})">&times;</button>`:''}</div>`;
   }).join('');
   updateBudgetTotal();
 }
+function updateBudgetAmount(i,val){const items=load('budget',[]);items[i].amount=parseFloat(val.replace(/,/g,''))||0;ss('budget',items);updateBudgetTotal();}
+function updateBudgetTotal(){
+  const items=load('budget',[]);
+  const totalEur=items.reduce((s,i)=>s+(i.note==='מוחזר'?0:(i.amount||0)),0);
+  const refund=items.reduce((s,i)=>s+(i.note==='מוחזר'?(i.amount||0):0),0);
+  let txt=fmtAmount(convertAmount(totalEur));
+  if(refund>0)txt+=` (כולל ${fmtAmount(convertAmount(refund))} מוחזר)`;
+  document.getElementById('budgetTotal').textContent=txt;
+}
+function addBudgetItem(){
+  const name=document.getElementById('addBudgetName').value.trim();
+  const amount=parseFloat(document.getElementById('addBudgetAmount').value.replace(/,/g,''))||0;
+  if(!name)return;const items=load('budget',[]);items.push({name,amount,editable:true});ss('budget',items);
+  document.getElementById('addBudgetName').value='';document.getElementById('addBudgetAmount').value='';renderBudget();
+}
+function deleteBudgetItem(i){const items=load('budget',[]);items.splice(i,1);ss('budget',items);renderBudget();}
 
-function updateBudgetAmount(i, val) {
-  const items = load('budget', []);
-  items[i].amount = parseFloat(val.replace(/,/g, '')) || 0;
-  ss('budget', items);
-  updateBudgetTotal();
+function toggleChat(){const o=document.getElementById('chatOverlay');o.classList.toggle('open');if(o.classList.contains('open'))document.getElementById('chatInput').focus();}
+function sendChat(){const inp=document.getElementById('chatInput'),t=inp.value.trim();if(!t)return;inp.value='';addChatMessage(t,'user');setTimeout(()=>addChatMessage(processQuery(t),'bot'),300);}
+function addChatMessage(text,type){const c=document.getElementById('chatMessages'),d=document.createElement('div');d.className='chat-msg '+type;d.textContent=text;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function match(t,kw){return kw.some(k=>t.includes(k));}
+function processQuery(q){
+  const ql=q.toLowerCase().replace(/[?!.,]/g,'');
+  if(match(ql,['טיסה','טיסות','flight','מטוס']))return match(ql,['חזרה','חזור'])?'טיסת חזור: LY 5182, 31.8. המראה 00:30 ZAG, נחיתה 04:40 TLV T3. הזמנה: 9JOHWG.':'טיסת הלוך: LY 5181, 16.8. המראה 21:00 TLV T1, נחיתה 23:25 ZAG. חזור: LY 5182, 31.8. המראה 00:30, נחיתה 04:40. הזמנה: 9JOHWG.';
+  if(match(ql,['רכב','car','hertz']))return 'Opel Vivaro 9 PAX, Hertz. הזמנה: L644E2F0013. איסוף: 17.8 10:30 שדה התעופה זאגרב. החזרה: 30.8 21:45. מחיר: 2,998.47€.';
+  if(match(ql,['יאכטה','yacht','gurgur','הפלגה','מרינה']))return 'Lagoon 43 "GURGUR", הזמנה 24332. צ\'ק-אין 22.8 מ-17:00 Pier 14, מרינה Dalmacija סוקושן. צ\'ק-אאוט 29.8 עד 09:00. טלפון: +385 23 393 230.';
+  if(match(ql,['מלון','hotel','לינה','villa','דירה']))return 'לינה: 1) Hotel Phoenix 16.8 (קוד 9263). 2) Hotel Degenija 17-18.8 (DQ1N4KML, חדרים 32,33). 3) Villa Cvita 19-21.8. 4) יאכטה 22-28.8. 5) דירה זאגרב 29-30.8 (קוד 7237).';
+  if(match(ql,['מסלול','route','הפלגה']))return 'מסלול הפלוטילה (23-28.8): יום 1: סוקושן→מורטר. יום 2: מורטר→שיבניק. יום 3: שיבניק→סקראדין. יום 4: סקראדין→קרקה→פרימושטן (עמוס!). יום 5: פרימושטן→קפרייה (רגוע). יום 6: קפרייה→סוקושן (ארוך, יציאה 07:30!).';
+  if(match(ql,['נוורה','nevera','סופה','storm']))return 'Nevera: סופת קיץ פתאומית באדריאטי, רוחות 40-50 קשר. סימנים: קיר עננים כהה במערב, ירידת טמפרטורה, ברקים. כלל הזהב: רואים עננים במערב? מתחילים להתכונן מיד! פרטים מלאים בלשונית יאכטה > סופת נוורה.';
+  if(match(ql,['חירום','emergency','עזרה']))return 'אנשי קשר חירום: 112 (חירום קרואטיה), VHF 16 (חירום ימי), VHF 67 (פלוטילה), Master Yachting +385 23 393 230, ביטוח Schomacker +49 40 36984949 (Ref: 97759K).';
+  if(match(ql,['ביטוח','insurance','schomacker']))return 'ביטוח ביטול השתתפות עצמית: Schomacker, Ref 97759K. פרמיה 280€ (שולמה). כיסוי פיקדון 3,000€. תקופה 22-29.8. חשוב: אל תזכירו את הביטוח בבסיס הצ\'ארטר! דיווח נזק: עד 30 יום מסוף הטיול.';
+  if(match(ql,['תקציב','budget','כמה','עלות']))return 'הוצאות עיקריות: רכב 2,998€, יאכטה 7,150€, Comfort Pack 550€, מלונות ~2,284€, ביטוח 280€, פליטביצה 140€. פיקדונות מוחזרים: יאכטה 3,000€, וילה 500€. פירוט מלא בלשונית תקציב.';
+  if(match(ql,['פליטביצה','plitvice']))return 'פליטביצה: 17.8, כניסה 1, 16:00-17:00. 4 כרטיסי ילדים (€20) + 1 מבוגר (€60) = 140€. לינה ב-Hotel Degenija 2 לילות.';
+  if(match(ql,['שלום','היי','hello']))return 'שלום! אני עוזר הטיול של משפחת כהן. שאלו על טיסות, רכב, יאכטה, מסלול הפלגה, לינה, תקציב, אנשי קשר, מזג אוויר, רשימות ועוד!';
+  if(match(ql,['משפחה','family','מי']))return '7 נפשות: נועם (סקיפר), שיר (אמא), יונתן (15), אורי (13), עמית (11), עופר (9), מלאכי (5).';
+  if(match(ql,['שירותים','toilet']))return 'שירותים ביאכטה: רק נייר טואלט ימי! מה שלא עבר דרך הבטן לא נכנס לשירותים. חשוב להסביר לכל הילדים!';
+  if(match(ql,['קניות','shopping']))return 'רשימת קניות מפורטת ב-11 קטגוריות בלשונית רשימות > קניות. כוללת חלבי, לחם, שתייה, פסטה, שימורים, בישול, חטיפים, פיצוחים, ירקות, בשר וניקיון.';
+  if(match(ql,['מזג','אוויר','weather','windy']))return 'אוגוסט בקרואטיה: 28-35 מעלות. רוחות Maestral (צפון-מערב) אחה"צ - מושלמות להפלגה. היזהרו מסופות Nevera! בדקו Windy.com מדי בוקר. פרטים על סופת נוורה בלשונית יאכטה.';
+  return 'לא מצאתי תשובה מדויקת. נסו: טיסות, רכב, יאכטה, מסלול, לינה, חירום, ביטוח, תקציב, פליטביצה, קניות, סופה, שירותים.';
 }
 
-function updateBudgetTotal() {
-  const items = load('budget', []);
-  const total = items.reduce((sum, i) => sum + (i.amount || 0), 0);
-  document.getElementById('budgetTotal').textContent = total.toLocaleString('en', {minimumFractionDigits: 0, maximumFractionDigits: 2}) + ' EUR';
+function toggleSettings(){document.getElementById('settingsOverlay').classList.toggle('open');}
+function setTheme(theme,btn){
+  btn.parentElement.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  if(theme==='dark')document.documentElement.setAttribute('data-theme','dark');
+  else if(theme==='light')document.documentElement.setAttribute('data-theme','light');
+  else document.documentElement.removeAttribute('data-theme');
+  ss('theme',theme);
+}
+function saveApiKey(){
+  const key=document.getElementById('apiKeyInput').value.trim();
+  if(!key)return;
+  if(tripDoc)tripDoc.set({geminiApiKey:key},{merge:true}).then(()=>{document.getElementById('apiKeyStatus').textContent='מפתח API נשמר בהצלחה!';document.getElementById('apiKeyInput').value='';setTimeout(()=>{document.getElementById('apiKeyStatus').textContent='';},3000);}).catch(()=>{document.getElementById('apiKeyStatus').textContent='שגיאה בשמירה';document.getElementById('apiKeyStatus').style.color='var(--coral)';});
+  else{document.getElementById('apiKeyStatus').textContent='Firebase לא מחובר';document.getElementById('apiKeyStatus').style.color='var(--coral)';}
 }
 
-function addBudgetItem() {
-  const name = document.getElementById('addBudgetName').value.trim();
-  const amount = parseFloat(document.getElementById('addBudgetAmount').value.replace(/,/g, '')) || 0;
-  if (!name) return;
-  const items = load('budget', []);
-  items.push({name, amount, editable: true});
-  ss('budget', items);
-  document.getElementById('addBudgetName').value = '';
-  document.getElementById('addBudgetAmount').value = '';
-  renderBudget();
-}
-
-function deleteBudgetItem(i) {
-  const items = load('budget', []);
-  items.splice(i, 1);
-  ss('budget', items);
-  renderBudget();
-}
-
-// ========== CHAT ==========
-function toggleChat() {
-  const overlay = document.getElementById('chatOverlay');
-  overlay.classList.toggle('open');
-  if (overlay.classList.contains('open')) {
-    document.getElementById('chatInput').focus();
-  }
-}
-
-function sendChat() {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = '';
-  addChatMessage(text, 'user');
-  const response = processQuery(text);
-  setTimeout(() => addChatMessage(response, 'bot'), 300);
-}
-
-function addChatMessage(text, type) {
-  const container = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = 'chat-msg ' + type;
-  div.textContent = text;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-// ========== SPEECH RECOGNITION ==========
-let recognition = null;
-let isRecording = false;
-
-function toggleMic() {
-  const btn = document.getElementById('micBtn');
-  if (isRecording) {
-    if (recognition) recognition.stop();
-    isRecording = false;
-    btn.classList.remove('recording');
-    return;
-  }
-
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    addChatMessage('הקלטה קולית לא נתמכת בדפדפן זה', 'bot');
-    return;
-  }
-
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = 'he-IL';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  recognition.onresult = function(e) {
-    const text = e.results[0][0].transcript;
-    document.getElementById('chatInput').value = text;
-    sendChat();
+function uploadDoc(){
+  const input=document.createElement('input');input.type='file';input.accept='image/*,application/pdf';input.setAttribute('capture','environment');
+  input.onchange=async function(){
+    const file=this.files[0];if(!file)return;
+    let apiKey=null;
+    if(tripDoc){try{const snap=await tripDoc.get();if(snap.exists)apiKey=snap.data().geminiApiKey;}catch(e){}}
+    if(!apiKey){alert('יש להגדיר מפתח Gemini API בהגדרות לפני העלאת מסמכים');return;}
+    const reader=new FileReader();
+    reader.onload=async function(){
+      const base64=reader.result.split(',')[1];
+      const mime=file.type||'image/jpeg';
+      try{
+        const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{inlineData:{mimeType:mime,data:base64}},{text:'Analyze this travel document. Extract: 1) Type (hotel/flight/ticket/receipt/insurance). 2) Key dates. 3) Costs/amounts. 4) Contact info. 5) Addresses. 6) Booking references. Reply in Hebrew, structured clearly.'}]}]})});
+        const data=await resp.json();
+        const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'לא הצלחתי לנתח את המסמך';
+        const mc=document.getElementById('modalContent');
+        mc.innerHTML=`<div class="modal-title">ניתוח מסמך</div><div style="font-size:13px;line-height:1.8;white-space:pre-wrap">${text}</div><p style="font-size:12px;color:var(--text-secondary);margin-top:12px">ניתוח בינה מלאכותית - בדקו את הנתונים</p>`;
+        document.getElementById('modalOverlay').classList.add('open');
+      }catch(e){alert('שגיאה בניתוח: '+e.message);}
+    };
+    reader.readAsDataURL(file);
   };
-
-  recognition.onend = function() {
-    isRecording = false;
-    btn.classList.remove('recording');
-  };
-
-  recognition.onerror = function() {
-    isRecording = false;
-    btn.classList.remove('recording');
-  };
-
-  recognition.start();
-  isRecording = true;
-  btn.classList.add('recording');
+  input.click();
 }
 
-// ========== AI ASSISTANT ==========
-function processQuery(q) {
-  const ql = q.toLowerCase().replace(/[?!.,]/g, '');
+function renderAll(){updateDashboard();renderSchedule();renderDocs();renderRoute();renderPersonTabs();renderPackingList();renderBudget();}
 
-  // Flight info
-  if (match(ql, ['טיסה','טיסות','לטוס','fly','flight','מטוס'])) {
-    if (match(ql, ['חזרה','חזור','back','return'])) {
-      return 'טיסת החזור: LY 5182, ב-31.8 (יום שני). המראה מזאגרב בשעה 00:30, נחיתה בבן גוריון T3 בשעה 04:40. מספר הזמנה: 9JOHWG.';
-    }
-    if (match(ql, ['מושב','מושבים','seat','seats'])) {
-      return 'מושבים הלוך: נועם 02D, שיר 03A, יונתן 03C, אורי 03B, מלאכי 02B, עופר 02C, עמית 02A. מושבים חזור: נועם 05D, שיר 06D, יונתן 06F, אורי 06E, מלאכי 06B, עופר 06C, עמית 06A.';
-    }
-    if (match(ql, ['כרטיס','e-ticket','eticket','ticket'])) {
-      return 'E-Tickets: עמית LY114-9480463482, מלאכי LY114-9480463483, עופר LY114-9480463484, נועם LY114-9480468703, שיר LY114-9480468704, אורי LY114-9480468705, יונתן LY114-9480468706.';
-    }
-    return 'טיסת הלוך: LY 5181, ב-16.8 (יום ראשון). המראה 21:00 מבן גוריון T1, נחיתה 23:25 בזאגרב. טיסת חזור: LY 5182, ב-31.8 (יום שני). המראה 00:30 מזאגרב, נחיתה 04:40 בבן גוריון T3. מספר הזמנה: 9JOHWG.';
-  }
-
-  // Car info
-  if (match(ql, ['רכב','מכונית','car','hertz','נהיגה','שובר','הזמנת רכב'])) {
-    return 'רכב: Opel Vivaro 9 PAX, ידני עם מזגן, דרך Hertz/Kesher. הזמנה: L644E2F0013, שובר: 25810083. איסוף: 17.8 בשעה 10:30 בשדה התעופה זאגרב. החזרה: 30.8 בשעה 21:45 באותו מיקום. מחיר: 2,998.47 EUR. כולל CDW, קילומטראז\' ללא הגבלה, TPL, הגנה מגניבה.';
-  }
-
-  // Yacht info
-  if (match(ql, ['יאכטה','yacht','gurgur','סירה','הפלגה','sail','lagoon','מרינה','marina'])) {
-    if (match(ql, ['צק אין','צ\'ק-אין','checkin','check-in','עלייה'])) {
-      return 'צ\'ק-אין ליאכטה: 22.8 (שבת) מ-17:00, Pier 14 במרינה Dalmacija, סוקושאן. צריך להביא: דרכון, boarding pass, רישיון סקיפר מקורי, רישיון VHF. תשלומים: Comfort Pack 550€ (מזומן), Tourist Tax 9.31€/אדם (מזומן), פיקדון 3,000€ (אשראי) או 300€ (מזומן).';
-    }
-    if (match(ql, ['צק אאוט','צ\'ק-אאוט','checkout','check-out','ירידה'])) {
-      return 'צ\'ק-אאוט מהיאכטה: 29.8 (שבת) עד 09:00. חשוב! חזרה לבסיס (מרינה סוקושאן) ב-28.8 ערב עד 18:00! יש למלא דלק לפני ההחזרה.';
-    }
-    if (match(ql, ['טלפון','phone','מייל','mail','יצירת קשר','contact'])) {
-      return 'Master Yachting d.o.o. טלפון: +385 23 393 230, מייל: team@masteryachting.hr. כתובת: Marina Dalmacija 14, Sukosan.';
-    }
-    if (match(ql, ['מחיר','עלות','כסף','cost','price'])) {
-      return 'עלות היאכטה: שכירות 7,150€, Comfort Pack 550€ (מזומן), Tourist Tax ~65€ (9.31€/אדם, מזומן), פיקדון 3,000€ (אשראי) או 300€ (מזומן).';
-    }
-    return 'היאכטה: Lagoon 43 "GURGUR", הזמנה 24332, דרך Master Yachting. צ\'ק-אין 22.8 מ-17:00 ב-Pier 14, מרינה Dalmacija סוקושאן. צ\'ק-אאוט 29.8 עד 09:00. מחיר: 7,150€ + 550€ Comfort Pack. טלפון: +385 23 393 230.';
-  }
-
-  // Hotel/accommodation
-  if (match(ql, ['מלון','לינה','hotel','hostel','villa','דירה','apartment','phoenix','degenija','cvita','לישון','איפה נישן','איפה לנים'])) {
-    return 'מקומות לינה: 1) Hotel Phoenix, זאגרב - 16.8 (לילה 1). 2) Hotel Degenija, פליטביצה - 17-18.8 (2 לילות). 3) Villa Cvita - 19-21.8 (3 לילות). 4) יאכטה - 22-28.8 (7 לילות). 5) דירה בזאגרב (ציון 9.9) - 29.8 (לילה 1).';
-  }
-
-  // Plitvice
-  if (match(ql, ['פליטביצה','plitvice','שמורה','אגם','lakes'])) {
-    return 'פליטביצה: נסיעה ביום 17.8 מזאגרב (~1:45-2 שעות, 135 ק"מ). יום שלם בשמורה ב-18.8. לינה ב-Hotel Degenija (2 לילות). שמורת טבע עולמית עם אגמים ומפלים מדהימים!';
-  }
-
-  // Weather / storm
-  if (match(ql, ['מזג אוויר','weather','סופה','storm','רוח','wind','גשם','rain','bura','maestral'])) {
-    return 'אוגוסט בקרואטיה: 28-35 מעלות, ימים שמשיים. רוחות Maestral (צפון-מערב) מתחזקות אחה"צ - טובות להפלגה. סכנה: סופות Bura (צפון-מזרח) יכולות להגיע פתאום. סימני אזהרה: ענני Cb, ירידת ברומטר, שינוי רוח. בדקו Windy.com כל בוקר! אם סופה צפויה - הישארו במרינה.';
-  }
-
-  // Schedule/day
-  if (match(ql, ['לוז','לוח זמנים','schedule','תכנית','מה עושים','מה ביום','מה קורה'])) {
-    for (const s of SCHEDULE) {
-      const dateNum = s.date.split('.')[0];
-      if (ql.includes(dateNum) || ql.includes(s.date)) {
-        return `${s.date} (${s.day}) - ${s.title}. ${s.events.map(e => (e.time ? e.time + ': ' : '') + e.text + (e.detail ? ' - ' + e.detail : '')).join('. ')}${s.lodge ? '. לינה: ' + s.lodge : ''}.`;
-      }
-    }
-    return 'הטיול: 16.8 נחיתה בזאגרב, 17.8 פליטביצה, 18.8 שמורה, 19-21.8 וילה, 22-28.8 הפלגה ביאכטה, 29.8 חזרה לזאגרב, 30.8 זאגרב, 31.8 טיסה הביתה. שאלו על יום ספציפי!';
-  }
-
-  // Budget
-  if (match(ql, ['תקציב','כמה עולה','budget','מחיר','עלות','כסף','הוצאות','cost'])) {
-    return 'הוצאות עיקריות: רכב Hertz 2,998.47€, יאכטה 7,150€, Comfort Pack 550€, Tourist Tax ~65€, פיקדון 3,000€ (או 300€). מלונות ודירה - מחירים טרם הוזנו. אפשר לעדכן בלשונית תקציב.';
-  }
-
-  // Packing
-  if (match(ql, ['אריזה','לארוז','packing','pack','מה לקחת','מה להביא','ציוד'])) {
-    if (match(ql, ['סקיפר','נועם','skipper'])) {
-      return 'נועם (הסקיפר) צריך להביא בנוסף: רישיון סקיפר מקורי, רישיון VHF, אולר, חבל 4 מ"מ (10-20 מ\'), סנדלים לקשירת חבלים.';
-    }
-    return 'פריטים חשובים לכולם: דרכון, בגדים קצרים + חמים, מעיל רוח, נעלי הליכה, סנדלים/נעלי מים (חובה!), כובע, בגדי ים, קרם הגנה, תרופות. משותף: עזרה ראשונה, ציוד שנירקול, משחקים, מפצל שקעים אירופאי. הרשימה המלאה בלשונית רשימות.';
-  }
-
-  // Safety / Malachi
-  if (match(ql, ['בטיחות','safety','אפוד','life jacket','מלאכי','malachi'])) {
-    return 'בטיחות: מלאכי (5) - תמיד עם אפוד הצלה ומבוגר ליד! לפני כל הפלגה: בדקו אפודות הצלה, זיקוקין, מטף. בסופה: כולם עם אפודות, הורידו מפרשים, הפעילו מנוע.';
-  }
-
-  // Bridge warning
-  if (match(ql, ['גשר','bridge','zdrelac','ugljan','pasman'])) {
-    return 'אזהרה חשובה! אסור בהחלט לעבור מתחת לגשר Zdrelac שבין Ugljan ל-Pasman! זהו כלל מחייב.';
-  }
-
-  // Family members
-  if (match(ql, ['משפחה','family','מי','בני משפחה','ילדים','כמה אנחנו'])) {
-    return 'משפחת כהן - 7 נפשות: נועם (אבא, הסקיפר), שיר (אמא), יונתן (15), אורי (13), עמית (11), עופר (9), מלאכי (5).';
-  }
-
-  // Shopping
-  if (match(ql, ['קניות','shopping','לקנות','מה לקנות','סופר','מכולת'])) {
-    return 'רשימת קניות ליאכטה כוללת: מזון (פסטה, אורז, ביצים, ירקות, פירות, לחם, חטיפים ועוד), חומרי ניקוי (סבון כלים, נייר טואלט ימי!, שקיות זבל), ומים מינרלים - חשוב! 3-4 ליטר/אדם/יום, לפחות 100-120 ליטר ל-4 ימים! הרשימה המלאה בלשונית רשימות.';
-  }
-
-  // Fuel
-  if (match(ql, ['דלק','fuel','מילוי','תדלוק'])) {
-    return 'חובה להחזיר את היאכטה עם מיכלי דלק מלאים! תדלקו לפני החזרה למרינה ב-28.8.';
-  }
-
-  // Toilet
-  if (match(ql, ['שירותים','toilet','שירות','נייר טואלט'])) {
-    return 'שירותים ביאכטה: רק נייר טואלט ימי! אסור להכניס נייר רגיל, מגבונים או כל דבר אחר - זה יסתום את המערכת. חשוב מאוד להסביר לכל הילדים!';
-  }
-
-  // Dates
-  if (match(ql, ['מתי','תאריך','date','when','כמה זמן'])) {
-    if (match(ql, ['הפלגה','sail','יאכטה'])) return 'הפלגה: 22.8-29.8 (7 לילות ביאכטה, 6 ימי הפלגה מלאים).';
-    if (match(ql, ['חזרה','חוזרים','return'])) return 'טיסת חזרה: 31.8 בשעה 00:30 מזאגרב, נחיתה 04:40 בבן גוריון.';
-    return 'הטיול: 16-31 באוגוסט 2026 (16 ימים). סיור יבשתי: 16-21.8, הפלגה: 22-29.8, זאגרב: 29-30.8.';
-  }
-
-  // Zagreb
-  if (match(ql, ['זאגרב','zagreb'])) {
-    return 'זאגרב: לילה ראשון (16.8) ב-Hotel Phoenix. יום אחרון (30.8) סיורים ושופינג, לינה בדירה (ציון 9.9). הגעה לשדה התעופה ~22:00, החזרת רכב. טיסה הביתה 31.8 ב-00:30.';
-  }
-
-  // Generic greeting
-  if (match(ql, ['שלום','היי','הי','hello','hi','hey'])) {
-    return 'שלום! אני עוזר הטיול של משפחת כהן. אפשר לשאול אותי על הטיסות, הרכב, היאכטה, לוח הזמנים, רשימות אריזה וקניות, מזג האוויר, תקציב ועוד. במה אוכל לעזור?';
-  }
-
-  // Thanks
-  if (match(ql, ['תודה','thanks','thank'])) {
-    return 'בכיף! אם יש עוד שאלות, אני כאן.';
-  }
-
-  // Default
-  return 'לא הצלחתי למצוא תשובה מדויקת. נסו לשאול על: טיסות, רכב, יאכטה, לינה, לוח זמנים, מזג אוויר, אריזה, קניות, תקציב, בטיחות, או פליטביצה.';
-}
-
-function match(text, keywords) {
-  return keywords.some(k => text.includes(k));
-}
-
-// ========== INIT ==========
-function renderAll() {
-  updateDashboard();
-  renderSchedule();
-  renderDocs();
-  renderYachtChecklist();
-  renderPersonTabs();
-  renderPackingList();
-  renderShoppingList();
-  renderBudget();
-}
-
-function init() {
+function init(){
+  const savedTheme=load('theme','auto');
+  if(savedTheme==='dark')document.documentElement.setAttribute('data-theme','dark');
+  else if(savedTheme==='light')document.documentElement.setAttribute('data-theme','light');
+  currentCurrency=load('currency','EUR');
   renderAll();
+  const savedTab=load('activeTab','dashboard');switchTab(savedTab);
 
-  const savedTab = load('activeTab', 'dashboard');
-  switchTab(savedTab);
-
-  document.getElementById('addPackingInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addPackingItem();
-  });
-  document.getElementById('addShoppingInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addShoppingItem();
-  });
-  document.getElementById('addBudgetName').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addBudgetItem();
-  });
-  document.getElementById('addBudgetAmount').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addBudgetItem();
-  });
-
-  if (tripDoc) {
-    const badge = document.createElement('div');
-    badge.id = 'syncBadge';
-    badge.style.cssText = 'position:fixed;top:8px;left:50%;transform:translateX(-50%);font-size:11px;padding:2px 10px;border-radius:10px;background:var(--accent);color:#fff;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none';
-    badge.textContent = 'מסונכרן';
-    document.body.appendChild(badge);
-
-    tripDoc.onSnapshot(snap => {
-      if (snap.exists) {
-        const data = snap.data();
-        const changed = !firebaseReady || JSON.stringify(data) !== JSON.stringify(firebaseData);
-        firebaseData = data;
-        Object.keys(data).forEach(k => {
-          try { localStorage.setItem('croatia_' + k, JSON.stringify(data[k])); } catch(e) {}
-        });
-        if (firebaseReady && changed) renderAll();
-        firebaseReady = true;
-      }
-      badge.style.opacity = '1';
-      setTimeout(() => badge.style.opacity = '0', 1500);
-    }, () => { firebaseReady = false; });
+  if(tripDoc){
+    const badge=document.createElement('div');badge.id='syncBadge';
+    badge.style.cssText='position:fixed;top:8px;left:50%;transform:translateX(-50%);font-size:11px;padding:2px 10px;border-radius:10px;background:var(--accent);color:#fff;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none';
+    badge.textContent='מסונכרן';document.body.appendChild(badge);
+    tripDoc.onSnapshot(snap=>{
+      if(snap.exists){const data=snap.data();const changed=!firebaseReady||JSON.stringify(data)!==JSON.stringify(firebaseData);firebaseData=data;Object.keys(data).forEach(k=>{if(k!=='geminiApiKey')try{localStorage.setItem('croatia_'+k,JSON.stringify(data[k]));}catch(e){}});if(firebaseReady&&changed)renderAll();firebaseReady=true;}
+      badge.style.opacity='1';setTimeout(()=>badge.style.opacity='0',1500);
+    },()=>{firebaseReady=false;});
   }
 }
 
-document.addEventListener('DOMContentLoaded', init);
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
+document.addEventListener('DOMContentLoaded',init);
 </script>
