@@ -630,7 +630,19 @@ function renderDocs(){
     {icon:'🎫',cls:'ticket',title:'כרטיסי פליטביצה',sub:'17.8 · כניסה 1 · 16:00-17:00',modal:'plitvice'},
     {icon:'🛡️',cls:'insurance',title:'ביטוח יאכטה',sub:'Schomacker · Ref: 97759K · €280',modal:'insurance'}
   ];
-  document.getElementById('docsContainer').innerHTML=docs.map(d=>`<div class="doc-card" onclick="openDocModal('${d.modal}')"><div class="doc-header"><div class="doc-icon-wrap ${d.cls}">${d.icon}</div><div class="doc-info"><h3>${d.title}</h3><p>${d.sub}</p></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div></div>`).join('');
+  let html=docs.map(d=>`<div class="doc-card" onclick="openDocModal('${d.modal}')"><div class="doc-header"><div class="doc-icon-wrap ${d.cls}">${d.icon}</div><div class="doc-info"><h3>${d.title}</h3><p>${d.sub}</p></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div></div>`).join('');
+  const uploads=load('uploads',[]);
+  if(uploads.length>0){
+    html+='<div class="section-sub" style="margin-top:16px">מסמכים שהועלו</div>';
+    const iconMap={receipt:'🧾',hotel:'🏨',flight:'✈️',ticket:'🎫',insurance:'🛡️',invoice:'🧾',other:'📄'};
+    uploads.forEach((u,i)=>{
+      const icon=iconMap[u.type]||'📄';
+      const amtStr=u.amount>0?` · ${u.amount} ${u.currency}`:'';
+      const dateStr=new Date(parseInt(u.timestamp)).toLocaleDateString('he-IL');
+      html+=`<div class="doc-card" onclick="viewUpload(${i})"><div class="doc-header"><div class="doc-icon-wrap ticket">${icon}</div><div class="doc-info"><h3>${u.name}</h3><p>${dateStr}${amtStr}</p></div><button class="edit-icon" onclick="event.stopPropagation();deleteUpload(${i})" style="font-size:18px;padding:8px" title="מחק">&times;</button></div></div>`;
+    });
+  }
+  document.getElementById('docsContainer').innerHTML=html;
 }
 
 function openDocModal(type){
@@ -1119,30 +1131,79 @@ function resetAllData(){
   renderAll();toggleSettings();
 }
 
+function compressImage(base64Url,maxDim){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=function(){
+      const canvas=document.createElement('canvas');
+      let w=img.width,h=img.height;
+      if(w>maxDim||h>maxDim){if(w>h){h=Math.round(h*maxDim/w);w=maxDim;}else{w=Math.round(w*maxDim/h);h=maxDim;}}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      resolve(canvas.toDataURL('image/jpeg',0.6));
+    };
+    img.onerror=()=>resolve(base64Url);
+    img.src=base64Url;
+  });
+}
 function uploadDoc(){
   const input=document.createElement('input');input.type='file';input.accept='image/*,application/pdf';input.setAttribute('capture','environment');
   input.onchange=async function(){
     const file=this.files[0];if(!file)return;
-    let apiKey=null;
-    if(tripRef){try{const snap=await tripRef.child('geminiApiKey').once('value');apiKey=snap.val();}catch(e){}}
+    const apiKey=await getApiKey();
     if(!apiKey){alert('יש להגדיר מפתח Gemini API בהגדרות לפני העלאת מסמכים');return;}
     const reader=new FileReader();
     reader.onload=async function(){
-      const base64=reader.result.split(',')[1];
+      const base64Full=reader.result;
+      const base64Data=base64Full.split(',')[1];
       const mime=file.type||'image/jpeg';
+      const mc=document.getElementById('modalContent');
+      mc.innerHTML='<div class="modal-title">מנתח מסמך...</div><p style="text-align:center;padding:40px 0;font-size:32px">⏳</p><p style="text-align:center;color:var(--text-secondary)">הבינה המלאכותית מנתחת את המסמך...</p>';
+      document.getElementById('modalOverlay').classList.add('open');
       try{
-        const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key='+apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{inlineData:{mimeType:mime,data:base64}},{text:'Analyze this travel document. Extract: 1) Type (hotel/flight/ticket/receipt/insurance). 2) Key dates. 3) Costs/amounts. 4) Contact info. 5) Addresses. 6) Booking references. Reply in Hebrew, structured clearly.'}]}]})});
+        const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key='+apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{inlineData:{mimeType:mime,data:base64Data}},{text:'נתח את המסמך הזה. חלץ:\n1) סוג (מלון/טיסה/כרטיס/קבלה/ביטוח/חשבונית)\n2) תאריכים רלוונטיים\n3) סכום כולל ומטבע\n4) פרטים חשובים\n5) כתובות ואנשי קשר\n6) מספרי הזמנה\nענה בעברית, בצורה מסודרת.\n\nבשורה האחרונה ממש, הוסף שורה בפורמט הזה בדיוק (לצורך עיבוד אוטומטי):\n##DATA: type=<סוג באנגלית: receipt/hotel/flight/ticket/insurance/other>, amount=<מספר בלבד ללא מטבע>, currency=<EUR/ILS/USD/HRK>, name=<שם קצר בעברית של המסמך>'}]}]})});
         const data=await resp.json();
+        if(data.error){mc.innerHTML=`<div class="modal-title">שגיאה</div><p>שגיאה (${data.error.code}): ${data.error.message}</p>`;return;}
         const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'לא הצלחתי לנתח את המסמך';
-        const mc=document.getElementById('modalContent');
-        mc.innerHTML=`<div class="modal-title">ניתוח מסמך</div><div style="font-size:13px;line-height:1.8;white-space:pre-wrap">${text}</div><p style="font-size:12px;color:var(--text-secondary);margin-top:12px">ניתוח בינה מלאכותית - בדקו את הנתונים</p>`;
-        document.getElementById('modalOverlay').classList.add('open');
-      }catch(e){alert('שגיאה בניתוח: '+e.message);}
+        let docType='other',amount=0,currency='EUR',docName='מסמך';
+        const dataMatch=text.match(/##DATA:\s*type=([^,]+),\s*amount=([^,]+),\s*currency=([^,]+),\s*name=(.+)/);
+        if(dataMatch){docType=dataMatch[1].trim();amount=parseFloat(dataMatch[2].trim().replace(/[^\d.]/g,''))||0;currency=dataMatch[3].trim();docName=dataMatch[4].trim();}
+        const thumb=await compressImage(base64Full,800);
+        const uploadId=Date.now().toString();
+        const uploads=load('uploads',[]);
+        uploads.push({id:uploadId,type:docType,name:docName,amount,currency,analysis:text.replace(/\n*##DATA:.*/,'').trim(),image:thumb,timestamp:uploadId,fileName:file.name});
+        ss('uploads',uploads);
+        const cleanText=text.replace(/\n*##DATA:.*/,'').trim();
+        let amountHtml='';
+        if(amount>0){
+          const esc=docName.replace(/'/g,"\\'");
+          amountHtml=`<div style="margin-top:16px;padding:14px;background:var(--accent-light);border-radius:var(--radius-sm);text-align:center"><div style="font-size:16px;font-weight:700;color:var(--accent)">סכום שזוהה: ${amount.toLocaleString()} ${currency}</div><button class="btn btn-accent" style="margin-top:10px;width:100%" onclick="addUploadToBudget('${esc}',${amount},'${currency}')">הוסף לתקציב</button></div>`;
+        }
+        mc.innerHTML=`<div class="modal-title">ניתוח מסמך</div><div style="font-size:13px;line-height:1.8;white-space:pre-wrap">${cleanText}</div>${amountHtml}<p style="font-size:12px;color:var(--text-secondary);margin-top:12px">המסמך נשמר באפליקציה ונגיש בטאב מסמכים</p>`;
+        renderDocs();
+      }catch(e){mc.innerHTML=`<div class="modal-title">שגיאה</div><p>שגיאה בניתוח: ${e.message}</p>`;}
     };
     reader.readAsDataURL(file);
   };
   input.click();
 }
+function addUploadToBudget(name,amount,currency){
+  const amountEur=currency==='EUR'?amount:currency==='ILS'?amount/RATES.ILS:currency==='USD'?amount/RATES.USD:amount;
+  const items=load('budget',[]);
+  if(items===null||items.length===0){const d=DEFAULT_BUDGET.map(b=>({...b}));d.push({name,amount:amountEur,editable:true});ss('budget',d);}
+  else{items.push({name,amount:amountEur,editable:true});ss('budget',items);}
+  closeModal();switchTab('budget');renderBudget();
+}
+function viewUpload(i){
+  const uploads=load('uploads',[]);const u=uploads[i];if(!u)return;
+  const mc=document.getElementById('modalContent');
+  const imgHtml=u.image?`<img src="${u.image}" style="width:100%;border-radius:8px;margin-bottom:12px">`:'';
+  const amtHtml=u.amount>0?`<div class="detail-row"><span class="detail-label">סכום</span><span class="detail-value">${u.amount.toLocaleString()} ${u.currency}</span></div>`:'';
+  const dateHtml=`<div class="detail-row"><span class="detail-label">תאריך העלאה</span><span class="detail-value rtl-val">${new Date(parseInt(u.timestamp)).toLocaleDateString('he-IL')}</span></div>`;
+  mc.innerHTML=`<div class="modal-title">${u.name}</div>${imgHtml}${amtHtml}${dateHtml}<div style="font-size:13px;line-height:1.8;white-space:pre-wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">${u.analysis}</div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function deleteUpload(i){if(!confirm('למחוק מסמך זה?'))return;const uploads=load('uploads',[]);uploads.splice(i,1);ss('uploads',uploads);renderDocs();}
 
 function renderAll(){updateDashboard();renderSchedule();renderDocs();renderRoute();renderPersonTabs();renderPackingList();renderBudget();}
 
