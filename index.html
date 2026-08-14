@@ -996,7 +996,7 @@ async function sendChat(){
   const prompt=getTripContext()+(history?'\n\nהיסטוריית שיחה:\n'+history:'')+'\n\nשאלה: '+t;
   try{
     const url='https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key='+apiKey;
-    const body={contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:500,temperature:0.7}};
+    const body={contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:2048,temperature:0.7}};
     const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const j=await r.json();
     if(j.error){
