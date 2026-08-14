@@ -982,7 +982,7 @@ async function sendChat(){
   const history=chatHistory.slice(0,-1).map(m=>(m.role==='user'?'שאלה':'תשובה')+': '+m.parts[0].text).join('\n');
   const prompt=getTripContext()+(history?'\n\nהיסטוריית שיחה:\n'+history:'')+'\n\nשאלה: '+t;
   try{
-    const url='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+apiKey;
+    const url='https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key='+apiKey;
     const body={contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:500,temperature:0.7}};
     const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const j=await r.json();
@@ -1033,7 +1033,7 @@ function uploadDoc(){
       const base64=reader.result.split(',')[1];
       const mime=file.type||'image/jpeg';
       try{
-        const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{inlineData:{mimeType:mime,data:base64}},{text:'Analyze this travel document. Extract: 1) Type (hotel/flight/ticket/receipt/insurance). 2) Key dates. 3) Costs/amounts. 4) Contact info. 5) Addresses. 6) Booking references. Reply in Hebrew, structured clearly.'}]}]})});
+        const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key='+apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{inlineData:{mimeType:mime,data:base64}},{text:'Analyze this travel document. Extract: 1) Type (hotel/flight/ticket/receipt/insurance). 2) Key dates. 3) Costs/amounts. 4) Contact info. 5) Addresses. 6) Booking references. Reply in Hebrew, structured clearly.'}]}]})});
         const data=await resp.json();
         const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'לא הצלחתי לנתח את המסמך';
         const mc=document.getElementById('modalContent');
