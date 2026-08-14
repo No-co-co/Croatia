@@ -155,6 +155,19 @@ body { font-family: var(--font); background: var(--bg-primary); color: var(--tex
 .add-item-row input { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: var(--font); background: var(--bg-primary); color: var(--text-primary); direction: rtl; }
 .add-item-row input::placeholder { color: var(--text-secondary); }
 .add-item-row input:focus { outline: none; border-color: var(--accent); }
+.event-actions { display: flex; gap: 2px; flex-shrink: 0; align-items: flex-start; margin-right: 8px; }
+.edit-icon { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 12px; padding: 4px; opacity: 0.5; line-height: 1; }
+.edit-icon:hover { opacity: 1; color: var(--accent); }
+.add-row-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 10px; border: 1px dashed var(--border); border-radius: var(--radius-sm); background: transparent; color: var(--accent); font-size: 13px; font-weight: 600; font-family: var(--font); cursor: pointer; margin-top: 8px; }
+.add-row-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+.edit-form-group { margin-bottom: 12px; }
+.edit-form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text-secondary); }
+.edit-form-group input, .edit-form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: var(--font); background: var(--bg-primary); color: var(--text-primary); direction: rtl; }
+.edit-form-group textarea { resize: vertical; min-height: 60px; }
+.edit-form-group input:focus, .edit-form-group textarea:focus { outline: none; border-color: var(--accent); }
+.edit-form-actions { display: flex; gap: 8px; margin-top: 16px; }
+.edit-form-actions .btn { flex: 1; }
+.reset-btn { background: var(--coral-light); color: var(--coral); border: 1px solid var(--coral); }
 .btn { padding: 10px 16px; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; font-family: var(--font); cursor: pointer; transition: background 0.15s; -webkit-tap-highlight-color: transparent; }
 .btn-accent { background: var(--accent); color: #fff; } .btn-accent:hover { background: var(--accent-hover); }
 .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
@@ -315,7 +328,8 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
       <div class="settings-row"><div><div class="settings-label">מצב תצוגה</div></div><div class="theme-toggle"><button class="theme-btn" onclick="setTheme('light',this)">בהיר</button><button class="theme-btn active" onclick="setTheme('auto',this)">אוטומטי</button><button class="theme-btn" onclick="setTheme('dark',this)">כהה</button></div></div>
       <div class="settings-row"><div><div class="settings-label">מטבע ברירת מחדל</div><div class="settings-sub">שער: 1 EUR = 4.05 ILS = 1.08 USD</div></div></div>
       <div class="settings-row" style="flex-direction:column;align-items:stretch"><div><div class="settings-label">מפתח Gemini API</div><div class="settings-sub">נשמר ב-Firebase בלבד, לא מוצג באפליקציה</div></div><div class="api-input-row"><input type="password" id="apiKeyInput" placeholder="הזן מפתח API חדש..."><button class="btn btn-accent" onclick="saveApiKey()">שמור</button></div><div id="apiKeyStatus" style="font-size:12px;color:var(--success);margin-top:4px"></div></div>
-      <div class="settings-row"><div><div class="settings-label">גרסה</div><div class="settings-sub">Croatia Trip App v2.0</div></div></div>
+      <div class="settings-row" style="flex-direction:column;align-items:stretch"><div><div class="settings-label">איפוס נתונים</div><div class="settings-sub">החזר לו"ז, מסלול, צ'קליסט לברירת מחדל</div></div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn reset-btn" onclick="resetAllData()">איפוס הכל</button></div></div>
+      <div class="settings-row"><div><div class="settings-label">גרסה</div><div class="settings-sub">Croatia Trip App v3.0</div></div></div>
     </div>
   </div>
 </div>
@@ -555,23 +569,57 @@ function updateDashboard(){
   else if(today>=TRIP_START&&today<=TRIP_END){const d=Math.floor((today-TRIP_START)/(1000*60*60*24))+1;cEl.textContent=d;lEl.textContent='יום בטיול';bEl.textContent=today>=SAIL_START&&today<SAIL_END?'הפלגה!':today<SAIL_START?'סיור יבשתי':'חזרה';}
   else{cEl.textContent='✓';lEl.textContent='הטיול הסתיים';bEl.textContent='חזרנו';}
   const tEl=document.getElementById('nextEventTitle'),dEl=document.getElementById('nextEventDetail');
+  const sched=getScheduleData();
   const dayIdx=Math.floor((today-TRIP_START)/(1000*60*60*24));
-  if(dayIdx<0){tEl.textContent=SCHEDULE[0].title;dEl.textContent=SCHEDULE[0].date+' '+SCHEDULE[0].day;}
-  else if(dayIdx<SCHEDULE.length){tEl.textContent=SCHEDULE[dayIdx].title;dEl.textContent=SCHEDULE[dayIdx].date+' '+SCHEDULE[dayIdx].day;}
+  if(dayIdx<0){tEl.textContent=sched[0].title;dEl.textContent=sched[0].date+' '+sched[0].day;}
+  else if(dayIdx<sched.length){tEl.textContent=sched[dayIdx].title;dEl.textContent=sched[dayIdx].date+' '+sched[dayIdx].day;}
   else{tEl.textContent='הטיול הסתיים';dEl.textContent='תודה על הזיכרונות!';}
 }
 
 function mapsUrl(addr){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(addr);}
 
+function getScheduleData(){let s=load('schedule',null);if(s===null){s=SCHEDULE.map(d=>({...d,events:d.events.map(e=>({...e}))}));ss('schedule',s);}return s;}
 function renderSchedule(){
-  document.getElementById('scheduleContainer').innerHTML=SCHEDULE.map((s,i)=>{
+  const sched=getScheduleData();
+  document.getElementById('scheduleContainer').innerHTML=sched.map((s,i)=>{
     const badge=s.badge==='sailing'?'<span class="day-badge sailing">הפלגה</span>':'';
     const mapBtn=s.addr?`<a href="${mapsUrl(s.addr)}" target="_blank" class="map-link" onclick="event.stopPropagation()">📍 מפה</a>`:'';
-    return `<div class="day-card" data-day="${i}"><div class="day-header" onclick="toggleDay(${i})"><div><div class="day-date">${s.date} ${s.day}</div><div class="day-title">${s.title}</div></div><div style="display:flex;align-items:center;gap:8px">${badge}<svg class="day-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="day-body">${s.events.map(e=>`<div class="event-item"><div class="event-icon">${e.icon}</div><div class="event-text"><div>${e.time?'<span class="event-time">'+e.time+'</span> ':''}${e.text}</div>${e.detail?'<div class="event-note">'+e.detail+'</div>':''}</div></div>`).join('')}${s.lodge?'<div class="lodge-tag">🏨 '+s.lodge+'</div>':''}${mapBtn}</div></div>`;
+    return `<div class="day-card" data-day="${i}"><div class="day-header" onclick="toggleDay(${i})"><div><div class="day-date">${s.date} ${s.day}</div><div class="day-title">${s.title} <button class="edit-icon" onclick="event.stopPropagation();editDayInfo(${i})" title="ערוך">✏️</button></div></div><div style="display:flex;align-items:center;gap:8px">${badge}<svg class="day-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="day-body">${s.events.map((e,j)=>`<div class="event-item"><div class="event-icon">${e.icon}</div><div class="event-text"><div>${e.time?'<span class="event-time">'+e.time+'</span> ':''}${e.text}</div>${e.detail?'<div class="event-note">'+e.detail+'</div>':''}</div><div class="event-actions"><button class="edit-icon" onclick="event.stopPropagation();editScheduleEvent(${i},${j})" title="ערוך">✏️</button><button class="edit-icon" onclick="event.stopPropagation();deleteScheduleEvent(${i},${j})" title="מחק">&times;</button></div></div>`).join('')}${s.lodge?'<div class="lodge-tag">🏨 '+s.lodge+'</div>':''}${mapBtn}<button class="add-row-btn" onclick="event.stopPropagation();addScheduleEvent(${i})">+ הוסף אירוע</button></div></div>`;
   }).join('');
 }
-
 function toggleDay(i){document.querySelector(`[data-day="${i}"]`).classList.toggle('open');}
+function editDayInfo(i){
+  const s=getScheduleData()[i];
+  document.getElementById('modalContent').innerHTML=`<div class="modal-title">עריכת יום ${s.date}</div>
+  <div class="edit-form-group"><label>כותרת</label><input id="ef_title" value="${s.title}"></div>
+  <div class="edit-form-group"><label>לינה</label><input id="ef_lodge" value="${s.lodge||''}"></div>
+  <div class="edit-form-group"><label>כתובת</label><input id="ef_addr" value="${s.addr||''}" dir="ltr"></div>
+  <div class="edit-form-actions"><button class="btn btn-accent" onclick="saveDayInfo(${i})">שמור</button><button class="btn btn-outline" onclick="closeModal()">ביטול</button></div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function saveDayInfo(i){const s=getScheduleData();s[i].title=document.getElementById('ef_title').value.trim()||s[i].title;s[i].lodge=document.getElementById('ef_lodge').value.trim();s[i].addr=document.getElementById('ef_addr').value.trim();ss('schedule',s);renderSchedule();closeModal();}
+function editScheduleEvent(di,ei){
+  const e=getScheduleData()[di].events[ei];
+  document.getElementById('modalContent').innerHTML=`<div class="modal-title">עריכת אירוע</div>
+  <div class="edit-form-group"><label>אייקון</label><input id="ef_icon" value="${e.icon}" style="width:60px"></div>
+  <div class="edit-form-group"><label>שעה</label><input id="ef_time" value="${e.time||''}" dir="ltr"></div>
+  <div class="edit-form-group"><label>טקסט</label><input id="ef_text" value="${e.text}"></div>
+  <div class="edit-form-group"><label>פרטים</label><textarea id="ef_detail">${e.detail||''}</textarea></div>
+  <div class="edit-form-actions"><button class="btn btn-accent" onclick="saveScheduleEvent(${di},${ei})">שמור</button><button class="btn btn-outline" onclick="closeModal()">ביטול</button></div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function saveScheduleEvent(di,ei){const s=getScheduleData();const e=s[di].events[ei];e.icon=document.getElementById('ef_icon').value||e.icon;e.time=document.getElementById('ef_time').value.trim();e.text=document.getElementById('ef_text').value.trim()||e.text;e.detail=document.getElementById('ef_detail').value.trim();ss('schedule',s);renderSchedule();closeModal();}
+function deleteScheduleEvent(di,ei){if(!confirm('למחוק אירוע זה?'))return;const s=getScheduleData();s[di].events.splice(ei,1);ss('schedule',s);renderSchedule();}
+function addScheduleEvent(di){
+  document.getElementById('modalContent').innerHTML=`<div class="modal-title">הוספת אירוע</div>
+  <div class="edit-form-group"><label>אייקון</label><input id="ef_icon" value="📌" style="width:60px"></div>
+  <div class="edit-form-group"><label>שעה</label><input id="ef_time" placeholder="09:00" dir="ltr"></div>
+  <div class="edit-form-group"><label>טקסט</label><input id="ef_text" placeholder="תיאור האירוע"></div>
+  <div class="edit-form-group"><label>פרטים</label><textarea id="ef_detail" placeholder="פרטים נוספים..."></textarea></div>
+  <div class="edit-form-actions"><button class="btn btn-accent" onclick="saveNewEvent(${di})">הוסף</button><button class="btn btn-outline" onclick="closeModal()">ביטול</button></div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function saveNewEvent(di){const t=document.getElementById('ef_text').value.trim();if(!t)return;const s=getScheduleData();s[di].events.push({icon:document.getElementById('ef_icon').value||'📌',time:document.getElementById('ef_time').value.trim(),text:t,detail:document.getElementById('ef_detail').value.trim()});ss('schedule',s);renderSchedule();closeModal();}
 
 function renderDocs(){
   const docs=[
@@ -722,9 +770,11 @@ function switchYachtView(view){
   if(view==='storm')renderStorm();
 }
 
+function getRouteData(){let r=load('route',null);if(r===null){r=FLOTILLA_ROUTE.map(d=>({...d}));ss('route',r);}return r;}
 function renderRoute(){
-  document.getElementById('yachtRoute').innerHTML=FLOTILLA_ROUTE.map(r=>`<div class="route-card">
-    <div class="route-day">יום ${r.day} - ${r.date}</div>
+  const route=getRouteData();
+  document.getElementById('yachtRoute').innerHTML=route.map((r,i)=>`<div class="route-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="route-day">יום ${r.day} - ${r.date}</div><button class="edit-icon" onclick="editRouteDay(${i})" title="ערוך" style="font-size:14px">✏️</button></div>
     <div class="route-path">${r.from} → ${r.to}</div>
     <div class="route-stats"><span>⛵ ${r.nm} NM</span><span>⏱️ ~${r.hours} שעות</span><span>🚀 יציאה ${r.depart}</span><span>🏁 הגעה ${r.arrive}</span></div>
     <div class="route-desc">${r.desc}</div>
@@ -732,28 +782,45 @@ function renderRoute(){
     <div class="route-planb">Plan B: ${r.planB}</div>
   </div>`).join('');
 }
+function editRouteDay(i){
+  const r=getRouteData()[i];
+  document.getElementById('modalContent').innerHTML=`<div class="modal-title">עריכת יום ${r.day} - ${r.date}</div>
+  <div class="edit-form-group"><label>מוצא</label><input id="ef_from" value="${r.from}"></div>
+  <div class="edit-form-group"><label>יעד</label><input id="ef_to" value="${r.to}"></div>
+  <div class="edit-form-group"><label>מרחק (NM)</label><input id="ef_nm" value="${r.nm}" dir="ltr"></div>
+  <div class="edit-form-group"><label>שעות</label><input id="ef_hours" value="${r.hours}" dir="ltr"></div>
+  <div class="edit-form-group"><label>יציאה</label><input id="ef_depart" value="${r.depart}" dir="ltr"></div>
+  <div class="edit-form-group"><label>הגעה</label><input id="ef_arrive" value="${r.arrive}" dir="ltr"></div>
+  <div class="edit-form-group"><label>תיאור</label><textarea id="ef_desc">${r.desc}</textarea></div>
+  <div class="edit-form-group"><label>אטרקציות</label><textarea id="ef_attr">${r.attractions}</textarea></div>
+  <div class="edit-form-group"><label>Plan B</label><textarea id="ef_planb">${r.planB}</textarea></div>
+  <div class="edit-form-actions"><button class="btn btn-accent" onclick="saveRouteDay(${i})">שמור</button><button class="btn btn-outline" onclick="closeModal()">ביטול</button></div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function saveRouteDay(i){const route=getRouteData();const r=route[i];r.from=document.getElementById('ef_from').value.trim()||r.from;r.to=document.getElementById('ef_to').value.trim()||r.to;r.nm=document.getElementById('ef_nm').value.trim()||r.nm;r.hours=document.getElementById('ef_hours').value.trim()||r.hours;r.depart=document.getElementById('ef_depart').value.trim()||r.depart;r.arrive=document.getElementById('ef_arrive').value.trim()||r.arrive;r.desc=document.getElementById('ef_desc').value.trim()||r.desc;r.attractions=document.getElementById('ef_attr').value.trim()||r.attractions;r.planB=document.getElementById('ef_planb').value.trim()||r.planB;ss('route',route);renderRoute();closeModal();}
 
+function getYachtItems(){let items=load('yachtItems',null);if(items===null){items=YACHT_CHECKLIST_DATA.map(c=>({cat:c.cat,items:c.items.map(it=>({text:it.text,hint:it.hint||'',checked:false}))}));const os=load('yachtCL',{});YACHT_CHECKLIST_DATA.forEach((cat,ci)=>{cat.items.forEach((_,ii)=>{if(os[cat.cat+'_'+ii])items[ci].items[ii].checked=true;});});ss('yachtItems',items);}return items;}
 function renderYachtChecklist(){
-  const state=load('yachtCL',{});
+  const cats=getYachtItems();
   let total=0,done=0;
   let html='<div class="card"><div class="card-title">צ\'קליסט צ\'ק-אין יאכטה</div><div class="progress-bar"><div class="progress-fill" id="ycProg"></div></div><div class="progress-text" id="ycProgText"></div>';
-  YACHT_CHECKLIST_DATA.forEach(cat=>{
+  cats.forEach((cat,ci)=>{
     html+=`<div class="section-sub">${cat.cat}</div>`;
-    cat.items.forEach((item,i)=>{
-      const key=cat.cat+'_'+i;
-      const checked=state[key]||false;
-      if(checked)done++;total++;
-      html+=`<div class="checklist-item ${checked?'checked':''}"><input type="checkbox" id="yc_${key}" ${checked?'checked':''} onchange="toggleYC('${key}')"><label for="yc_${key}">${item.text}${item.hint?'<span class="item-hint">'+item.hint+'</span>':''}</label></div>`;
+    cat.items.forEach((item,ii)=>{
+      if(item.checked)done++;total++;
+      html+=`<div class="checklist-item ${item.checked?'checked':''}"><input type="checkbox" id="yc_${ci}_${ii}" ${item.checked?'checked':''} onchange="toggleYachtItem(${ci},${ii})"><label for="yc_${ci}_${ii}">${item.text}${item.hint?'<span class="item-hint">'+item.hint+'</span>':''}</label><button class="delete-btn" onclick="deleteYachtItem(${ci},${ii})">&times;</button></div>`;
     });
+    html+=`<div class="add-item-row"><input type="text" id="addYI_${ci}" placeholder="הוסף פריט..." onkeydown="if(event.key==='Enter')addYachtItem(${ci})"><button class="btn btn-accent" onclick="addYachtItem(${ci})">+</button></div>`;
   });
   html+='</div>';
   document.getElementById('yachtChecklist').innerHTML=html;
   const pEl=document.getElementById('ycProg'),tEl=document.getElementById('ycProgText');
-  if(pEl){pEl.style.width=(done/total*100)+'%';}
-  if(tEl){tEl.textContent=done+'/'+total+' הושלמו';}
+  if(pEl)pEl.style.width=(total>0?done/total*100:0)+'%';
+  if(tEl)tEl.textContent=done+'/'+total+' הושלמו';
 }
-
-function toggleYC(key){const s=load('yachtCL',{});s[key]=!s[key];ss('yachtCL',s);renderYachtChecklist();}
+function toggleYachtItem(ci,ii){const cats=getYachtItems();cats[ci].items[ii].checked=!cats[ci].items[ii].checked;ss('yachtItems',cats);renderYachtChecklist();}
+function addYachtItem(ci){const inp=document.getElementById('addYI_'+ci);const t=inp.value.trim();if(!t)return;const cats=getYachtItems();cats[ci].items.push({text:t,hint:'',checked:false});ss('yachtItems',cats);inp.value='';renderYachtChecklist();}
+function deleteYachtItem(ci,ii){if(!confirm('למחוק פריט זה?'))return;const cats=getYachtItems();cats[ci].items.splice(ii,1);ss('yachtItems',cats);renderYachtChecklist();}
 
 function renderBriefing(){
   document.getElementById('yachtBriefing').innerHTML=`
@@ -802,8 +869,17 @@ function renderBriefing(){
   <div class="briefing-item">תמיד לקחת: משוטים, פנס, טלפון</div>
   <div class="briefing-item">בדיקת דלק לפני יציאה</div>
   <div class="briefing-item">עלייה זהירה - אדם אחד במרכז בכל פעם</div>
-  <div class="briefing-item">היזהרו משוחים כשמפעילים מנוע</div></div>`;
+  <div class="briefing-item">היזהרו משוחים כשמפעילים מנוע</div></div>` + renderBriefingNotes();
 }
+function renderBriefingNotes(){
+  const notes=load('briefingNotes',[]);
+  let html='<div class="briefing-section"><div class="briefing-title">הערות אישיות</div>';
+  notes.forEach((n,i)=>{html+=`<div class="briefing-item" style="display:flex;justify-content:space-between;align-items:flex-start"><span style="flex:1">${n}</span><button class="edit-icon" onclick="deleteBriefingNote(${i})" style="flex-shrink:0;font-size:16px">&times;</button></div>`;});
+  html+=`<div class="add-item-row"><input type="text" id="addBriefingNote" placeholder="הוסף הערה..." onkeydown="if(event.key==='Enter')addBriefingNote()"><button class="btn btn-accent" onclick="addBriefingNote()">+</button></div></div>`;
+  return html;
+}
+function addBriefingNote(){const inp=document.getElementById('addBriefingNote');const t=inp.value.trim();if(!t)return;const notes=load('briefingNotes',[]);notes.push(t);ss('briefingNotes',notes);inp.value='';renderBriefing();}
+function deleteBriefingNote(i){const notes=load('briefingNotes',[]);notes.splice(i,1);ss('briefingNotes',notes);renderBriefing();}
 
 function renderStorm(){
   document.getElementById('yachtStorm').innerHTML=`
@@ -952,7 +1028,7 @@ function getTripContext(){
   let ctx='אתה עוזר טיול חכם של משפחת כהן לקרואטיה, 16-31 באוגוסט 2026. ענה בעברית, בקצרה וידידותי.\n';
   ctx+='משפחה: נועם (אבא/סקיפר), שיר (אמא), יונתן (15), אורי (13), עמית (11), עופר (9), מלאכי (5).\n';
   ctx+='לוח זמנים:\n';
-  SCHEDULE.forEach(d=>{
+  getScheduleData().forEach(d=>{
     ctx+=d.date+' '+d.day+': '+d.title;
     if(d.lodge)ctx+=' (לינה: '+d.lodge+')';
     ctx+='. ';
@@ -1035,6 +1111,12 @@ function saveApiKey(){
   const status=document.getElementById('apiKeyStatus');
   if(tripRef)tripRef.child('geminiApiKey').set(key).then(()=>{status.textContent='מפתח API נשמר בהצלחה!';status.style.color='var(--accent)';document.getElementById('apiKeyInput').value='';setTimeout(()=>{status.textContent='';},3000);}).catch(()=>{status.textContent='נשמר מקומית (Firebase לא זמין)';status.style.color='orange';document.getElementById('apiKeyInput').value='';setTimeout(()=>{status.textContent='';},3000);});
   else{status.textContent='נשמר מקומית';status.style.color='var(--accent)';document.getElementById('apiKeyInput').value='';setTimeout(()=>{status.textContent='';},3000);}
+}
+
+function resetAllData(){
+  if(!confirm('האם לאפס את כל הנתונים לברירת מחדל?\nלוח זמנים, מסלול, צ\'קליסט יאכטה והערות תדריך יאופסו.'))return;
+  ['schedule','route','yachtItems','yachtCL','briefingNotes'].forEach(k=>{try{localStorage.removeItem('croatia_'+k);}catch(e){}if(tripRef)tripRef.child(k).remove().catch(()=>{});delete firebaseData[k];});
+  renderAll();toggleSettings();
 }
 
 function uploadDoc(){
