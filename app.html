@@ -321,11 +321,11 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script>
-let db=null,tripDoc=null,firebaseData={},firebaseReady=false;
-try{if(typeof firebase!=='undefined'){firebase.initializeApp({apiKey:"AIzaSyDawBz-7hUWUVxRoaQwuddkeGyVx_hYwh8",authDomain:"croatia-vacation-461ab.firebaseapp.com",projectId:"croatia-vacation-461ab",storageBucket:"croatia-vacation-461ab.firebasestorage.app",messagingSenderId:"335257132951",appId:"1:335257132951:web:2a057d9b5dd642f0156ed2"});db=firebase.firestore();tripDoc=db.collection('trips').doc('cohen2026');}}catch(e){}
-function fbSave(k,v){if(!tripDoc)return;firebaseData[k]=v;tripDoc.set({[k]:v},{merge:true}).catch(()=>{});}
+let db=null,tripRef=null,firebaseData={},firebaseReady=false;
+try{if(typeof firebase!=='undefined'){firebase.initializeApp({apiKey:"AIzaSyDawBz-7hUWUVxRoaQwuddkeGyVx_hYwh8",authDomain:"croatia-vacation-461ab.firebaseapp.com",databaseURL:"https://croatia-vacation-461ab-default-rtdb.europe-west1.firebasedatabase.app",projectId:"croatia-vacation-461ab",storageBucket:"croatia-vacation-461ab.firebasestorage.app",messagingSenderId:"335257132951",appId:"1:335257132951:web:2a057d9b5dd642f0156ed2"});db=firebase.database();tripRef=db.ref('trips/cohen2026');}}catch(e){}
+function fbSave(k,v){if(!tripRef)return;firebaseData[k]=v;tripRef.child(k).set(v).catch(()=>{});}
 function fbLoad(k,d){if(firebaseReady&&k in firebaseData)return firebaseData[k];return ls(k,d);}
 function ls(k,d){try{const v=localStorage.getItem('croatia_'+k);return v!==null?JSON.parse(v):d;}catch(e){return d;}}
 function ss(k,v){try{localStorage.setItem('croatia_'+k,JSON.stringify(v));}catch(e){}fbSave(k,v);}
@@ -974,7 +974,7 @@ function setTheme(theme,btn){
 function saveApiKey(){
   const key=document.getElementById('apiKeyInput').value.trim();
   if(!key)return;
-  if(tripDoc)tripDoc.set({geminiApiKey:key},{merge:true}).then(()=>{document.getElementById('apiKeyStatus').textContent='מפתח API נשמר בהצלחה!';document.getElementById('apiKeyInput').value='';setTimeout(()=>{document.getElementById('apiKeyStatus').textContent='';},3000);}).catch(()=>{document.getElementById('apiKeyStatus').textContent='שגיאה בשמירה';document.getElementById('apiKeyStatus').style.color='var(--coral)';});
+  if(tripRef)tripRef.child('geminiApiKey').set(key).then(()=>{document.getElementById('apiKeyStatus').textContent='מפתח API נשמר בהצלחה!';document.getElementById('apiKeyInput').value='';setTimeout(()=>{document.getElementById('apiKeyStatus').textContent='';},3000);}).catch(()=>{document.getElementById('apiKeyStatus').textContent='שגיאה בשמירה';document.getElementById('apiKeyStatus').style.color='var(--coral)';});
   else{document.getElementById('apiKeyStatus').textContent='Firebase לא מחובר';document.getElementById('apiKeyStatus').style.color='var(--coral)';}
 }
 
@@ -983,7 +983,7 @@ function uploadDoc(){
   input.onchange=async function(){
     const file=this.files[0];if(!file)return;
     let apiKey=null;
-    if(tripDoc){try{const snap=await tripDoc.get();if(snap.exists)apiKey=snap.data().geminiApiKey;}catch(e){}}
+    if(tripRef){try{const snap=await tripRef.child('geminiApiKey').once('value');apiKey=snap.val();}catch(e){}}
     if(!apiKey){alert('יש להגדיר מפתח Gemini API בהגדרות לפני העלאת מסמכים');return;}
     const reader=new FileReader();
     reader.onload=async function(){
@@ -1013,12 +1013,12 @@ function init(){
   renderAll();
   const savedTab=load('activeTab','dashboard');switchTab(savedTab);
 
-  if(tripDoc){
+  if(tripRef){
     const badge=document.createElement('div');badge.id='syncBadge';
     badge.style.cssText='position:fixed;top:8px;left:50%;transform:translateX(-50%);font-size:11px;padding:2px 10px;border-radius:10px;background:var(--accent);color:#fff;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none';
     badge.textContent='מסונכרן';document.body.appendChild(badge);
-    tripDoc.onSnapshot(snap=>{
-      if(snap.exists){const data=snap.data();const changed=!firebaseReady||JSON.stringify(data)!==JSON.stringify(firebaseData);firebaseData=data;Object.keys(data).forEach(k=>{if(k!=='geminiApiKey')try{localStorage.setItem('croatia_'+k,JSON.stringify(data[k]));}catch(e){}});if(firebaseReady&&changed)renderAll();firebaseReady=true;}
+    tripRef.on('value',snap=>{
+      const data=snap.val()||{};const changed=!firebaseReady||JSON.stringify(data)!==JSON.stringify(firebaseData);firebaseData=data;Object.keys(data).forEach(k=>{if(k!=='geminiApiKey')try{localStorage.setItem('croatia_'+k,JSON.stringify(data[k]));}catch(e){}});if(firebaseReady&&changed)renderAll();firebaseReady=true;
       badge.style.opacity='1';setTimeout(()=>badge.style.opacity='0',1500);
     },()=>{firebaseReady=false;});
   }
