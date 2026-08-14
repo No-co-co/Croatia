@@ -913,16 +913,18 @@ function fmtAmount(val){
   return val.toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0})+' '+sym;
 }
 function renderBudget(){
+  const sym={EUR:'€',ILS:'₪',USD:'$'}[currentCurrency];
   let items=load('budget',null);
   if(items===null){items=DEFAULT_BUDGET.map(b=>({...b}));ss('budget',items);}
   document.getElementById('budgetList').innerHTML=items.map((item,i)=>{
     const amt=convertAmount(item.amount);const amtStr=item.amount>0?fmtAmount(amt):'';
+    const displayVal=item.amount>0?Math.round(amt):'';
     const noteHtml=item.note?`<div class="budget-note">(${item.note})</div>`:'';
-    return `<div class="budget-item"><div class="budget-name">${item.name}${noteHtml}</div><div class="budget-amount">${item.editable!==false||item.amount===0?`<input type="text" value="${item.amount||''}" onchange="updateBudgetAmount(${i},this.value)" placeholder="EUR">`:`<span>${amtStr}</span>`}</div>${i>=DEFAULT_BUDGET.length?`<button class="budget-delete" onclick="deleteBudgetItem(${i})">&times;</button>`:''}</div>`;
+    return `<div class="budget-item"><div class="budget-name">${item.name}${noteHtml}</div><div class="budget-amount">${item.editable!==false||item.amount===0?`<input type="text" value="${displayVal}" onchange="updateBudgetAmount(${i},this.value)" placeholder="${sym}">`:`<span>${amtStr}</span>`}</div>${i>=DEFAULT_BUDGET.length?`<button class="budget-delete" onclick="deleteBudgetItem(${i})">&times;</button>`:''}</div>`;
   }).join('');
   updateBudgetTotal();
 }
-function updateBudgetAmount(i,val){const items=load('budget',[]);items[i].amount=parseFloat(val.replace(/,/g,''))||0;ss('budget',items);updateBudgetTotal();}
+function updateBudgetAmount(i,val){const items=load('budget',[]);const v=parseFloat(val.replace(/,/g,''))||0;items[i].amount=v/RATES[currentCurrency];ss('budget',items);renderBudget();}
 function updateBudgetTotal(){
   const items=load('budget',[]);
   const totalEur=items.reduce((s,i)=>s+(i.note==='מוחזר'?0:(i.amount||0)),0);
