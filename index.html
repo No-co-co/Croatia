@@ -549,11 +549,11 @@ const DEFAULT_BUDGET=[
   {name:'Tourist Tax (7 אנשים)',amount:65.17,editable:false},
   {name:'פיקדון יאכטה',amount:3000,editable:false,note:'מוחזר'},
   {name:'ביטוח ביטול השתתפות עצמית',amount:280,editable:false},
-  {name:'Hotel Phoenix (לילה 1)',amount:120.47,editable:false},
-  {name:'Hotel Degenija (2 לילות)',amount:0,editable:true},
-  {name:'Villa Cvita (3 לילות)',amount:1509,editable:false},
+  {name:'לינה 16-17/8 Hotel Phoenix, זאגרב',amount:120.47,editable:false},
+  {name:'לינה 17-19/8 Hotel Degenija, פליטביצה',amount:0,editable:true},
+  {name:'לינה 19-22/8 Villa Cvita, פוליצ\'ניק',amount:1509,editable:false},
   {name:'פיקדון Villa Cvita',amount:500,editable:false,note:'מוחזר'},
-  {name:'דירה זאגרב (2 לילות)',amount:654.48,editable:false},
+  {name:'לינה 29-31/8 דירה, זאגרב',amount:654.48,editable:false},
   {name:'כרטיסי פליטביצה',amount:140,editable:false},
   {name:'טיסות',amount:0,editable:true},
   {name:'דלק וכבישי אגרה',amount:0,editable:true},
@@ -1083,7 +1083,7 @@ function renderBudget(){
     const amt=convertAmount(item.amount);const amtStr=item.amount>0?fmtAmount(amt):'';
     const displayVal=item.amount>0?Math.round(amt):'';
     const noteHtml=item.note?`<div class="budget-note">(${item.note})</div>`:'';
-    return `<div class="budget-item"><div class="budget-name">${item.name}${noteHtml}</div><div class="budget-amount">${item.editable!==false||item.amount===0?`<input type="text" value="${displayVal}" onchange="updateBudgetAmount(${i},this.value)" placeholder="${sym}">`:`<span>${amtStr}</span>`}</div>${i>=DEFAULT_BUDGET.length?`<button class="budget-delete" onclick="deleteBudgetItem(${i})">&times;</button>`:''}</div>`;
+    return `<div class="budget-item"><div class="budget-name">${item.name}${noteHtml}</div><div class="budget-amount"><input type="text" value="${displayVal}" onchange="updateBudgetAmount(${i},this.value)" placeholder="${sym}"></div><button class="budget-delete" onclick="deleteBudgetItem(${i})">&times;</button></div>`;
   }).join('');
   updateBudgetTotal();
 }
@@ -1299,7 +1299,9 @@ function uploadDoc(){
       mc.innerHTML='<div class="modal-title">מנתח מסמך...</div><p style="text-align:center;padding:40px 0;font-size:32px">⏳</p><p style="text-align:center;color:var(--text-secondary)">הבינה המלאכותית מנתחת את המסמך...</p>';
       document.getElementById('modalOverlay').classList.add('open');
       try{
-        const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key='+apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{inlineData:{mimeType:mime,data:base64Data}},{text:'נתח את המסמך הזה. חלץ:\n1) סוג (מלון/טיסה/כרטיס/קבלה/ביטוח/חשבונית)\n2) תאריכים רלוונטיים\n3) סכום כולל ומטבע\n4) פרטים חשובים\n5) כתובות ואנשי קשר\n6) מספרי הזמנה\nענה בעברית, בצורה מסודרת.\n\nבשורה האחרונה ממש, הוסף שורה בפורמט הזה בדיוק (לצורך עיבוד אוטומטי):\n##DATA: type=<סוג באנגלית: receipt/hotel/flight/ticket/insurance/other>, amount=<מספר בלבד ללא מטבע>, currency=<EUR/ILS/USD/HRK>, name=<שם קצר בעברית של המסמך>'}]}]})});
+        const budgetItems=load('budget',[]);
+        const budgetList=budgetItems.map(b=>b.name+(b.amount>0?' ('+Math.round(b.amount)+'€)':'')).join(', ');
+        const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key='+apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{inlineData:{mimeType:mime,data:base64Data}},{text:'נתח את המסמך הזה. חלץ:\n1) סוג (מלון/טיסה/כרטיס/קבלה/ביטוח/חשבונית)\n2) תאריכים רלוונטיים\n3) סכום כולל ומטבע\n4) פרטים חשובים\n5) כתובות ואנשי קשר\n6) מספרי הזמנה\nענה בעברית, בצורה מסודרת.\n\nאם זה מסמך מלון/לינה, כלול את התאריכים בשם בפורמט פשוט כמו 17-19/8.\n\nהנה רשימת פריטי התקציב הקיימים: '+budgetList+'\nאם הסכום שזוהה במסמך כבר מופיע בתקציב (סכום זהה או דומה מאוד), הוסף שורה לפני שורת ה-DATA בפורמט:\n##BUDGET_EXISTS: <שם הפריט בתקציב שמתאים>\n\nבשורה האחרונה ממש, הוסף שורה בפורמט הזה בדיוק (לצורך עיבוד אוטומטי):\n##DATA: type=<סוג באנגלית: receipt/hotel/flight/ticket/insurance/other>, amount=<מספר בלבד ללא מטבע>, currency=<EUR/ILS/USD/HRK>, name=<שם קצר בעברית — אם מלון: לינה תאריכים שם-מלון מיקום>'}]}]})});
         const data=await resp.json();
         if(data.error){mc.innerHTML=`<div class="modal-title">שגיאה</div><p>שגיאה (${data.error.code}): ${data.error.message}</p>`;return;}
         const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'לא הצלחתי לנתח את המסמך';
@@ -1313,13 +1315,20 @@ function uploadDoc(){
           imageUrl=await uploadBase64ToStorage(thumb,'uploads/'+uploadId+'_'+file.name);
         }catch(e){imageUrl='';}
         const uploads=load('uploads',[]);
-        uploads.push({id:uploadId,type:docType,name:docName,amount,currency,analysis:text.replace(/\n*##DATA:.*/,'').trim(),image:imageUrl,timestamp:uploadId,fileName:file.name});
+        uploads.push({id:uploadId,type:docType,name:docName,amount,currency,analysis:text.replace(/\n*##BUDGET_EXISTS:.*/,'').replace(/\n*##DATA:.*/,'').trim(),image:imageUrl,timestamp:uploadId,fileName:file.name});
         ss('uploads',uploads);
-        const cleanText=text.replace(/\n*##DATA:.*/,'').trim();
+        const budgetExistsMatch=text.match(/##BUDGET_EXISTS:\s*(.+)/);
+        const existingBudgetName=budgetExistsMatch?budgetExistsMatch[1].trim():'';
+        const cleanText=text.replace(/\n*##BUDGET_EXISTS:.*/,'').replace(/\n*##DATA:.*/,'').trim();
         let amountHtml='';
         if(amount>0){
           const esc=docName.replace(/'/g,"\\'");
-          amountHtml=`<div style="margin-top:16px;padding:14px;background:var(--accent-light);border-radius:var(--radius-sm);text-align:center"><div style="font-size:16px;font-weight:700;color:var(--accent)">סכום שזוהה: ${amount.toLocaleString()} ${currency}</div><button class="btn btn-accent" style="margin-top:10px;width:100%" onclick="addUploadToBudget('${esc}',${amount},'${currency}')">הוסף לתקציב</button></div>`;
+          if(existingBudgetName){
+            const escExist=existingBudgetName.replace(/'/g,"\\'");
+            amountHtml=`<div style="margin-top:16px;padding:14px;background:var(--warning-light);border-radius:var(--radius-sm);text-align:center"><div style="font-size:14px;font-weight:600;color:var(--text-primary)">סכום שזוהה: ${amount.toLocaleString()} ${currency}</div><div style="font-size:13px;color:var(--coral);margin-top:6px">כבר מופיע בתקציב כ: "${escExist}"</div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-accent" style="flex:1" onclick="addUploadToBudget('${esc}',${amount},'${currency}')">הוסף בכל זאת</button><button class="btn" style="flex:1;background:var(--bg-secondary);color:var(--text-primary)" onclick="closeModal()">לא להוסיף</button></div></div>`;
+          } else {
+            amountHtml=`<div style="margin-top:16px;padding:14px;background:var(--accent-light);border-radius:var(--radius-sm);text-align:center"><div style="font-size:16px;font-weight:700;color:var(--accent)">סכום שזוהה: ${amount.toLocaleString()} ${currency}</div><button class="btn btn-accent" style="margin-top:10px;width:100%" onclick="addUploadToBudget('${esc}',${amount},'${currency}')">הוסף לתקציב</button></div>`;
+          }
         }
         mc.innerHTML=`<div class="modal-title">${docName}</div>${formatAnalysis(cleanText)}${amountHtml}<p style="font-size:12px;color:var(--text-secondary);margin-top:12px">המסמך נשמר באפליקציה ונגיש בטאב מסמכים</p>`;
         renderDocs();
