@@ -287,6 +287,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
       <div class="stats-row"><div class="stat-box"><div class="stat-value">16</div><div class="stat-label">ימים</div></div><div class="stat-box"><div class="stat-value">7</div><div class="stat-label">ימי הפלגה</div></div><div class="stat-box"><div class="stat-value">6</div><div class="stat-label">יעדים</div></div></div>
       <div class="card card-accent" id="nextEventCard"><div class="card-subtitle">האירוע הבא</div><div class="card-title" id="nextEventTitle">טוען...</div><div id="nextEventDetail" style="font-size:13px;color:var(--text-secondary)"></div></div>
       <div class="card alerts-card" id="alertsCard" style="display:none"><div class="alerts-title">תזכורות</div><div id="alertsList"></div></div>
+      <div class="card weather-card" id="weatherCard" onclick="if(event.target.closest('a'))return;openWeatherApp()" style="cursor:pointer"><div class="card-title">מזג אוויר והפלגה ☁️</div><div id="weatherContent"><div class="wx-loading">טוען תחזית...</div></div></div>
       <div class="card emergency-card">
         <div class="card-title">אנשי קשר לחירום</div>
         <div class="emergency-grid">
@@ -296,7 +297,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
           <a href="tel:+494036984949" class="emer-btn"><span class="emer-icon">🛡️</span><span>ביטוח Schomacker<br>+49 40 36984949</span></a>
         </div>
       </div>
-      <div class="card weather-card" id="weatherCard"><div class="card-title">מזג אוויר והפלגה</div><div id="weatherContent"><div class="wx-loading">טוען תחזית...</div></div></div>
       <div class="card card-coral"><div class="card-title">תזכורות חשובות</div><p style="font-size:13px;line-height:1.6">אסור לעבור מתחת לגשר Zdrelac! חזרה למרינה 28.8 עד 17:00. החזרת יאכטה עם מיכלי דלק מלאים. שירותים: רק נייר טואלט ימי!</p></div>
     </div>
     <div class="tab-content" id="tab-schedule"><div class="section-header">לוח זמנים</div><div id="scheduleContainer"></div></div>
@@ -675,6 +675,12 @@ function renderAlerts(today,dayIdx,sched){
 
 function getWindDir(deg){const dirs=['צפון','צפון-מזרח','מזרח','דרום-מזרח','דרום','דרום-מערב','מערב','צפון-מערב'];return dirs[Math.round(deg/45)%8];}
 function wxIcon(code){if(code<=1)return'☀️';if(code<=3)return'⛅';if(code<=48)return'🌫️';if(code<=67)return'🌧️';if(code<=77)return'❄️';if(code<=82)return'🌦️';if(code<=86)return'🌨️';return'⛈️';}
+function openWeatherApp(){
+  const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const dayIdx=Math.floor((today-TRIP_START)/(1000*60*60*24));
+  const loc=getLocForDay(dayIdx<0?0:dayIdx);
+  window.open(`https://www.windy.com/${loc.lat}/${loc.lon}?${loc.lat},${loc.lon},10`,'_blank');
+}
 function getLocForDay(dayIdx){
   if(dayIdx<0)return TRIP_LOCATIONS[0];
   if(dayIdx>=TRIP_LOCATIONS.length)return TRIP_LOCATIONS[TRIP_LOCATIONS.length-1];
@@ -746,7 +752,7 @@ async function fetchWeather(){
           prompt+='תן 2-3 תובנות קצרות על מזג האוויר והשפעתו על התוכניות.\n';
         }
         prompt+='ענה בעברית, קצר וממוקד. השתמש ב-emoji. אם יש אזהרה — התחל בה.';
-        const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+        const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key='+apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
         const data=await resp.json();
         const insight=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
         if(insight){
