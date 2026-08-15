@@ -1336,6 +1336,8 @@ function saveApiKey(){
 }
 
 function resetAllData(){
+  const code=prompt('הזן קוד איפוס:');
+  if(code!=='8778')return alert('קוד שגוי');
   if(!confirm('האם לאפס את כל הנתונים לברירת מחדל?\nלוח זמנים, מסלול, צ\'קליסט יאכטה והערות תדריך יאופסו.'))return;
   ['schedule','route','yachtItems','yachtCL','briefingNotes'].forEach(k=>{try{localStorage.removeItem('croatia_'+k);}catch(e){}if(tripRef)tripRef.child(k).remove().catch(()=>{});delete firebaseData[k];});
   renderAll();toggleSettings();
