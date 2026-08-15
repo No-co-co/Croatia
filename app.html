@@ -336,9 +336,10 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 <script>
-let db=null,tripRef=null,firebaseData={},firebaseReady=false;
-try{if(typeof firebase!=='undefined'){firebase.initializeApp({apiKey:"AIzaSyDawBz-7hUWUVxRoaQwuddkeGyVx_hYwh8",authDomain:"croatia-vacation-461ab.firebaseapp.com",databaseURL:"https://croatia-vacation-461ab-default-rtdb.europe-west1.firebasedatabase.app",projectId:"croatia-vacation-461ab",storageBucket:"croatia-vacation-461ab.firebasestorage.app",messagingSenderId:"335257132951",appId:"1:335257132951:web:2a057d9b5dd642f0156ed2"});db=firebase.database();tripRef=db.ref('trips/cohen2026');}}catch(e){}
+let db=null,tripRef=null,storageRef=null,firebaseData={},firebaseReady=false;
+try{if(typeof firebase!=='undefined'){firebase.initializeApp({apiKey:"AIzaSyDawBz-7hUWUVxRoaQwuddkeGyVx_hYwh8",authDomain:"croatia-vacation-461ab.firebaseapp.com",databaseURL:"https://croatia-vacation-461ab-default-rtdb.europe-west1.firebasedatabase.app",projectId:"croatia-vacation-461ab",storageBucket:"croatia-vacation-461ab.firebasestorage.app",messagingSenderId:"335257132951",appId:"1:335257132951:web:2a057d9b5dd642f0156ed2"});db=firebase.database();tripRef=db.ref('trips/cohen2026');storageRef=firebase.storage().ref('trips/cohen2026');}}catch(e){}
 function fbSave(k,v){if(!tripRef)return;firebaseData[k]=v;tripRef.child(k).set(v).catch(()=>{});}
 function fbLoad(k,d){if(firebaseReady&&k in firebaseData)return firebaseData[k];return ls(k,d);}
 function ls(k,d){try{const v=localStorage.getItem('croatia_'+k);return v!==null?JSON.parse(v):d;}catch(e){return d;}}
@@ -630,7 +631,8 @@ function renderDocs(){
     {icon:'🎫',cls:'ticket',title:'כרטיסי פליטביצה',sub:'17.8 · כניסה 1 · 16:00-17:00',modal:'plitvice'},
     {icon:'🛡️',cls:'insurance',title:'ביטוח יאכטה',sub:'Schomacker · Ref: 97759K · €280',modal:'insurance'}
   ];
-  let html=docs.map(d=>`<div class="doc-card" onclick="openDocModal('${d.modal}')"><div class="doc-header"><div class="doc-icon-wrap ${d.cls}">${d.icon}</div><div class="doc-info"><h3>${d.title}</h3><p>${d.sub}</p></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div></div>`).join('');
+  const docFiles=load('docFiles',{});
+  let html=docs.map(d=>{const hasFile=docFiles[d.modal];return `<div class="doc-card" onclick="openDocModal('${d.modal}')"><div class="doc-header"><div class="doc-icon-wrap ${d.cls}">${d.icon}</div><div class="doc-info"><h3>${d.title}${hasFile?' 📎':''}</h3><p>${d.sub}</p></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div></div>`;}).join('');
   const uploads=load('uploads',[]);
   if(uploads.length>0){
     html+='<div class="section-sub" style="margin-top:16px">מסמכים שהועלו</div>';
@@ -763,6 +765,13 @@ function openDocModal(type){
     <div class="detail-section">חשוב!</div>
     <div class="detail-row"><span class="detail-value rtl-val" style="color:var(--coral);font-weight:700">אל תזכירו את קיום הביטוח בבסיס הצ'ארטר! התנהגו כאילו אין לכם ביטוח.</span></div>
     <div class="detail-row"><span class="detail-value rtl-val">דיווח נזק: עד 30 יום מסוף הטיול באתר או בטלפון (ימים א'-ה' 09:00-17:00)</span></div>`;
+  }
+  const docFiles=load('docFiles',{});
+  const df=docFiles[type];
+  if(df){
+    h+=`<div style="margin-top:16px;padding:14px;background:var(--accent-light);border-radius:var(--radius-sm)"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;font-size:14px">📎 ${df.name}</span><button class="edit-icon" onclick="removeDocFile('${type}')" title="הסר" style="font-size:16px">&times;</button></div><button class="btn btn-accent" style="width:100%;margin-top:8px" onclick="viewDocFile('${type}')">📄 פתח קובץ</button></div>`;
+  }else{
+    h+=`<div style="margin-top:16px;text-align:center"><button id="attachBtn_${type}" class="btn" style="width:100%;border:2px dashed var(--border);background:transparent;color:var(--text-secondary)" onclick="event.stopPropagation();attachDocFile('${type}')">📎 צרף קובץ</button></div>`;
   }
   c.innerHTML=h;document.getElementById('modalOverlay').classList.add('open');
 }
@@ -1131,6 +1140,55 @@ function resetAllData(){
   renderAll();toggleSettings();
 }
 
+async function uploadFileToStorage(file,path){
+  if(!storageRef){throw new Error('Firebase Storage לא זמין');}
+  const ref=storageRef.child(path);
+  await ref.put(file);
+  return await ref.getDownloadURL();
+}
+async function uploadBase64ToStorage(base64Url,path){
+  if(!storageRef){throw new Error('Firebase Storage לא זמין');}
+  const ref=storageRef.child(path);
+  await ref.putString(base64Url,'data_url');
+  return await ref.getDownloadURL();
+}
+function attachDocFile(type){
+  const input=document.createElement('input');input.type='file';input.accept='image/*,application/pdf,.doc,.docx';
+  input.onchange=async function(){
+    const file=this.files[0];if(!file)return;
+    const btn=document.getElementById('attachBtn_'+type);
+    if(btn){btn.textContent='מעלה...';btn.disabled=true;}
+    try{
+      const path='docs/'+type+'/'+Date.now()+'_'+file.name;
+      const url=await uploadFileToStorage(file,path);
+      const docFiles=load('docFiles',{});
+      docFiles[type]={url,name:file.name,path,uploadedAt:Date.now()};
+      ss('docFiles',docFiles);
+      if(btn){btn.textContent='✓ קובץ מצורף';btn.style.background='var(--accent)';btn.style.color='#fff';}
+      renderDocs();
+    }catch(e){
+      alert('שגיאה בהעלאה: '+e.message);
+      if(btn){btn.textContent='📎 צרף קובץ';btn.disabled=false;}
+    }
+  };
+  input.click();
+}
+function viewDocFile(type){
+  const docFiles=load('docFiles',{});
+  const f=docFiles[type];
+  if(f&&f.url)window.open(f.url,'_blank');
+}
+function removeDocFile(type){
+  if(!confirm('להסיר את הקובץ המצורף?'))return;
+  const docFiles=load('docFiles',{});
+  if(docFiles[type]&&docFiles[type].path&&storageRef){
+    storageRef.child(docFiles[type].path).delete().catch(()=>{});
+  }
+  delete docFiles[type];
+  ss('docFiles',docFiles);
+  openDocModal(type);
+  renderDocs();
+}
 function compressImage(base64Url,maxDim){
   return new Promise(resolve=>{
     const img=new Image();
@@ -1168,10 +1226,14 @@ function uploadDoc(){
         let docType='other',amount=0,currency='EUR',docName='מסמך';
         const dataMatch=text.match(/##DATA:\s*type=([^,]+),\s*amount=([^,]+),\s*currency=([^,]+),\s*name=(.+)/);
         if(dataMatch){docType=dataMatch[1].trim();amount=parseFloat(dataMatch[2].trim().replace(/[^\d.]/g,''))||0;currency=dataMatch[3].trim();docName=dataMatch[4].trim();}
-        const thumb=await compressImage(base64Full,800);
         const uploadId=Date.now().toString();
+        let imageUrl='';
+        try{
+          const thumb=await compressImage(base64Full,800);
+          imageUrl=await uploadBase64ToStorage(thumb,'uploads/'+uploadId+'_'+file.name);
+        }catch(e){imageUrl='';}
         const uploads=load('uploads',[]);
-        uploads.push({id:uploadId,type:docType,name:docName,amount,currency,analysis:text.replace(/\n*##DATA:.*/,'').trim(),image:thumb,timestamp:uploadId,fileName:file.name});
+        uploads.push({id:uploadId,type:docType,name:docName,amount,currency,analysis:text.replace(/\n*##DATA:.*/,'').trim(),image:imageUrl,timestamp:uploadId,fileName:file.name});
         ss('uploads',uploads);
         const cleanText=text.replace(/\n*##DATA:.*/,'').trim();
         let amountHtml='';
@@ -1203,7 +1265,7 @@ function viewUpload(i){
   mc.innerHTML=`<div class="modal-title">${u.name}</div>${imgHtml}${amtHtml}${dateHtml}<div style="font-size:13px;line-height:1.8;white-space:pre-wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">${u.analysis}</div>`;
   document.getElementById('modalOverlay').classList.add('open');
 }
-function deleteUpload(i){if(!confirm('למחוק מסמך זה?'))return;const uploads=load('uploads',[]);uploads.splice(i,1);ss('uploads',uploads);renderDocs();}
+function deleteUpload(i){if(!confirm('למחוק מסמך זה?'))return;const uploads=load('uploads',[]);const u=uploads[i];if(u&&u.image&&u.image.startsWith('http')&&storageRef){try{firebase.storage().refFromURL(u.image).delete().catch(()=>{});}catch(e){}}uploads.splice(i,1);ss('uploads',uploads);renderDocs();}
 
 function renderAll(){updateDashboard();renderSchedule();renderDocs();renderRoute();renderPersonTabs();renderPackingList();renderBudget();}
 
