@@ -220,6 +220,19 @@ body { font-family: var(--font); background: var(--bg-primary); color: var(--tex
 .list-subtab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 .weather-card { background: linear-gradient(135deg, #1B3A4B, #0F1E28); color: #fff; border: none; padding: 16px; }
 .weather-card .card-title { color: #fff; } .weather-card p { font-size: 13px; line-height: 1.6; opacity: 0.9; }
+.wx-location { font-size: 12px; opacity: 0.7; margin-bottom: 10px; }
+.wx-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+.wx-day { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 10px 6px; text-align: center; font-size: 12px; }
+.wx-day-name { font-weight: 700; margin-bottom: 4px; font-size: 11px; opacity: 0.8; }
+.wx-day-icon { font-size: 24px; margin: 4px 0; }
+.wx-day-temp { font-weight: 700; font-size: 14px; }
+.wx-day-wind { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+.wx-insight { background: rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 12px; font-size: 13px; line-height: 1.6; margin-top: 10px; }
+.wx-insight.warning { background: rgba(234,179,8,0.2); border: 1px solid rgba(234,179,8,0.4); }
+.wx-links { display: flex; gap: 8px; margin-top: 10px; }
+.wx-link { flex: 1; text-align: center; padding: 8px; background: rgba(255,255,255,0.12); border-radius: 8px; color: #fff; text-decoration: none; font-size: 12px; font-weight: 600; }
+.wx-link:hover { background: rgba(255,255,255,0.2); }
+.wx-loading { text-align: center; padding: 20px 0; opacity: 0.7; font-size: 13px; }
 .route-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; }
 .route-day { font-size: 15px; font-weight: 700; color: var(--accent); }
 .route-path { font-size: 14px; font-weight: 600; margin: 4px 0; }
@@ -283,7 +296,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
           <a href="tel:+494036984949" class="emer-btn"><span class="emer-icon">🛡️</span><span>ביטוח Schomacker<br>+49 40 36984949</span></a>
         </div>
       </div>
-      <div class="card weather-card"><div class="card-title">מזג אוויר והפלגה</div><p>אוגוסט בקרואטיה: 28-35 מעלות. רוחות Maestral (צפון-מערב) אחה"צ - מושלמות להפלגה. היזהרו מסופות Nevera שיכולות להגיע ללא אזהרה. בדקו Windy.com מדי בוקר!</p></div>
+      <div class="card weather-card" id="weatherCard"><div class="card-title">מזג אוויר והפלגה</div><div id="weatherContent"><div class="wx-loading">טוען תחזית...</div></div></div>
       <div class="card card-coral"><div class="card-title">תזכורות חשובות</div><p style="font-size:13px;line-height:1.6">אסור לעבור מתחת לגשר Zdrelac! חזרה למרינה 28.8 עד 17:00. החזרת יאכטה עם מיכלי דלק מלאים. שירותים: רק נייר טואלט ימי!</p></div>
     </div>
     <div class="tab-content" id="tab-schedule"><div class="section-header">לוח זמנים</div><div id="scheduleContainer"></div></div>
@@ -439,6 +452,25 @@ const SCHEDULE=[
   ],lodge:''}
 ];
 
+const TRIP_LOCATIONS=[
+  {dayIdx:0,name:'זאגרב',lat:45.815,lon:15.982,marine:false},
+  {dayIdx:1,name:'פליטביצה',lat:44.880,lon:15.616,marine:false},
+  {dayIdx:2,name:'פליטביצה',lat:44.880,lon:15.616,marine:false},
+  {dayIdx:3,name:'פוליצ\'ניק (Villa Cvita)',lat:44.215,lon:15.275,marine:false},
+  {dayIdx:4,name:'פוליצ\'ניק',lat:44.215,lon:15.275,marine:false},
+  {dayIdx:5,name:'פוליצ\'ניק',lat:44.215,lon:15.275,marine:false},
+  {dayIdx:6,name:'מרינה סוקושן',lat:43.939,lon:15.338,marine:true},
+  {dayIdx:7,name:'סוקושן → מורטר',lat:43.810,lon:15.600,marine:true},
+  {dayIdx:8,name:'מורטר → שיבניק',lat:43.735,lon:15.890,marine:true},
+  {dayIdx:9,name:'שיבניק → סקראדין',lat:43.818,lon:15.920,marine:true},
+  {dayIdx:10,name:'סקראדין → פרימושטן',lat:43.690,lon:15.800,marine:true},
+  {dayIdx:11,name:'פרימושטן → קפרייה',lat:43.690,lon:15.710,marine:true},
+  {dayIdx:12,name:'קפרייה → סוקושן',lat:43.750,lon:15.500,marine:true},
+  {dayIdx:13,name:'זאגרב',lat:45.815,lon:15.982,marine:false},
+  {dayIdx:14,name:'זאגרב',lat:45.815,lon:15.982,marine:false},
+  {dayIdx:15,name:'זאגרב',lat:45.815,lon:15.982,marine:false}
+];
+
 const FLOTILLA_ROUTE=[
   {day:1,date:'23.8',from:'סוקושן',to:'מורטר (Murter)',nm:'25-28',hours:'4.5-5',depart:'09:00',arrive:'15:30-16:00',desc:'יציאה בבוקר ממרינה סוקושן והפלגה דרומה בין האיים. עצירה במפרץ נוח באזור ורגדה לשחייה וארוחה. המשך למורטר.',attractions:'הפלגה בין האיים, מפרצים ומים צלולים, נופי צפון דלמטיה, כניסה למפרץ מורטר',planB:'רוח נגדית או קצב איטי → קיצור עצירת צהריים, הגעה מוקדמת למורטר או להישאר באזור פסמן'},
   {day:2,date:'24.8',from:'מורטר',to:'שיבניק (Šibenik)',nm:'20-23',hours:'3.5-4',depart:'09:00',arrive:'15:00-16:00',desc:'יציאה ממורטר והפלגה דרומה דרך האיים. עצירת צהריים באזור Prvić או Zlarin לשחייה וארוחה. המשך דרך Šibenik Channel לשיבניק.',attractions:'האיים Prvić ו-Zlarin, הכניסה דרך תעלת שיבניק, העיר העתיקה של שיבניק, קתדרלת St. James',planB:'קיצור היום → דילוג על עצירת איים, ישירות לשיבניק'},
@@ -585,6 +617,7 @@ function updateDashboard(){
   else if(dayIdx<sched.length){tEl.textContent=sched[dayIdx].title;dEl.textContent=sched[dayIdx].date+' '+sched[dayIdx].day;}
   else{tEl.textContent='הטיול הסתיים';dEl.textContent='תודה על הזיכרונות!';}
   renderAlerts(today,dayIdx,sched);
+  if(!window._wxLoaded){window._wxLoaded=true;fetchWeather();}
 }
 
 function renderAlerts(today,dayIdx,sched){
@@ -638,6 +671,101 @@ function renderAlerts(today,dayIdx,sched){
   if(alerts.length===0){card.style.display='none';return;}
   card.style.display='block';
   list.innerHTML=alerts.map(a=>'<div class="alert-item'+(a.urgent?' alert-urgent':'')+'"><span class="alert-icon">'+a.icon+'</span><span class="alert-text">'+a.text+'</span></div>').join('');
+}
+
+function getWindDir(deg){const dirs=['צפון','צפון-מזרח','מזרח','דרום-מזרח','דרום','דרום-מערב','מערב','צפון-מערב'];return dirs[Math.round(deg/45)%8];}
+function wxIcon(code){if(code<=1)return'☀️';if(code<=3)return'⛅';if(code<=48)return'🌫️';if(code<=67)return'🌧️';if(code<=77)return'❄️';if(code<=82)return'🌦️';if(code<=86)return'🌨️';return'⛈️';}
+function getLocForDay(dayIdx){
+  if(dayIdx<0)return TRIP_LOCATIONS[0];
+  if(dayIdx>=TRIP_LOCATIONS.length)return TRIP_LOCATIONS[TRIP_LOCATIONS.length-1];
+  return TRIP_LOCATIONS[dayIdx];
+}
+async function fetchWeather(){
+  const wc=document.getElementById('weatherContent');
+  const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const dayIdx=Math.floor((today-TRIP_START)/(1000*60*60*24));
+  const loc=getLocForDay(dayIdx<0?0:dayIdx);
+  const days=[];
+  for(let i=0;i<3;i++){
+    const d=dayIdx<0?0+i:dayIdx+i;
+    if(d<TRIP_LOCATIONS.length)days.push({offset:i,loc:getLocForDay(d),dayIdx:d});
+  }
+  try{
+    const wxUrl=`https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&daily=temperature_2m_max,temperature_2m_min,weathercode,windspeed_10m_max,winddirection_10m_dominant,precipitation_sum&timezone=Europe/Zagreb&forecast_days=3`;
+    const wxResp=await fetch(wxUrl);const wxData=await wxResp.json();
+    let marineData=null;
+    if(loc.marine||days.some(d=>d.loc.marine)){
+      try{
+        const mUrl=`https://marine-api.open-meteo.com/v1/marine?latitude=${loc.lat}&longitude=${loc.lon}&daily=wave_height_max,wave_period_max,wind_wave_height_max&timezone=Europe/Zagreb&forecast_days=3`;
+        const mResp=await fetch(mUrl);marineData=await mResp.json();
+      }catch(e){}
+    }
+    const dayNames=['היום','מחר','מחרתיים'];
+    const sched=getScheduleData();
+    let gridHtml='<div class="wx-grid">';
+    let wxSummary='';
+    for(let i=0;i<Math.min(3,wxData.daily.time.length);i++){
+      const d=wxData.daily;
+      const dLoc=days[i]?days[i].loc:loc;
+      const waveHtml=marineData&&marineData.daily&&marineData.daily.wave_height_max?`<div class="wx-day-wind">🌊 ${marineData.daily.wave_height_max[i]}m</div>`:'';
+      gridHtml+=`<div class="wx-day"><div class="wx-day-name">${dayNames[i]||d.time[i]}</div><div class="wx-day-icon">${wxIcon(d.weathercode[i])}</div><div class="wx-day-temp">${Math.round(d.temperature_2m_max[i])}°/${Math.round(d.temperature_2m_min[i])}°</div><div class="wx-day-wind">💨 ${Math.round(d.windspeed_10m_max[i])} קמ"ש ${getWindDir(d.winddirection_10m_dominant[i])}</div>${d.precipitation_sum[i]>0?`<div class="wx-day-wind">🌧️ ${d.precipitation_sum[i]}mm</div>`:''}${waveHtml}</div>`;
+      const schedDay=dayIdx+i>=0&&dayIdx+i<sched.length?sched[dayIdx+i]:null;
+      wxSummary+=`${dayNames[i]}: ${dLoc.name}, ${Math.round(d.temperature_2m_max[i])}°C, רוח ${Math.round(d.windspeed_10m_max[i])} קמ"ש ${getWindDir(d.winddirection_10m_dominant[i])}, גשם ${d.precipitation_sum[i]}mm`;
+      if(marineData&&marineData.daily)wxSummary+=`, גלים ${marineData.daily.wave_height_max[i]}m`;
+      if(schedDay)wxSummary+=` (${schedDay.title})`;
+      wxSummary+='\n';
+    }
+    gridHtml+='</div>';
+    const windyUrl=`https://www.windy.com/${loc.lat}/${loc.lon}?wind,waves,${loc.lat},${loc.lon},10`;
+    const navilyUrl=`https://navily.com/map?lat=${loc.lat}&lng=${loc.lon}&zoom=12`;
+    const linksHtml=`<div class="wx-links"><a href="${windyUrl}" target="_blank" class="wx-link">🌊 Windy</a><a href="${navilyUrl}" target="_blank" class="wx-link">⚓ Navily</a><a href="https://www.boattrip.com/weather/croatia" target="_blank" class="wx-link">⛵ Boating</a></div>`;
+    const locLabel=dayIdx>=0&&dayIdx<sched.length?sched[dayIdx].title:loc.name;
+    const locationHtml=`<div class="wx-location">📍 ${locLabel} — ${loc.name}</div>`;
+    let insightHtml='';
+    const isSailing=loc.marine;
+    const maxWind=Math.max(...wxData.daily.windspeed_10m_max);
+    const maxWave=marineData&&marineData.daily?Math.max(...marineData.daily.wave_height_max):0;
+    const apiKey=await getApiKey();
+    if(apiKey&&(isSailing||dayIdx>=0)){
+      try{
+        const sailRoute=dayIdx>=6&&dayIdx<=12?FLOTILLA_ROUTE[dayIdx-6]:null;
+        let prompt='אתה מומחה הפלגה בחוף קרואטיה (דלמטיה). ';
+        prompt+='נתוני מזג אוויר ל-3 ימים הקרובים:\n'+wxSummary+'\n';
+        if(sailRoute)prompt+='מסלול ההפלגה היום: מ-'+sailRoute.from+' ל-'+sailRoute.to+', '+sailRoute.nm+' מייל ימי, '+sailRoute.hours+' שעות. '+sailRoute.desc+'\nPlan B: '+sailRoute.planB+'\n';
+        if(isSailing){
+          prompt+='אנחנו על קטמרן Lagoon 43 עם 7 אנשי צוות (כולל 4 ילדים).\n';
+          prompt+='תן תובנות הפלגה חכמות:\n';
+          prompt+='1) האם התנאים מתאימים להפלגה? רוחות מעל 25 קשר או גלים מעל 1.5m = אזהרה\n';
+          prompt+='2) כיוון הרוח ביחס למסלול — האם נפליג ברוח נגדית/נוחה?\n';
+          prompt+='3) האם יש סימנים לסופת Nevera (ירידת לחץ פתאומית, עננים מערביים)?\n';
+          prompt+='4) המלצה על מפרצים מוגנים לעגינה או הסתתרות לאורך המסלול (ציין שמות ספציפיים)\n';
+          prompt+='5) האם כדאי לשנות את שעת היציאה או המסלול?\n';
+          prompt+='6) המלץ על מפרצים יפים לעצירת שחייה/צהריים לאורך המסלול\n';
+        }else{
+          prompt+='אנחנו בטיול יבשתי בקרואטיה עם משפחה (7 אנשים, 4 ילדים).\n';
+          prompt+='תן 2-3 תובנות קצרות על מזג האוויר והשפעתו על התוכניות.\n';
+        }
+        prompt+='ענה בעברית, קצר וממוקד. השתמש ב-emoji. אם יש אזהרה — התחל בה.';
+        const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+        const data=await resp.json();
+        const insight=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+        if(insight){
+          const isWarning=maxWind>40||maxWave>1.5||insight.includes('אזהרה')||insight.includes('⚠');
+          insightHtml=`<div class="wx-insight${isWarning?' warning':''}">${insight.replace(/\n/g,'<br>')}</div>`;
+        }
+      }catch(e){}
+    }
+    if(!insightHtml&&maxWind>40){
+      insightHtml='<div class="wx-insight warning">⚠️ רוחות חזקות צפויות ('+Math.round(maxWind)+' קמ"ש). בדקו תחזית מפורטת ב-Windy!</div>';
+    }
+    wc.innerHTML=locationHtml+gridHtml+insightHtml+linksHtml;
+    const cacheData={html:wc.innerHTML,timestamp:Date.now(),dayIdx};
+    try{localStorage.setItem('croatia_wxCache',JSON.stringify(cacheData));}catch(e){}
+  }catch(e){
+    const cached=JSON.parse(localStorage.getItem('croatia_wxCache')||'null');
+    if(cached&&cached.html){wc.innerHTML=cached.html+'<div style="font-size:11px;opacity:0.5;margin-top:8px">נתונים שמורים מ-'+new Date(cached.timestamp).toLocaleTimeString('he-IL')+'</div>';}
+    else{wc.innerHTML='<p style="opacity:0.7">לא ניתן לטעון תחזית. בדקו חיבור אינטרנט.</p><div class="wx-links"><a href="https://www.windy.com/43.939/15.338" target="_blank" class="wx-link">🌊 Windy</a><a href="https://navily.com" target="_blank" class="wx-link">⚓ Navily</a></div>';}
+  }
 }
 
 function mapsUrl(addr){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(addr);}
