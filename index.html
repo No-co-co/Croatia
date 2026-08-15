@@ -1258,7 +1258,7 @@ function uploadDoc(){
           const esc=docName.replace(/'/g,"\\'");
           amountHtml=`<div style="margin-top:16px;padding:14px;background:var(--accent-light);border-radius:var(--radius-sm);text-align:center"><div style="font-size:16px;font-weight:700;color:var(--accent)">סכום שזוהה: ${amount.toLocaleString()} ${currency}</div><button class="btn btn-accent" style="margin-top:10px;width:100%" onclick="addUploadToBudget('${esc}',${amount},'${currency}')">הוסף לתקציב</button></div>`;
         }
-        mc.innerHTML=`<div class="modal-title">ניתוח מסמך</div><div style="font-size:13px;line-height:1.8;white-space:pre-wrap">${cleanText}</div>${amountHtml}<p style="font-size:12px;color:var(--text-secondary);margin-top:12px">המסמך נשמר באפליקציה ונגיש בטאב מסמכים</p>`;
+        mc.innerHTML=`<div class="modal-title">${docName}</div>${formatAnalysis(cleanText)}${amountHtml}<p style="font-size:12px;color:var(--text-secondary);margin-top:12px">המסמך נשמר באפליקציה ונגיש בטאב מסמכים</p>`;
         renderDocs();
       }catch(e){mc.innerHTML=`<div class="modal-title">שגיאה</div><p>שגיאה בניתוח: ${e.message}</p>`;}
     };
@@ -1273,13 +1273,31 @@ function addUploadToBudget(name,amount,currency){
   else{items.push({name,amount:amountEur,editable:true});ss('budget',items);}
   closeModal();switchTab('budget');renderBudget();
 }
+function formatAnalysis(text){
+  if(!text)return'';
+  const lines=text.split('\n').filter(l=>l.trim());
+  return lines.map(line=>{
+    const colonMatch=line.match(/^([^:]{1,30}):\s*(.+)/);
+    if(colonMatch){
+      const label=colonMatch[1].replace(/^[\s\-•*]+/,'').trim();
+      const value=colonMatch[2].trim();
+      return `<div class="detail-row"><span class="detail-label">${label}</span><span class="detail-value rtl-val">${value}</span></div>`;
+    }
+    const trimmed=line.replace(/^[\s\-•*]+/,'').trim();
+    if(trimmed.length<40&&!trimmed.includes(' ')===false){
+      return `<div class="detail-section">${trimmed}</div>`;
+    }
+    return `<div class="detail-row"><span class="detail-value rtl-val">${trimmed}</span></div>`;
+  }).join('');
+}
 function viewUpload(i){
   const uploads=load('uploads',[]);const u=uploads[i];if(!u)return;
   const mc=document.getElementById('modalContent');
-  const imgHtml=u.image?`<img src="${u.image}" style="width:100%;border-radius:8px;margin-bottom:12px">`:'';
+  const fileBtn=u.image&&u.image.startsWith('http')?`<button class="btn btn-accent" style="width:100%;margin-bottom:12px" onclick="window.open('${u.image}','_blank')">📄 פתח קובץ</button>`:'';
   const amtHtml=u.amount>0?`<div class="detail-row"><span class="detail-label">סכום</span><span class="detail-value">${u.amount.toLocaleString()} ${u.currency}</span></div>`:'';
   const dateHtml=`<div class="detail-row"><span class="detail-label">תאריך העלאה</span><span class="detail-value rtl-val">${new Date(parseInt(u.timestamp)).toLocaleDateString('he-IL')}</span></div>`;
-  mc.innerHTML=`<div class="modal-title">${u.name}</div>${imgHtml}${amtHtml}${dateHtml}<div style="font-size:13px;line-height:1.8;white-space:pre-wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">${u.analysis}</div>`;
+  const analysisHtml=formatAnalysis(u.analysis);
+  mc.innerHTML=`<div class="modal-title">${u.name}</div>${fileBtn}${amtHtml}${dateHtml}<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">${analysisHtml}</div>`;
   document.getElementById('modalOverlay').classList.add('open');
 }
 function deleteUpload(i){if(!confirm('למחוק מסמך זה?'))return;const uploads=load('uploads',[]);const u=uploads[i];if(u&&u.image&&u.image.startsWith('http')&&storageRef){try{firebase.storage().refFromURL(u.image).delete().catch(()=>{});}catch(e){}}uploads.splice(i,1);ss('uploads',uploads);renderDocs();}
