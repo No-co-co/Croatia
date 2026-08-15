@@ -632,7 +632,8 @@ function renderDocs(){
     {icon:'🛡️',cls:'insurance',title:'ביטוח יאכטה',sub:'Schomacker · Ref: 97759K · €280',modal:'insurance'}
   ];
   const docFiles=load('docFiles',{});
-  let html=docs.map(d=>{const hasFile=docFiles[d.modal];return `<div class="doc-card" onclick="openDocModal('${d.modal}')"><div class="doc-header"><div class="doc-icon-wrap ${d.cls}">${d.icon}</div><div class="doc-info"><h3>${d.title}${hasFile?' 📎':''}</h3><p>${d.sub}</p></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div></div>`;}).join('');
+  const docNames=load('docNames',{});
+  let html=docs.map(d=>{const hasFile=docFiles[d.modal];const displayName=docNames[d.modal]||d.title;return `<div class="doc-card" onclick="openDocModal('${d.modal}')"><div class="doc-header"><div class="doc-icon-wrap ${d.cls}">${d.icon}</div><div class="doc-info"><h3>${displayName}${hasFile?' 📎':''}</h3><p>${d.sub}</p></div><button class="edit-icon" onclick="event.stopPropagation();renameDoc('fixed','${d.modal}')" title="שנה שם" style="font-size:14px;padding:6px">✏️</button></div></div>`;}).join('');
   const uploads=load('uploads',[]);
   if(uploads.length>0){
     html+='<div class="section-sub" style="margin-top:16px">מסמכים שהועלו</div>';
@@ -641,7 +642,7 @@ function renderDocs(){
       const icon=iconMap[u.type]||'📄';
       const amtStr=u.amount>0?` · ${u.amount} ${u.currency}`:'';
       const dateStr=new Date(parseInt(u.timestamp)).toLocaleDateString('he-IL');
-      html+=`<div class="doc-card" onclick="viewUpload(${i})"><div class="doc-header"><div class="doc-icon-wrap ticket">${icon}</div><div class="doc-info"><h3>${u.name}</h3><p>${dateStr}${amtStr}</p></div><button class="edit-icon" onclick="event.stopPropagation();deleteUpload(${i})" style="font-size:18px;padding:8px" title="מחק">&times;</button></div></div>`;
+      html+=`<div class="doc-card" onclick="viewUpload(${i})"><div class="doc-header"><div class="doc-icon-wrap ticket">${icon}</div><div class="doc-info"><h3>${u.name}</h3><p>${dateStr}${amtStr}</p></div><div style="display:flex;gap:2px"><button class="edit-icon" onclick="event.stopPropagation();renameDoc('upload',${i})" title="שנה שם" style="font-size:14px;padding:6px">✏️</button><button class="edit-icon" onclick="event.stopPropagation();deleteUpload(${i})" style="font-size:18px;padding:6px" title="מחק">&times;</button></div></div></div>`;
     });
   }
   document.getElementById('docsContainer').innerHTML=html;
@@ -649,8 +650,10 @@ function renderDocs(){
 
 function openDocModal(type){
   const c=document.getElementById('modalContent');let h='';
+  const docNames=load('docNames',{});
+  const customTitle=docNames[type];
   if(type==='flights'){
-    h=`<div class="modal-title">טיסות</div>
+    h=`<div class="modal-title">${customTitle||'טיסות'}</div>
     <div class="detail-section">הזמנה: 9JOHWG</div>
     <div class="detail-section">הלוך - 16.8 שבת</div>
     <div class="detail-row"><span class="detail-label">טיסה</span><span class="detail-value">LY 5181</span></div>
@@ -677,7 +680,7 @@ function openDocModal(type){
     <div class="detail-row"><span class="detail-label">עופר</span><span class="detail-value">06C</span></div>
     <div class="detail-row"><span class="detail-label">מלאכי</span><span class="detail-value">06B</span></div>`;
   } else if(type==='car'){
-    h=`<div class="modal-title">רכב</div>
+    h=`<div class="modal-title">${customTitle||'רכב'}</div>
     <div class="detail-row"><span class="detail-label">חברה</span><span class="detail-value">Hertz/Kesher</span></div>
     <div class="detail-row"><span class="detail-label">רכב</span><span class="detail-value">Opel Vivaro 9 PAX</span></div>
     <div class="detail-row"><span class="detail-label">הילוכים</span><span class="detail-value rtl-val">ידני, מזגן</span></div>
@@ -691,7 +694,7 @@ function openDocModal(type){
     <div class="detail-row"><span class="detail-label">מחיר</span><span class="detail-value">2,998.47 EUR</span></div>
     <div class="detail-row"><span class="detail-label">כולל</span><span class="detail-value rtl-val">CDW, ק"מ ללא הגבלה, TPL, הגנה מגניבה</span></div>`;
   } else if(type==='yacht'){
-    h=`<div class="modal-title">יאכטה</div>
+    h=`<div class="modal-title">${customTitle||'יאכטה'}</div>
     <div class="detail-row"><span class="detail-label">דגם</span><span class="detail-value">Lagoon 43 "GURGUR"</span></div>
     <div class="detail-row"><span class="detail-label">הזמנה</span><span class="detail-value">24332</span></div>
     <div class="detail-row"><span class="detail-label">חברה</span><span class="detail-value">Master Yachting d.o.o.</span></div>
@@ -706,7 +709,7 @@ function openDocModal(type){
     <div class="detail-row"><span class="detail-label">Tourist Tax</span><span class="detail-value">9.31 EUR/אדם</span></div>
     <div class="detail-row"><span class="detail-label">פיקדון</span><span class="detail-value">3,000 EUR (אשראי)</span></div>`;
   } else if(type==='hotels'){
-    h=`<div class="modal-title">מקומות לינה</div>
+    h=`<div class="modal-title">${customTitle||'מקומות לינה'}</div>
     <div class="detail-section">Hotel Phoenix - ליד זאגרב (16.8)</div>
     <div class="detail-row"><span class="detail-label">כתובת</span><span class="detail-value">Velikogorička 10b, Staro Čiče</span></div>
     <div class="detail-row"><span class="detail-label">הזמנה</span><span class="detail-value">5696.518.289</span></div>
@@ -743,7 +746,7 @@ function openDocModal(type){
     <div class="detail-row"><span class="detail-label">ביטול</span><span class="detail-value rtl-val">חינם עד 25.8</span></div>
     <div class="detail-row"><span class="detail-label">מפה</span><span class="detail-value"><a href="${mapsUrl('Ul. Radoslava Lopašića 2/1, Zagreb, Croatia')}" target="_blank" style="color:var(--accent)">📍 פתח במפות</a></span></div>`;
   } else if(type==='plitvice'){
-    h=`<div class="modal-title">כרטיסי פליטביצה</div>
+    h=`<div class="modal-title">${customTitle||'כרטיסי פליטביצה'}</div>
     <div class="detail-row"><span class="detail-label">תאריך</span><span class="detail-value rtl-val">17.8</span></div>
     <div class="detail-row"><span class="detail-label">כניסה</span><span class="detail-value rtl-val">כניסה 1, 16:00-17:00</span></div>
     <div class="detail-section">כרטיסים</div>
@@ -751,7 +754,7 @@ function openDocModal(type){
     <div class="detail-row"><span class="detail-label">מבוגרים</span><span class="detail-value rtl-val">1 כרטיס × 60€ = 60€</span></div>
     <div class="detail-row"><span class="detail-label">סה"כ</span><span class="detail-value">140 EUR</span></div>`;
   } else if(type==='insurance'){
-    h=`<div class="modal-title">ביטוח ביטול השתתפות עצמית</div>
+    h=`<div class="modal-title">${customTitle||'ביטוח ביטול השתתפות עצמית'}</div>
     <div class="detail-row"><span class="detail-label">חברה</span><span class="detail-value">Hamburger Yachtversicherung Schomacker</span></div>
     <div class="detail-row"><span class="detail-label">מספר</span><span class="detail-value">97759K</span></div>
     <div class="detail-row"><span class="detail-label">תקופה</span><span class="detail-value">22.08-29.08.2026</span></div>
@@ -1187,6 +1190,20 @@ function removeDocFile(type){
   delete docFiles[type];
   ss('docFiles',docFiles);
   openDocModal(type);
+  renderDocs();
+}
+function renameDoc(kind,key){
+  const currentName=kind==='fixed'?(load('docNames',{})[key]||''):(load('uploads',[])[key]||{}).name||'';
+  const newName=prompt('שם חדש למסמך:',currentName);
+  if(newName===null||newName.trim()==='')return;
+  if(kind==='fixed'){
+    const names=load('docNames',{});
+    names[key]=newName.trim();
+    ss('docNames',names);
+  }else{
+    const uploads=load('uploads',[]);
+    if(uploads[key]){uploads[key].name=newName.trim();ss('uploads',uploads);}
+  }
   renderDocs();
 }
 function compressImage(base64Url,maxDim){
