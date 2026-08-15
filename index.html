@@ -245,6 +245,14 @@ body { font-family: var(--font); background: var(--bg-primary); color: var(--tex
 .briefing-item strong { color: var(--accent); }
 .storm-signs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
 .storm-sign { font-size: 12px; padding: 8px; background: var(--warning-light); border-radius: var(--radius-sm); line-height: 1.4; }
+.alerts-card { border-right: 3px solid var(--warning); }
+.alerts-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.alert-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.5; }
+.alert-item:last-child { border-bottom: none; }
+.alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.alert-text { flex: 1; }
+.alert-text strong { color: var(--text-primary); }
+.alert-urgent { background: var(--coral-light); border-radius: var(--radius-sm); padding: 4px 8px; margin: -4px 0; }
 @media (min-width: 768px) { .content-area { max-width: 640px; margin: 0 auto; } .modal-sheet { max-width: 560px; } }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
@@ -265,6 +273,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
       <div class="card countdown-card" id="countdownCard"><div class="countdown-number" id="countdownNum">--</div><div class="countdown-label" id="countdownLabel">ימים לטיול</div><div class="countdown-date">16-31 באוגוסט 2026</div></div>
       <div class="stats-row"><div class="stat-box"><div class="stat-value">16</div><div class="stat-label">ימים</div></div><div class="stat-box"><div class="stat-value">7</div><div class="stat-label">ימי הפלגה</div></div><div class="stat-box"><div class="stat-value">6</div><div class="stat-label">יעדים</div></div></div>
       <div class="card card-accent" id="nextEventCard"><div class="card-subtitle">האירוע הבא</div><div class="card-title" id="nextEventTitle">טוען...</div><div id="nextEventDetail" style="font-size:13px;color:var(--text-secondary)"></div></div>
+      <div class="card alerts-card" id="alertsCard" style="display:none"><div class="alerts-title">תזכורות</div><div id="alertsList"></div></div>
       <div class="card emergency-card">
         <div class="card-title">אנשי קשר לחירום</div>
         <div class="emergency-grid">
@@ -575,6 +584,60 @@ function updateDashboard(){
   if(dayIdx<0){tEl.textContent=sched[0].title;dEl.textContent=sched[0].date+' '+sched[0].day;}
   else if(dayIdx<sched.length){tEl.textContent=sched[dayIdx].title;dEl.textContent=sched[dayIdx].date+' '+sched[dayIdx].day;}
   else{tEl.textContent='הטיול הסתיים';dEl.textContent='תודה על הזיכרונות!';}
+  renderAlerts(today,dayIdx,sched);
+}
+
+function renderAlerts(today,dayIdx,sched){
+  const alerts=[];
+  const diff=Math.ceil((TRIP_START-today)/(1000*60*60*24));
+  const PEOPLE=['נועם','שירלי','עילי','אילה','אורי','עומר','מיכל'];
+  if(dayIdx>=sched.length){document.getElementById('alertsCard').style.display='none';return;}
+  if(diff>0){
+    alerts.push({icon:'✈️',text:'<strong>'+diff+' ימים לטיסה</strong> — LY 5181, המראה 21:00 מנתב"ג',urgent:diff<=3});
+    if(diff<=14)alerts.push({icon:'📄',text:'בדקו שכל המסמכים מוכנים — דרכונים, ביטוח, הזמנות'});
+    if(diff<=7){
+      let totalItems=0,totalDone=0;
+      PEOPLE.forEach(p=>{const items=load('packing_'+p,null);if(items){totalItems+=items.length;totalDone+=items.filter(x=>x.checked).length;}});
+      if(totalItems>0){const pct=Math.round(totalDone/totalItems*100);if(pct<100)alerts.push({icon:'🧳',text:'רשימת ארוזים: <strong>'+pct+'%</strong> הושלם ('+totalDone+'/'+totalItems+')',urgent:pct<50});}
+    }
+    if(diff<=5)alerts.push({icon:'⛵',text:'הכינו מסמכי יאכטה — רישיון סקיפר, ביטוח, חוזה שכירות'});
+    if(diff<=3){
+      const checkin=[
+        {day:0,name:'Hotel Phoenix',date:'16.8'},
+        {day:3,name:'Villa Cvita',date:'19.8'}
+      ];
+      checkin.forEach(c=>{if(diff<=c.day+3&&diff>c.day)alerts.push({icon:'🏨',text:'<strong>צ\'ק-אין '+c.name+'</strong> — הודיעו שאתם מגיעים ב-'+c.date});});
+    }
+  } else {
+    const todayDayIdx=dayIdx;
+    const lodges=[
+      {dayIdx:0,name:'Hotel Phoenix',checkout:null,checkinText:'צ\'ק-אין Hotel Phoenix — הגעה מאוחרת אחרי 23:25'},
+      {dayIdx:1,name:'Hotel Degenija',checkout:'Hotel Phoenix',checkinText:null},
+      {dayIdx:3,name:'Villa Cvita',checkout:'Hotel Degenija',checkinText:'צ\'ק-אין Villa Cvita אחרי 16:00 — הודיעו לבעלים'},
+      {dayIdx:6,name:'יאכטה',checkout:'Villa Cvita',checkinText:'צ\'ק-אין יאכטה Lagoon 43 בשעה 17:00'},
+      {dayIdx:13,name:'דירה בזאגרב',checkout:'יאכטה',checkinText:'צ\'ק-אין דירה בזאגרב — הודיעו לבעלים שעת הגעה'}
+    ];
+    lodges.forEach(l=>{
+      if(todayDayIdx===l.dayIdx&&l.checkinText)alerts.push({icon:'🏨',text:'<strong>'+l.checkinText+'</strong>',urgent:true});
+      if(l.checkout&&todayDayIdx===l.dayIdx)alerts.push({icon:'🧳',text:'<strong>צ\'ק-אאוט מ-'+l.checkout+'</strong> — אל תשכחו חפצים',urgent:true});
+    });
+    lodges.forEach(l=>{
+      if(todayDayIdx===l.dayIdx-1&&l.checkinText)alerts.push({icon:'📞',text:'מחר '+l.checkinText+' — הודיעו שאתם מגיעים'});
+    });
+    if(todayDayIdx===5)alerts.push({icon:'🛒',text:'<strong>הכנות ליאכטה</strong> — קניות ציוד ואספקה'});
+    if(todayDayIdx>=6&&todayDayIdx<=12){
+      const sailDay=todayDayIdx-5;
+      alerts.push({icon:'⛵',text:'<strong>יום הפלגה '+sailDay+'</strong> — בדקו תחזית רוח ב-Windy.com'});
+    }
+    if(todayDayIdx===12)alerts.push({icon:'⚠️',text:'<strong>חזרה למרינה סוקושן עד 17:00!</strong> מילוי דלק חובה',urgent:true});
+    if(todayDayIdx===11)alerts.push({icon:'⏰',text:'מחר יום חזרה למרינה — <strong>יציאה מוקדמת 07:30!</strong> הכינו הכל הערב'});
+    if(todayDayIdx===14)alerts.push({icon:'🚗',text:'<strong>החזרת רכב</strong> בשדה התעופה — בדקו דלק ומצב הרכב'});
+    if(todayDayIdx===15)alerts.push({icon:'✈️',text:'<strong>טיסה הביתה LY 5182</strong> — המראה 00:30 מזאגרב',urgent:true});
+  }
+  const card=document.getElementById('alertsCard'),list=document.getElementById('alertsList');
+  if(alerts.length===0){card.style.display='none';return;}
+  card.style.display='block';
+  list.innerHTML=alerts.map(a=>'<div class="alert-item'+(a.urgent?' alert-urgent':'')+'"><span class="alert-icon">'+a.icon+'</span><span class="alert-text">'+a.text+'</span></div>').join('');
 }
 
 function mapsUrl(addr){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(addr);}

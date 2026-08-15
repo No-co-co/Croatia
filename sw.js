@@ -1,4 +1,4 @@
-const CACHE = 'croatia-v4';
+const CACHE = 'croatia-v5';
 const ASSETS = ['app.html', 'manifest.json'];
 
 self.addEventListener('install', e => {
