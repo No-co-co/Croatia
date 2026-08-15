@@ -1122,16 +1122,17 @@ function getTripContext(){
     d.events.forEach(e=>{ctx+=(e.time||'')+' '+e.text+(e.detail?' - '+e.detail:'')+'. ';});
     ctx+='\n';
   });
-  ctx+='\nטיסות: LY 5181 הלוך 16.8 21:00 TLV→23:25 ZAG. LY 5182 חזור 31.8 00:30 ZAG→04:40 TLV. הזמנה: 9JOHWG.\n';
-  ctx+='רכב: Opel Vivaro 9 PAX, Hertz, הזמנה L644E2F0013. איסוף 17.8 10:30 שדה תעופה זאגרב. החזרה 30.8 21:45. 2,998€.\n';
-  ctx+='יאכטה: Lagoon 43 "GURGUR", הזמנה 24332. צ\'ק-אין 22.8 17:00 Pier 14 Marina Dalmacija סוקושן. צ\'ק-אאוט 29.8 09:00. Master Yachting +385 23 393 230.\n';
-  ctx+='מסלול הפלגה: יום 1 (23.8) סוקושן→מורטר. יום 2 (24.8) מורטר→שיבניק. יום 3 (25.8) שיבניק→סקראדין. יום 4 (26.8) סקראדין+קרקה→פרימושטן. יום 5 (27.8) פרימושטן→קפרייה. יום 6 (28.8) קפרייה→סוקושן.\n';
-  ctx+='לינה: Hotel Phoenix 16.8 (קוד 9263). Hotel Degenija 17-18.8 (DQ1N4KML, חדרים 32,33). Villa Cvita 19-21.8. יאכטה 22-28.8. דירה זאגרב 29-30.8 (קוד 7237).\n';
-  ctx+='חירום: 112 (חירום), VHF 16 (ימי), VHF 67 (פלוטילה), Master Yachting +385 23 393 230.\n';
-  ctx+='ביטוח ביטול השתתפות עצמית: Schomacker Ref 97759K, 280€. כיסוי פיקדון 3,000€. תקופה 22-29.8.\n';
-  ctx+='תקציב: רכב 2,998€, יאכטה 7,150€, Comfort Pack 550€, Tourist Tax 65€, פיקדון יאכטה 3,000€ (מוחזר), ביטוח 280€, Hotel Phoenix 120€, Villa Cvita 1,509€ + פיקדון 500€ (מוחזר), דירה זאגרב 654€, פליטביצה 140€.\n';
-  ctx+='מזג אוויר אוגוסט: 28-35°C, רוחות Maestral אחה"צ. סופת Nevera - סופת קיץ פתאומית, רוחות 40-50 קשר.\n';
-  ctx+='שירותים ביאכטה: רק נייר טואלט ימי! מה שלא עבר דרך הבטן לא נכנס.\n';
+  ctx+='\nתקציב:\n';
+  const budgetData=load('budget',[]);
+  budgetData.forEach(b=>{if(b.amount>0)ctx+=b.name+': '+Math.round(b.amount)+'€'+(b.note?' ('+b.note+')':'')+'. ';});
+  const totalBudget=budgetData.reduce((s,b)=>s+(b.note==='מוחזר'?0:(b.amount||0)),0);
+  ctx+='\nסה"כ תקציב: '+Math.round(totalBudget)+'€.\n';
+  const uploadsData=load('uploads',[]);
+  if(uploadsData.length>0){
+    ctx+='\nמסמכים שהועלו:\n';
+    uploadsData.forEach(u=>{ctx+=u.name+(u.amount>0?' ('+u.amount+' '+u.currency+')':'')+': '+(u.analysis||'').substring(0,200)+'\n';});
+  }
+  ctx+='\nחירום: 112 (חירום קרואטיה), VHF 16 (חירום ימי), VHF 67 (פלוטילה), Master Yachting +385 23 393 230.\n';
   return ctx;
 }
 let chatHistory=JSON.parse(localStorage.getItem('croatia_chatHistory')||'[]');
@@ -1388,7 +1389,6 @@ function init(){
   if(savedTheme==='dark')document.documentElement.setAttribute('data-theme','dark');
   else if(savedTheme==='light')document.documentElement.setAttribute('data-theme','light');
   currentCurrency=load('currency','EUR');
-  migrateBudgetNames();
   renderAll();
   loadChatUI();
   const savedTab=load('activeTab','dashboard');switchTab(savedTab);
@@ -1398,7 +1398,7 @@ function init(){
     badge.style.cssText='position:fixed;top:8px;left:50%;transform:translateX(-50%);font-size:11px;padding:2px 10px;border-radius:10px;background:var(--accent);color:#fff;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none';
     badge.textContent='מסונכרן';document.body.appendChild(badge);
     tripRef.on('value',snap=>{
-      const data=snap.val()||{};const changed=!firebaseReady||JSON.stringify(data)!==JSON.stringify(firebaseData);firebaseData=data;Object.keys(data).forEach(k=>{if(k!=='geminiApiKey')try{localStorage.setItem('croatia_'+k,JSON.stringify(data[k]));}catch(e){}});if(firebaseReady&&changed)renderAll();firebaseReady=true;
+      const data=snap.val()||{};const changed=!firebaseReady||JSON.stringify(data)!==JSON.stringify(firebaseData);firebaseData=data;Object.keys(data).forEach(k=>{if(k!=='geminiApiKey')try{localStorage.setItem('croatia_'+k,JSON.stringify(data[k]));}catch(e){}});if(!firebaseReady)migrateBudgetNames();if(firebaseReady&&changed)renderAll();firebaseReady=true;
       badge.style.opacity='1';setTimeout(()=>badge.style.opacity='0',1500);
     },()=>{firebaseReady=false;});
   }
