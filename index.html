@@ -1376,11 +1376,19 @@ function deleteUpload(i){if(!confirm('למחוק מסמך זה?'))return;const u
 
 function renderAll(){updateDashboard();renderSchedule();renderDocs();renderRoute();renderPersonTabs();renderPackingList();renderBudget();}
 
+function migrateBudgetNames(){
+  const renames={'Hotel Phoenix (לילה 1)':'לינה 16-17/8 Hotel Phoenix, זאגרב','Hotel Degenija (2 לילות)':'לינה 17-19/8 Hotel Degenija, פליטביצה','Villa Cvita (3 לילות)':'לינה 19-22/8 Villa Cvita, פוליצ\'ניק','דירה זאגרב (2 לילות)':'לינה 29-31/8 דירה, זאגרב'};
+  const items=load('budget',null);if(!items)return;
+  let changed=false;
+  items.forEach(item=>{if(renames[item.name]){item.name=renames[item.name];changed=true;}});
+  if(changed)ss('budget',items);
+}
 function init(){
   const savedTheme=load('theme','auto');
   if(savedTheme==='dark')document.documentElement.setAttribute('data-theme','dark');
   else if(savedTheme==='light')document.documentElement.setAttribute('data-theme','light');
   currentCurrency=load('currency','EUR');
+  migrateBudgetNames();
   renderAll();
   loadChatUI();
   const savedTab=load('activeTab','dashboard');switchTab(savedTab);
