@@ -355,7 +355,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
       <div class="modal-title">הגדרות</div>
       <div class="settings-row"><div><div class="settings-label">מצב תצוגה</div></div><div class="theme-toggle"><button class="theme-btn" onclick="setTheme('light',this)">בהיר</button><button class="theme-btn active" onclick="setTheme('auto',this)">אוטומטי</button><button class="theme-btn" onclick="setTheme('dark',this)">כהה</button></div></div>
       <div class="settings-row"><div><div class="settings-label">מטבע ברירת מחדל</div><div class="settings-sub">שער: 1 EUR = 4.05 ILS = 1.08 USD</div></div></div>
-      <div class="settings-row" style="flex-direction:column;align-items:stretch"><div><div class="settings-label">מפתח Gemini API</div><div class="settings-sub">נשמר ב-Firebase בלבד, לא מוצג באפליקציה</div></div><div class="api-input-row"><input type="password" id="apiKeyInput" placeholder="הזן מפתח API חדש..."><button class="btn btn-accent" onclick="saveApiKey()">שמור</button></div><div id="apiKeyStatus" style="font-size:12px;color:var(--success);margin-top:4px"></div></div>
+      <div class="settings-row" style="flex-direction:column;align-items:stretch"><div><div class="settings-label">מפתח Gemini API</div><div class="settings-sub">נשמר ב-Firebase בלבד, לא מוצג באפליקציה</div></div><div class="api-input-row"><input type="password" id="apiKeyInput" placeholder="הזן מפתח API חדש..."><button class="btn btn-accent" onclick="saveApiKey()">שמור</button></div><div id="apiKeyStatus" style="font-size:12px;color:var(--success);margin-top:4px"></div><div style="margin-top:8px"><button class="btn reset-btn" onclick="disableAI()">ביטול AI — מחיקת מפתח</button></div></div>
       <div class="settings-row" style="flex-direction:column;align-items:stretch"><div><div class="settings-label">איפוס נתונים</div><div class="settings-sub">החזר לו"ז, מסלול, צ'קליסט לברירת מחדל</div></div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn reset-btn" onclick="resetAllData()">איפוס הכל</button></div></div>
       <div class="settings-row"><div><div class="settings-label">גרסה</div><div class="settings-sub">Croatia Trip App v3.0</div></div></div>
     </div>
@@ -1345,6 +1345,15 @@ function saveApiKey(){
   const status=document.getElementById('apiKeyStatus');
   if(tripRef)tripRef.child('geminiApiKey').set(key).then(()=>{status.textContent='מפתח API נשמר בהצלחה!';status.style.color='var(--accent)';document.getElementById('apiKeyInput').value='';setTimeout(()=>{status.textContent='';},3000);}).catch(()=>{status.textContent='נשמר מקומית (Firebase לא זמין)';status.style.color='orange';document.getElementById('apiKeyInput').value='';setTimeout(()=>{status.textContent='';},3000);});
   else{status.textContent='נשמר מקומית';status.style.color='var(--accent)';document.getElementById('apiKeyInput').value='';setTimeout(()=>{status.textContent='';},3000);}
+}
+function disableAI(){
+  if(!confirm('למחוק את מפתח ה-API ולבטל את כל פיצ\'רי ה-AI?\n(צ\'אט, תובנות מזג אוויר, ניתוח מסמכים)\n\nהנתונים והמסמכים הקיימים לא יימחקו.'))return;
+  delete firebaseData.geminiApiKey;
+  try{localStorage.removeItem('croatia_geminiKey');}catch(e){}
+  if(tripRef)tripRef.child('geminiApiKey').remove().catch(()=>{});
+  const status=document.getElementById('apiKeyStatus');
+  status.textContent='AI בוטל — מפתח נמחק';status.style.color='var(--coral)';
+  setTimeout(()=>{status.textContent='';},3000);
 }
 
 function resetAllData(){
