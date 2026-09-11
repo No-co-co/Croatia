@@ -1350,10 +1350,15 @@ function saveApiKey(){
 function showLocalBudget(){
   const out=document.getElementById('localBudgetOutput');
   try{
+    let txt='=== תקציב ===\n';
     const raw=localStorage.getItem('croatia_budget');
-    if(!raw){out.textContent='אין נתוני תקציב ב-localStorage';return;}
-    const items=JSON.parse(raw);
-    out.textContent=items.map((b,i)=>(i+1)+'. '+b.name+' — '+b.amount+' EUR'+(b.note?' ('+b.note+')':'')).join('\n');
+    if(!raw){txt+='אין נתוני תקציב\n';}
+    else{const items=JSON.parse(raw);txt+=items.map((b,i)=>(i+1)+'. '+b.name+' — '+b.amount+' EUR'+(b.note?' ('+b.note+')':'')).join('\n');}
+    txt+='\n\n=== מסמכים ===\n';
+    const uRaw=localStorage.getItem('croatia_uploads');
+    if(!uRaw){txt+='אין מסמכים\n';}
+    else{const uploads=JSON.parse(uRaw);txt+=uploads.map((u,i)=>(i+1)+'. '+u.name+(u.amount?' — '+u.amount+' '+u.currency:'')+'\n   '+((u.analysis||'').substring(0,300))).join('\n\n');}
+    out.textContent=txt;
   }catch(e){out.textContent='שגיאה: '+e.message;}
 }
 function disableAI(){
