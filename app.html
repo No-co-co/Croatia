@@ -588,13 +588,31 @@ const DEFAULT_BUDGET=[
   {name:'Tourist Tax (7 אנשים)',amount:65.17,editable:false},
   {name:'פיקדון יאכטה',amount:3000,editable:false,note:'מוחזר'},
   {name:'ביטוח ביטול השתתפות עצמית',amount:280,editable:false},
+  {name:'ביטוח נסיעות הפניקס',amount:409,editable:false},
+  {name:'טיסות',amount:3613,editable:false},
   {name:'לינה 16-17/8 Hotel Phoenix, זאגרב',amount:120.47,editable:false},
   {name:'לינה 17-19/8 Hotel Degenija, פליטביצה',amount:880,editable:false},
   {name:'לינה 19-22/8 Villa Cvita, פוליצ\'ניק',amount:1509,editable:false},
   {name:'פיקדון Villa Cvita',amount:500,editable:false,note:'מוחזר'},
   {name:'לינה 29-31/8 דירה, זאגרב',amount:654.48,editable:false},
   {name:'כרטיסי פליטביצה',amount:140,editable:false},
-  {name:'טיסות',amount:3613,editable:false},
+  {name:'מסעדת Savic 17/8',amount:128.6,editable:false},
+  {name:'מסעדות Hotel Degenija 17-19/8',amount:403.8,editable:false},
+  {name:'מסעדת Time קורניצה 19/8',amount:83.1,editable:false},
+  {name:'מסעדת Morita זאדאר 20/8',amount:133.7,editable:false},
+  {name:'מסעדת Batak',amount:143.8,editable:false},
+  {name:'מסעדת Arigato זאגרב 29/8',amount:107.5,editable:false},
+  {name:'מסעדת Purple Monkey זאגרב 30/8',amount:98,editable:false},
+  {name:'סופרמרקט 17/8',amount:83.59,editable:false},
+  {name:'סופרמרקט Studenac 19/8',amount:108.53,editable:false},
+  {name:'סופרמרקט 26/8',amount:198.69,editable:false},
+  {name:'סופרמרקט 26/8 (2)',amount:719.42,editable:false},
+  {name:'עגינה Marina Hramina 23-24/8',amount:301.4,editable:false},
+  {name:'עגינה מורטר 23-24/8',amount:277.2,editable:false},
+  {name:'עגינה ACI Skradin 25-26/8',amount:320,editable:false},
+  {name:'עגינה ACI Jezera 27-28/8',amount:252,editable:false},
+  {name:'רישיון דייג ימי',amount:45,editable:false},
+  {name:'דלק Coral זאדאר 29/8',amount:153.01,editable:false},
   {name:'דלק וכבישי אגרה',amount:0,editable:true},
   {name:'אוכל וקניות',amount:0,editable:true}
 ];
@@ -1225,7 +1243,7 @@ function fmtAmount(val){
 function renderBudget(){
   const sym={EUR:'€',ILS:'₪',USD:'$'}[currentCurrency];
   let items=load('budget',null);
-  if(items===null){items=DEFAULT_BUDGET.map(b=>({...b}));ss('budget',items);}
+  if(items===null){items=DEFAULT_BUDGET.map(b=>({...b}));if(firebaseReady)ss('budget',items);}
   document.getElementById('budgetList').innerHTML=items.map((item,i)=>{
     const amt=convertAmount(item.amount);const amtStr=item.amount>0?fmtAmount(amt):'';
     const displayVal=item.amount>0?Math.round(amt):'';
@@ -1550,11 +1568,8 @@ function deleteUpload(i){if(!confirm('למחוק מסמך זה?'))return;const u
 function renderAll(){updateDashboard();renderSchedule();renderDocs();renderRoute();renderPersonTabs();renderPackingList();renderBudget();}
 
 function migrateBudgetNames(){
-  const renames={'Hotel Phoenix (לילה 1)':'לינה 16-17/8 Hotel Phoenix, זאגרב','Hotel Degenija (2 לילות)':'לינה 17-19/8 Hotel Degenija, פליטביצה','Villa Cvita (3 לילות)':'לינה 19-22/8 Villa Cvita, פוליצ\'ניק','דירה זאגרב (2 לילות)':'לינה 29-31/8 דירה, זאגרב'};
   const items=load('budget',null);if(!items)return;
-  let changed=false;
-  items.forEach(item=>{if(renames[item.name]){item.name=renames[item.name];changed=true;}});
-  if(changed)ss('budget',items);
+  if(!items.find(b=>b.name==='מסעדת Savic 17/8')){ss('budget',DEFAULT_BUDGET.map(b=>({...b})));return;}
 }
 function init(){
   const savedTheme=load('theme','auto');
